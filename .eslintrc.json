@@ -15,6 +15,7 @@
         "require-jsdoc":"off",
         "no-unused-vars": "warn",
         "max-len": ["warn", { "code": 120, "comments": 100, "tabWidth": 2 }],
-        "prefer-const": "off"
+        "prefer-const": "off",
+        "linebreak-style": ["error", "windows"]
     }
 }
