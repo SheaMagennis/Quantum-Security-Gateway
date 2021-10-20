@@ -18,7 +18,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'random received input');
 
-      let error = errors.validateGroversInput(msg);
+      let error = errors.validateRandomInput(msg);
       if (error) {
         logger.error(node.id, error);
         done(error);
@@ -41,7 +41,7 @@ module.exports = function(RED) {
             logger.error(node.id, err);
             done(err);
           }).finally(() => {
-            logger.trace(node.id, 'Executed grovers command');
+            logger.trace(node.id, 'Executed random command');
             shell.stop();
           });
     });

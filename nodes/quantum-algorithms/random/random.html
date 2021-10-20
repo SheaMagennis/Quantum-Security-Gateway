@@ -1,7 +1,7 @@
 <script type="text/javascript">
-  RED.nodes.registerType("grovers", {
+  RED.nodes.registerType("random", {
     category: "quantum algorithms",
-    color: "#737177",
+    color: "#00CED1",
     defaults: {
       name: { value: "" },
     },
@@ -9,16 +9,16 @@
     outputs: 1,
     icon: "font-awesome/fa-search",
     align: "right",
-    paletteLabel: "grover's",
+    paletteLabel: "random",
     label: function () {
-      return this.name || "grover's";
+      return this.name || "random";
     },
     inputLabels: "Input",
     outputLabels: "Output",
   });
 </script>
 
-<script type="text/html" data-template-name="grovers">
+<script type="text/html" data-template-name="random">
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name" />

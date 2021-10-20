@@ -141,6 +141,10 @@ function validateShorsInput(msg) {
   return null;
 };
 
+function validateRandomInput(msg) {
+  return null;
+};
+
 module.exports = {
   NOT_QUANTUM_NODE,
   USE_REGISTER_NODES,
@@ -162,4 +166,5 @@ module.exports = {
   validateRegisterStrucutre,
   validateGroversInput,
   validateShorsInput,
+  validateRandomInput,
 };
