@@ -10,7 +10,7 @@ const shell = new PythonInteractive(PythonPath);
 module.exports = function(RED) {
   function RandomNode(config) {
     RED.nodes.createNode(this, config);
-    this.name = config.name || 'Random';
+    this.name = config.name || 'random';
     const node = this;
 
     logger.trace(this.id, 'Initialised random');
