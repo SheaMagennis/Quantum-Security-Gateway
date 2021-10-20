@@ -30,12 +30,7 @@ module.exports = function(RED) {
       shell.start();
       await shell.execute(script)
           .then((data) => {
-            data = data.split('\n');
-            msg.payload = {
-              topMeasurement: data[0].trim(),
-              iterationsNum: Number(data[1]),
-            };
-            send(msg);
+            send(data);
             done();
           }).catch((err) => {
             logger.error(node.id, err);
