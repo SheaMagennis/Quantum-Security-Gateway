@@ -339,4 +339,5 @@ module.exports = {
   INITIALIZE,
   SHORS,
   HISTOGRAM,
+  RAND,
 };

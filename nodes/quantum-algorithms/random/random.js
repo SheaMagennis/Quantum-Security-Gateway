@@ -25,7 +25,7 @@ module.exports = function(RED) {
         return;
       }
 
-      let script = util.format(snippets.GROVERS, msg.payload);
+      let script = util.format(snippets.RAND, msg.payload);
 
       shell.start();
       await shell.execute(script)
