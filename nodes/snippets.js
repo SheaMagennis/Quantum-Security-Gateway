@@ -293,9 +293,9 @@ const RAND =
 `from qiskit import Aer, QuantumCircuit, execute
 qc = QuantumCircuit(6,6)
 for qubit in range(6):
-    qc.h(qubit)
+  qc.h(qubit)
 for i in range(6):
-    qc.measure(i, i)
+  qc.measure(i, i)
 simulator = Aer.get_backend('qasm_simulator')
 result = execute(qc, backend = simulator, shots = 1).result()
 counts = result.get_counts()
