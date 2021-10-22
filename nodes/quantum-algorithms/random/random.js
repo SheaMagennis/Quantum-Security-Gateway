@@ -25,12 +25,14 @@ module.exports = function(RED) {
         return;
       }
 
-      let script = util.format(snippets.RAND, msg.payload);
-
+      let script = util.format(snippets.RAND);
+      logger.trace(node.id, script); //testing
       shell.start();
       await shell.execute(script)
           .then((data) => {
-            send(data);
+            logger.trace(data);
+            msg.payload = data;
+            send(msg);
             done();
           }).catch((err) => {
             logger.error(node.id, err);
