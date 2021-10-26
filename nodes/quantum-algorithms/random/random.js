@@ -26,7 +26,7 @@ module.exports = function(RED) {
       }
 
       let script = util.format(snippets.RAND);
-      logger.trace(node.id, script); //testing
+      logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
           .then((data) => {
