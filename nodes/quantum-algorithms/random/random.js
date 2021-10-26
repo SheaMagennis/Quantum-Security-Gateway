@@ -31,7 +31,7 @@ module.exports = function(RED) {
       await shell.execute(script)
           .then((data) => {
             logger.trace(data);
-            msg.payload = data.slice(924, data.length);
+            msg.payload = {randVal: Number(data.slice(924, data.length))};
             send(msg);
             done();
           }).catch((err) => {

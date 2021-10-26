@@ -1,6 +1,6 @@
-<script type="text/html" data-help-name="grovers">
+<script type="text/html" data-help-name="random">
   <p>
-    This node applies Grover's algorithm to find specified bit string value in the search space.
+    This node generates a true random number between the values 0 and 63 inclusive.
   </p>
 
   <h3>Inputs</h3>
@@ -8,18 +8,14 @@
         <dt>payload
             <span class="property-type">string</span>
         </dt>
-        <dd>Bit string that signifies the state which needs to be found using grover's algorithm</dd>
+        <dd>Any input, used to trigger the value creation and subsequent output process.
     </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
-      <dt>payload.topMeasurement
+      <dt>payload.randVal
           <span class="property-type">string</span>
       </dt>
-      <dd>Top measurement produced by algorithm that satisfies the input bit string state</dd>
-        <dt>payload.iterationsNum
-            <span class="property-type">integer</span>
-        </dt>
-        <dd>Number of times it took algorithm to find the desired state</dd>
+      <dd>randVal is the random integer result of the algorithm</dd>
     </dl>
 </script>
