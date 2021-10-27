@@ -7,7 +7,7 @@ const {FlowBuilder} = require('../flow-builder');
 
 const flow = new FlowBuilder();
 
-describe('randomNode', function() {
+describe('RandomNode', function() {
   beforeEach(function(done) {
     nodeTestHelper.startServer(done);
   });

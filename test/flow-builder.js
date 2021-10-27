@@ -22,6 +22,7 @@ const NODES = {
   'quantum-circuit': require('../nodes/quantum/quantum-circuit/quantum-circuit.js'),
   'quantum-register': require('../nodes/quantum/quantum-register/quantum-register.js'),
   'qubit': require('../nodes/quantum/qubit/qubit.js'),
+  'random': require('../nodes/quantum-algorithms/random/random.js'),
   'reset': require('../nodes/quantum/reset/reset.js'),
   'rotation-gate': require('../nodes/quantum/rotation-gate/rotation-gate.js'),
   'script': require('../nodes/quantum/script/script.js'),
