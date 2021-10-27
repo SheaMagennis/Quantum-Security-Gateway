@@ -78,6 +78,25 @@ function correctOutputReceived(flowBuilder, givenInput, expectedOutput, done) {
   });
 }
 
+function outputReceivedInCorrectRange(flowBuilder, givenInput, expectedLowerOutput, expectedHigherOutput, done) {
+  nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
+    const inputNode = nodeTestHelper.getNode(flowBuilder.inputId);
+    const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
+    outputNode.once('input', function(msg) {
+      try {
+        assert.isAbove(msg.payload.randVal, expectedLowerOutput.randVal);
+        assert.isBelow(msg.payload.randVal, expectedHigherOutput.randVal);
+        done();
+      } catch (err) {
+        done(err);
+      } finally {
+        shell.stop();
+      }
+    });
+    inputNode.receive(givenInput);
+  });
+}
+
 function nodeFailed(flowBuilder, givenInput, expectedMessage, done) {
   nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
     let node = nodeTestHelper.getNode(flowBuilder.inputId);
@@ -97,4 +116,5 @@ module.exports = {
   commandExecuted,
   correctOutputReceived,
   nodeFailed,
+  outputReceivedInCorrectRange,
 };
