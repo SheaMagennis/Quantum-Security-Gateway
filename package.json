@@ -86,7 +86,8 @@
       "grovers": "nodes/quantum-algorithms/grovers/grovers.js",
       "shors": "nodes/quantum-algorithms/shors/shors.js",
       "portfolio-optimisation": "nodes/quantum-algorithms/portfolio-optimisation/portfolio-optimisation.js",
-      "random": "nodes/quantum-algorithms/random/random.js"
+      "random": "nodes/quantum-algorithms/random/random.js",
+      "intrusion-detection": "nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js"
     }
   }
 }

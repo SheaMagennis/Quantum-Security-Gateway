@@ -8,7 +8,7 @@ const {PythonInteractive, PythonPath} = require('../../python');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
-  function RandomNode(config) {
+  function IntrusionDetectionNode(config) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'intrusion-detection';
     const node = this;
