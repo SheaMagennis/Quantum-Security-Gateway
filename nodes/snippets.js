@@ -316,7 +316,7 @@ from qiskit.aqua.utils import get_feature_dimension
 from qiskit import IBMQ
 
 vals=[]
-with open("UNSW_NB15_training_ten.csv", "r") as csv_file:
+with open("./UNSW_NB15_training_ten.csv", "r") as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
     next(csv_reader)
     for lines in csv_reader:
