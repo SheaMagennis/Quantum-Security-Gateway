@@ -317,36 +317,28 @@ from qiskit import IBMQ
 
 vals=[]
 with open("./UNSW_NB15_training_ten.csv", "r") as csv_file:
-    csv_reader = csv.reader(csv_file, delimiter=',')
-    next(csv_reader)
-    for lines in csv_reader:
-      vals.append(list(lines))
+  csv_reader = csv.reader(csv_file, delimiter=',')
+  next(csv_reader)
+  for lines in csv_reader:
+    vals.append(list(lines))
 
 test = []
 for i in vals:
-    subvals=[]
-    subvals.append(float(i[7])/1000)
-    subvals.append(float(i[16])*100)
-    test.append(subvals)
+  subvals=[]
+  subvals.append(float(i[7])/1000)
+  subvals.append(float(i[16])*100)
+  test.append(subvals)
     
 training_data = {'A': np.asarray([test[0],test[1],test[2],test[3],test[4]]),'B': np.asarray([test[5],test[6],test[7],test[8]])}
-
 backend = Aer.get_backend('qasm_simulator')
-
 num_qubits = 2
 shots = 8192 
-
 feature_map = ZZFeatureMap(feature_dimension=num_qubits,reps=2,entanglement='full')
-
-svm = QSVM(feature_map, training_data,testing_data) 
 quantum_instance = QuantumInstance(backend,shots=shots,skip_qobj_validation=False)
-
+svm = QSVM(feature_map, training_data,testing_data)
 result = svm.run(quantum_instance) 
-
 data = np.array([[1.453,0.5],[1.023,0.5],[0.135,0.5],[0.266,0.5]]) #Unlabelled test data
-
-prediction = svm.predict(data,quantum_instance) # Predict using unlabelled data 
-print(prediction)
+print(svm.predict(data,quantum_instance)) # Predict using unlabelled data 
 `;
 
 module.exports = {
