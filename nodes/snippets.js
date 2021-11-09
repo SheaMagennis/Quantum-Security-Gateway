@@ -328,7 +328,7 @@ for i in vals:
   subvals.append(float(i[7])/1000)
   subvals.append(float(i[16])*100)
   test.append(subvals)
-    
+
 training_data = {'A': np.asarray([test[0],test[1],test[2],test[3],test[4]]),'B': np.asarray([test[5],test[6],test[7],test[8]])}
 backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
