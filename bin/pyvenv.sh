@@ -6,7 +6,7 @@
 
 
 # Dependencies list.
-declare -a packages=("qiskit" "matplotlib" "pylatexenc" "qiskit-finance" "qiskit-optimization")
+declare -a packages=("qiskit" "matplotlib" "pylatexenc" "qiskit-finance" "qiskit-optimization" "qiskit-machine-learning")
 
 # Check OS for paths.
 venv="$PWD/venv"
