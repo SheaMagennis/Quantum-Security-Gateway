@@ -359,8 +359,9 @@ basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
 print('Running....\\n')
 
 train_features=data
-qsvc = QSVC(quantum_kernel=basis)
-qsvc.fit(train_features, type)
+qsvc = QSVC(quantum_kernel=basis) 
+
+#qsvc.fit(train_features, type)
 print("done")#remove
 `;
 
