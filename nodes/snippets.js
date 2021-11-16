@@ -316,52 +316,35 @@ from sklearn.preprocessing import normalize
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-#encoding below (one-hot)
 df = pd.read_csv("UNSW_NB15_training_ten.csv")
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
-#done
-
-#get only relevant data
-# This indicates this will delete 3rd column
-# Of the array
 type=final[:,41]
 type = type.astype('int')#convert from object to usable
-#first two only exist for training
+
 arrOne = np.delete(final, 41, 1)#array, num, column/row
 arrTwo = np.delete(arrOne, 40, 1)
 test = np.delete(arrTwo, 1, 1)
-#done
 
-#processing (PCA for dimension reduction speedup)
 scalar=StandardScaler()
 scalar.fit(test)
 test=scalar.transform(test)
 pca=PCA(.95)
 pca.fit(test)
 test = pca.transform(test)
-#done processing
-
-#normalising
 data = normalize(test, axis=0, norm='max')
-#done normalising
 
-#running qsvm below
 backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
 shots = 8192  # Number of times the job will be run on the quantum device
-
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='full')  #
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
-#quantum_instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
-
-print('Running....\\n')
-
 train_features=data
-qsvc = QSVC(quantum_kernel=basis) 
 
-#qsvc.fit(train_features, type)
+#qsvc = QSVC(C=1.0, quantum_kernel=basis, degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=- 1, decision_function_shape='ovr', break_ties=False, random_state=None) 
+qsvc= QSVC(quantum_kernel=basis)
+qsvc.fit(train_features, type)
 print("done")#remove
 `;
 
