@@ -308,12 +308,6 @@ const QSVM =`
 from qiskit_machine_learning.algorithms import QSVC
 from sklearn.linear_model import LogisticRegression
 import pickle
-#from sklearn.model_selection import train_test_split
-#x_train = [[1,2,3]]
-#y_train = [[1],[2],[3]]
-#example = LogisticRegression()
-#example.fit(x_train, y_train)
-#pickle.dump(example, open("./qsvmStore", 'wb'))
 
 model = pickle.load(open("./model_store/qsvmStore", 'rb')) 
 res=model.predict([[-0.74856406,-0.30061566, 0.19750934]])
