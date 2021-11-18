@@ -309,12 +309,12 @@ from qiskit_machine_learning.algorithms import QSVC
 from sklearn.linear_model import LogisticRegression
 import pickle
 
-model = pickle.load(open("./model_store/qsvmStore", 'rb')) 
+model = pickle.load(open("./qsvcStore", 'rb')) 
 res=model.predict([[-0.74856406,-0.30061566, 0.19750934]])
 print(res)
 `;
 
-const TEMP =
+const TEST =
 `import numpy as np
 import pandas as pd
 from qiskit import Aer
@@ -325,6 +325,7 @@ from qiskit_machine_learning.algorithms import QSVC
 from sklearn.preprocessing import normalize
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
+import pickle
 
 df = pd.read_csv("UNSW_NB15_training_ten.csv")
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
@@ -347,14 +348,15 @@ data = normalize(test, axis=0, norm='max')
 backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
 shots = 8192  # Number of times the job will be run on the quantum device
-feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='full')  #
+feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='full')  
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
-basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
+basis = QuantumKernel(feature_map, quantum_instance=instance)  
 train_features=data
 
 #qsvc = QSVC(C=1.0, quantum_kernel=basis, degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=- 1, decision_function_shape='ovr', break_ties=False, random_state=None) 
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, type)
+pickle.dump(qsvc, open("./qsvcStore", 'wb'))
 print("done")#remove
 `;
 
