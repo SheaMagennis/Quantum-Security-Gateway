@@ -24,17 +24,32 @@ module.exports = function(RED) {
         done(error);
         return;
       }
+      node.status({
+        fill: 'orange',
+        shape: 'dot',
+        text: 'Classifying traffic...',
+      });
 
       let script = util.format(snippets.QSVM);
       // logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
           .then((data) => {
+            node.status({
+              fill: 'green',
+              shape: 'dot',
+              text: 'Traffic classified!',
+            });
             logger.trace(data);
             msg.payload = data;
             send(msg);
             done();
           }).catch((err) => {
+            node.status({
+              fill: 'red',
+              shape: 'dot',
+              text: 'Traffic failed to classify!',
+            });
             logger.error(node.id, err);
             done(err);
           }).finally(() => {
