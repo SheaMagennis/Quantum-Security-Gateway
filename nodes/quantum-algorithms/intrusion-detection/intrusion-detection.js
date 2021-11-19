@@ -18,7 +18,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection node received input');
 
-      let error = errors.validateRandomInput(msg);
+      let error = errors.validateRandomInput(msg);//changeMe
       if (error) {
         logger.error(node.id, error);
         done(error);
@@ -29,8 +29,8 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Classifying traffic...',
       });
-
-      let script = util.format(snippets.QSVM);
+      let params = Number(msg.payload);
+      let script = util.format(snippets.QSVM, params);
       // logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)

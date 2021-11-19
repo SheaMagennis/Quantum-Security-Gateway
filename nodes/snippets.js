@@ -310,7 +310,7 @@ from sklearn.linear_model import LogisticRegression
 import pickle
 
 model = pickle.load(open("./qsvcStore", 'rb')) 
-res=model.predict([[-0.74856406,-0.30061566, 0.19750934]])
+res=model.predict(%s)#[[-0.74856406,-0.30061566, 0.19750934]]
 print(res)
 `;
 
