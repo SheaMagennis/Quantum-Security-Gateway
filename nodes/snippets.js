@@ -334,10 +334,10 @@ pca=PCA(.95)
 pca.fit(test)#needs more than 1 sample
 test = pca.transform(test)
 data = normalize(test, axis=0, norm='max')
-print(data)
+#print(data)
 #make prediction
-#fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
-#print(fin)
+fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
+print(fin)
 #if(res=="[0]"):
 #  print("Not a threat")
 #else:
