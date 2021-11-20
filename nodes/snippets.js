@@ -308,10 +308,17 @@ const QSVM =`
 from qiskit_machine_learning.algorithms import QSVC
 from sklearn.linear_model import LogisticRegression
 import pickle
+from ast import literal_eval
 
-model = pickle.load(open("./qsvcStore", 'rb')) 
-res=model.predict(%s)#[[-0.74856406,-0.30061566, 0.19750934]]
-print(res)
+#model = pickle.load(open("./qsvcStore", 'rb')) 
+#data=literal_eval()
+print(%o)
+#res=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
+#if(res=="[0]"):
+#  print("Not a threat")
+#else:
+#  print("Threat detected")
+  
 `;
 
 const TEST =
