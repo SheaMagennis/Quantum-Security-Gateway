@@ -310,10 +310,13 @@ from sklearn.linear_model import LogisticRegression
 import pickle
 from ast import literal_eval
 
-#model = pickle.load(open("./qsvcStore", 'rb')) 
+model = pickle.load(open("./qsvcStore", 'rb')) 
 #data=literal_eval()
-print(%o)
-#res=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
+type=(%o)
+lType=literal_eval(type)
+#print(lType)
+res=model.predict(lType)#[[-0.74856406,-0.30061566, 0.19750934]]
+print(res)
 #if(res=="[0]"):
 #  print("Not a threat")
 #else:
