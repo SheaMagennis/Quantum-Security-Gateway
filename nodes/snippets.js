@@ -304,7 +304,7 @@ dec = list(counts.keys())[0]
 print(int(dec,2))
 `;
 
-const QSVM =`
+const QSVC =`
 import numpy as np
 import pandas as pd
 from qiskit import Aer
@@ -345,7 +345,7 @@ print(fin)
   
 `;
 
-const TEST =
+const CREATE_QSVC =
 `import numpy as np
 import pandas as pd
 from qiskit import Aer
@@ -428,5 +428,5 @@ module.exports = {
   SHORS,
   HISTOGRAM,
   RAND,
-  QSVM,
+  QSVC,
 };
