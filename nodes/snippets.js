@@ -305,18 +305,39 @@ print(int(dec,2))
 `;
 
 const QSVM =`
+import numpy as np
+import pandas as pd
+from qiskit import Aer
+from qiskit.utils import QuantumInstance
+from qiskit.circuit.library import ZZFeatureMap
+from qiskit_machine_learning.kernels import QuantumKernel
 from qiskit_machine_learning.algorithms import QSVC
-from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import normalize
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 import pickle
 from ast import literal_eval
 
 model = pickle.load(open("./qsvcStore", 'rb')) 
-#data=literal_eval()
+#get data inputted and convert to dataframe
 type=(%o)
 lType=literal_eval(type)
-#print(lType)
-res=model.predict(lType)#[[-0.74856406,-0.30061566, 0.19750934]]
-print(res)
+res=pd.DataFrame(data=lType)
+#process data
+encoded = pd.get_dummies(res, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
+final=encoded.to_numpy()
+test = np.delete(final, 1, 1)
+scalar=StandardScaler()
+scalar.fit(test)
+test=scalar.transform(test)
+pca=PCA(.95)
+pca.fit(test)#needs more than 1 sample
+test = pca.transform(test)
+data = normalize(test, axis=0, norm='max')
+print(data)
+#make prediction
+#fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
+#print(fin)
 #if(res=="[0]"):
 #  print("Not a threat")
 #else:
