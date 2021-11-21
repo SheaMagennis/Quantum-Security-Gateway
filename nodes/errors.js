@@ -59,6 +59,12 @@ const INPUT_AN_INTEGER =
 const NO_INTERNET =
 'Failed to connect to the internet.';
 
+const INPUT_STRING =
+'The input must be a string value';
+
+const BAD_FORMAT =
+'The input must be a string in JSON format';
+
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
 
@@ -145,6 +151,24 @@ function validateRandomInput(msg) {
   return null;
 };
 
+function validateIntrusionInput(msg) {
+  if (typeof(msg.payload) !== 'string') {//string for now, convert to JSON
+    return new Error(INPUT_STRING);
+  }
+  /* work in progress
+  try {
+    let temp = msg.payload.replace(/'/g, '"');
+    let conv = JSON.parse(temp);
+  } catch (err) {
+    return new Error(BAD_FORMAT);
+  }*/
+  //if wrong headers
+  //if wrong length
+  //if different length vals
+  //if vals wrong type
+  return null;
+};
+
 module.exports = {
   NOT_QUANTUM_NODE,
   USE_REGISTER_NODES,
@@ -167,4 +191,5 @@ module.exports = {
   validateGroversInput,
   validateShorsInput,
   validateRandomInput,
+  validateIntrusionInput,
 };
