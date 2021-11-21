@@ -337,7 +337,11 @@ data = normalize(test, axis=0, norm='max')
 #print(data)
 #make prediction
 fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
-print(fin)
+#print(fin)
+for i in fin:
+  if i == 0:  print("not a threat")
+  else: print("Threat")
+   
 #if(res=="[0]"):
 #  print("Not a threat")
 #else:
