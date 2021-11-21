@@ -316,13 +316,14 @@ from sklearn.preprocessing import normalize
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pickle
+import json
 from ast import literal_eval
 
 model = pickle.load(open("./model_store/qsvcStore", 'rb')) 
 #get data inputted and convert to dataframe
-type=(%o)
-lType=literal_eval(type)
-res=pd.DataFrame(data=lType)
+type=%j
+#lType=literal_eval(type)
+res=pd.DataFrame(data=type)
 #process data
 encoded = pd.get_dummies(res, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
