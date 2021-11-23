@@ -363,7 +363,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pickle
 
-df = pd.read_csv("UNSW_NB15_training_ten.csv")
+df = pd.read_csv("UNSW_NB15_training_ten.csv")#one-hot encoding
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
 type=final[:,41]
@@ -373,13 +373,13 @@ arrOne = np.delete(final, 41, 1)#array, num, column/row
 arrTwo = np.delete(arrOne, 40, 1)
 test = np.delete(arrTwo, 1, 1)
 
-scalar=StandardScaler()
+scalar=StandardScaler()#PCA for dimensionality reduction
 scalar.fit(test)
 test=scalar.transform(test)
 pca=PCA(.95)
 pca.fit(test)
 test = pca.transform(test)
-data = normalize(test, axis=0, norm='max')
+data = normalize(test, axis=0, norm='max')#normalization
 
 backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
