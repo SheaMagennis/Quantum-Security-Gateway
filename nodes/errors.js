@@ -59,11 +59,14 @@ const INPUT_AN_INTEGER =
 const NO_INTERNET =
 'Failed to connect to the internet.';
 
-const INPUT_STRING =
-'The input must be a string value';
+const INPUT_JSON =
+'The input must be a JSON value';
 
 const BAD_FORMAT =
 'The input must be a string in JSON format';
+
+const BAD_HEADERS =
+'The keys in the inputted json do not match those required';
 
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
@@ -152,16 +155,15 @@ function validateRandomInput(msg) {
 };
 
 function validateIntrusionInput(msg) {// below suspended for json conversion
-  /* if (typeof(msg.payload) !== 'string') {//string for now, convert to JSON
-    return new Error(INPUT_STRING);
-  }*/
-  /* work in progress
+  if (typeof(msg.payload) !== 'object') {
+    return new Error(INPUT_JSON);
+  }
   try {
-    let temp = msg.payload.replace(/'/g, '"');
-    let conv = JSON.parse(temp);
+    let conv = JSON.stringify(msg.payload);
   } catch (err) {
     return new Error(BAD_FORMAT);
-  }*/
+  }
+  let headers = [];
   // if wrong headers
   // if wrong length
   // if different length vals
