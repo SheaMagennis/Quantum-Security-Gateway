@@ -13,6 +13,7 @@ const NODES = {
   'histogram-simulator': require('../nodes/quantum/histogram-simulator/histogram-simulator.js'),
   'ibm-quantum-system': require('../nodes/quantum/ibm-quantum-system/ibm-quantum-system.js'),
   'identity-gate': require('../nodes/quantum/identity-gate/identity-gate.js'),
+  'intrusion-detection': require('../nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js'),
   'local-simulator': require('../nodes/quantum/local-simulator/local-simulator.js'),
   'measure': require('../nodes/quantum/measure/measure.js'),
   'multi-controlled-u-gate': require('../nodes/quantum/multi-controlled-u-gate/multi-controlled-u-gate.js'),
