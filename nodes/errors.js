@@ -154,7 +154,7 @@ function validateRandomInput(msg) {
   return null;
 };
 
-function validateIntrusionInput(msg) {// below suspended for json conversion
+function validateIntrusionInput(msg) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
@@ -186,6 +186,9 @@ module.exports = {
   INPUT_ODD_INTEGER,
   INPUT_AN_INTEGER,
   NO_INTERNET,
+  INPUT_JSON,
+  BAD_HEADERS,
+  BAD_FORMAT,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,

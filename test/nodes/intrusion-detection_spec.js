@@ -32,6 +32,22 @@ describe('IntrusionDetectionNode', function() {
     });
   });
 
+  it('return error if input is not json', function(done) {
+    flow.add('intrusion-detection', 'i1', []);
+
+    const givenInput = {payload: 1};
+    const expectedMessage = errors.INPUT_JSON;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
+  it('return error if json has wrong headers', function(done) {
+    flow.add('shors', 'n1', []);
+
+    const givenInput = {payload: {'name': 'Joe'}};
+    const expectedMessage = errors.BAD_FORMAT;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
   it('return success output on valid input', function(done) {// change
     flow.add('intrusion-detection', 'intrusionDetectionNode', [['helperNode']]);
     flow.addOutput('helperNode');
