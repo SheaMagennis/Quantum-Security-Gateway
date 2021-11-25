@@ -24,16 +24,16 @@ describe('IntrusionDetectionNode', function() {
 
   it('default name outputs correctly', function(done) {
     flow.add('intrusion-detection', 'intrusionDetectionNode', [[]]);
-
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
-      inputNode.should.have.property('name', 'intrusion-detection');
+      // console.log(JSON.stringify(inputNode, null, 4));
+      inputNode.should.have.property('name', 'intrusion detection');
       done();
     });
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('intrusion-detection', 'IntrusionDetectionNode', [['helperNode']]);
+    flow.add('intrusion-detection', 'intrusionDetectionNode', [['helperNode']]);
     flow.addOutput('helperNode');
 
     const givenInput = {payload: 15};
