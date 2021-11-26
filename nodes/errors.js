@@ -63,7 +63,7 @@ const INPUT_JSON =
 'The input must be a JSON value';
 
 const BAD_FORMAT =
-'The input must be a string in JSON format';
+'The value types assigned to the json keys are incorrect';
 
 const BAD_HEADERS =
 'The keys in the inputted json do not match those required';
@@ -158,16 +158,41 @@ function validateIntrusionInput(msg) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
-  try {
-    let conv = JSON.stringify(msg.payload);
-  } catch (err) {
-    return new Error(BAD_FORMAT);
-  }
   let headers = ['id', 'dur', 'proto', 'service', 'state', 'spkts', 'dpkts', 'sbytes', 'dbytes', 'rate', 'sttl', 'dttl', 'sload', 'dload', 'sloss', 'dloss', 'sinpkt', 'dinpkt', 'sjit', 'djit', 'swin', 'stcpb', 'dtcpb', 'dwin', 'tcprtt', 'synack', 'ackdat', 'smean', 'dmean', 'trans_depth', 'response_body_len', 'ct_srv_src', 'ct_state_ttl', 'ct_dst_ltm', 'ct_src_dport_ltm', 'ct_dst_sport_ltm', 'ct_dst_src_ltm', 'is_ftp_login', 'ct_ftp_cmd', 'ct_flw_http_mthd', 'ct_src_ltm', 'ct_srv_dst', 'is_sm_ips_ports'];
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
     return new Error(BAD_HEADERS);
   }
-  // if vals wrong type
+  let vals = Object.values(msg.payload);// new
+  let headerNum=-1;
+  let protoVals=['udp', 'arp', 'tcp', 'ospf', 'sctp'];// and more
+  let serviceVals=['http', '-', 'ftp'];// and more
+  let stateVals=['FIN', 'INT'];
+  for (const val of vals) {
+    let subVal=Object.values(val);
+    headerNum+=1;
+    for (const sinVal of subVal) {
+      if (headerNum<2 || headerNum>4) {// number of string
+        if (isNaN(sinVal) ) {
+          return new Error(BAD_FORMAT);
+        }
+      }
+      else if (headerNum===2) {
+        if (!protoVals.includes(sinVal)) {
+          return new Error(BAD_FORMAT);
+        }
+      }
+      else if (headerNum===3) {
+        if (!serviceVals.includes(sinVal)){
+          return new Error(BAD_FORMAT);
+        }
+      }
+      else if (headerNum===4) {
+        if (!stateVals.includes(sinVal)){
+          return new Error(BAD_FORMAT);
+        }
+      }
+    }
+  }
   return null;
 };
 
