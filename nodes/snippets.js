@@ -340,13 +340,11 @@ data = normalize(test, axis=0, norm='max')
 fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
 #print(fin)
 for i in fin:
-  if i == 0:  print("not a threat")
-  else: print("Threat")
+  if i == 0:  print("No threat present")
+  else:  print("Threat detected")
    
-#if(res=="[0]"):
-#  print("Not a threat")
-#else:
-#  print("Threat detected")
+#print("non-threats: "+str(nonThreats))
+#print("threats: "+str(threats))
   
 `;
 
@@ -388,8 +386,6 @@ feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='f
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  
 train_features=data
-
-#qsvc = QSVC(C=1.0, quantum_kernel=basis, degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, class_weight=None, verbose=False, max_iter=- 1, decision_function_shape='ovr', break_ties=False, random_state=None) 
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, type)
 pickle.dump(qsvc, open("./model_store/qsvcStore", 'wb'))

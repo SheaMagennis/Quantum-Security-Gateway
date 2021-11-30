@@ -175,24 +175,23 @@ function validateIntrusionInput(msg) {
         if (isNaN(sinVal) ) {
           return new Error(BAD_FORMAT);
         }
-      }
-      else if (headerNum===2) {
+      } else if (headerNum===2) {
         if (!protoVals.includes(sinVal)) {
           return new Error(BAD_FORMAT);
         }
-      }
-      else if (headerNum===3) {
-        if (!serviceVals.includes(sinVal)){
+      } else if (headerNum===3) {
+        if (!serviceVals.includes(sinVal)) {
           return new Error(BAD_FORMAT);
         }
-      }
-      else if (headerNum===4) {
-        if (!stateVals.includes(sinVal)){
+      } else if (headerNum===4) {
+        if (!stateVals.includes(sinVal)) {
           return new Error(BAD_FORMAT);
         }
       }
     }
   }
+  // are the number of elements equal
+  // are the key names correct
   return null;
 };
 

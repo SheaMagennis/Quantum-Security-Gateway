@@ -6,13 +6,19 @@
   <h3>Inputs</h3>
     <dl class="message-properties">
         <dt>payload
-            <span class="property-type">string</span>
+            <span class="property-type">json</span>
         </dt>
-        <dd>Any input, used to trigger the output.
+        <dd>JSON with headers: 'id', 'dur', 'proto', 'service', 'state', 'spkts', 'dpkts', 'sbytes',
+            'dbytes', 'rate', 'sttl', 'dttl', 'sload', 'dload', 'sloss', 'dloss', 'sinpkt', 'dinpkt',
+            'sjit', 'djit', 'swin', 'stcpb', 'dtcpb', 'dwin', 'tcprtt', 'synack', 'ackdat', 'smean',
+            'dmean', 'trans_depth', 'response_body_len', 'ct_srv_src', 'ct_state_ttl', 'ct_dst_ltm',
+            'ct_src_dport_ltm', 'ct_dst_sport_ltm', 'ct_dst_src_ltm', 'is_ftp_login', 'ct_ftp_cmd',
+            'ct_flw_http_mthd', 'ct_src_ltm', 'ct_srv_dst', 'is_sm_ips_ports'. Each holds an object of key:value pairs,
+            one for each packet, with the key being a string index starting from '0'</dd>
     </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
-      <dd>The output is the classification of the traffic</dd>
+      <dd>The output is the classification of the traffic, as a string</dd>
     </dl>
 </script>
