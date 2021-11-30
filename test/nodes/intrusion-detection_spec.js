@@ -43,7 +43,6 @@ describe('IntrusionDetectionNode', function() {
     flow.add('intrusion-detection', 'intrusionDetectionNode', [[]]);
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
-      // console.log(JSON.stringify(inputNode, null, 4));
       inputNode.should.have.property('name', 'intrusion detection');
       done();
     });
