@@ -331,7 +331,7 @@ test = np.delete(final, 1, 1)
 scalar=StandardScaler()
 scalar.fit(test)
 test=scalar.transform(test)
-pca=PCA(.95)
+pca=PCA(n_components=3)
 pca.fit(test)#needs more than 1 sample
 test = pca.transform(test)
 data = normalize(test, axis=0, norm='max')
@@ -374,7 +374,7 @@ test = np.delete(arrTwo, 1, 1)
 scalar=StandardScaler()#PCA for dimensionality reduction
 scalar.fit(test)
 test=scalar.transform(test)
-pca=PCA(.95)
+pca=PCA(n_components=3)
 pca.fit(test)
 test = pca.transform(test)
 data = normalize(test, axis=0, norm='max')#normalization
