@@ -361,7 +361,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pickle
 
-df = pd.read_csv("UNSW_NB15_training_ten.csv")#one-hot encoding
+df = pd.read_csv("/data_store/UNSW_NB15_training_ten.csv")#one-hot encoding
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
 type=final[:,41]

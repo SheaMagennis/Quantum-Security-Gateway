@@ -68,6 +68,12 @@ const BAD_FORMAT =
 const BAD_HEADERS =
 'The keys in the inputted json do not match those required';
 
+const NEEDS_MORE =
+'At least three records of data are needed in the json';
+
+const UNEVEN =
+'There should be the same number of key-value pairs for each header';
+
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
 
@@ -169,13 +175,24 @@ function validateIntrusionInput(msg) {
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
     return new Error(BAD_HEADERS);
   }
-  let vals = Object.values(msg.payload);// new
+  let vals = Object.values(msg.payload);
   let headerNum=-1;
   let protoVals=['udp', 'arp', 'tcp', 'ospf', 'sctp'];// and more
   let serviceVals=['http', '-', 'ftp'];// and more
   let stateVals=['FIN', 'INT'];
+  let standardLen = 0;
   for (const val of vals) {
+    if (headernum===-1) {
+      standardLen = val.length;
+    } else {
+      if (val.length !== standardLen) {
+        throw new Error(UNEVEN);
+      }
+    }
     let subVal=Object.values(val);
+    if (subVal.length<3) {
+      return new Error(NEEDS_MORE);
+    }
     headerNum+=1;
     for (const sinVal of subVal) {
       if (headerNum<2 || headerNum>4) {// number of string
@@ -197,7 +214,6 @@ function validateIntrusionInput(msg) {
       }
     }
   }
-  // are the number of elements equal
   // are the key names correct
   return null;
 };
