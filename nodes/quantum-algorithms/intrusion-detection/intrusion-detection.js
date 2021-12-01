@@ -41,7 +41,7 @@ module.exports = function(RED) {
               text: 'Traffic classified!',
             });
             logger.trace(data);
-            msg.payload = (data.slice(42, data.length));
+            msg.payload = (data.slice(39, data.length));
             send(msg);
             done();
           }).catch((err) => {
