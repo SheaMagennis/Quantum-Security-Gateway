@@ -63,11 +63,28 @@ describe('IntrusionDetectionNode', function() {
     const expectedMessage = errors.BAD_HEADERS;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
+
   it('return error if values are wrong type', function(done) {
     flow.add('intrusion-detection', 'n1', []);
     let sub = `"id":{"0":"error","1":2,"2":3}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_FORMAT;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
+  it('return error if uneven number of values', function(done) {
+    flow.add('intrusion-detection', 'n1', []);
+    let sub = `"id":{"0":1,"1":2,"2":3,"3":4}`;
+    const givenInput = JSON.parse(util.format(baseJSON, sub));
+    const expectedMessage = errors.UNEVEN;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
+  it('return error if less than three packets sent for classification', function(done) {
+    flow.add('intrusion-detection', 'n1', []);
+    let sub = `"id":{"0":1,"1":2}`;
+    const givenInput = JSON.parse(util.format(baseJSON, sub));
+    const expectedMessage = errors.NEEDS_MORE;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 

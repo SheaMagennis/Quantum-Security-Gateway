@@ -182,7 +182,7 @@ function validateIntrusionInput(msg) {
   let stateVals=['FIN', 'INT'];
   let standardLen = 0;
   for (const val of vals) {
-    if (headernum===-1) {
+    if (headerNum===-1) {
       standardLen = val.length;
     } else {
       if (val.length !== standardLen) {
@@ -236,6 +236,8 @@ module.exports = {
   INPUT_JSON,
   BAD_HEADERS,
   BAD_FORMAT,
+  UNEVEN,
+  NEEDS_MORE,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,
