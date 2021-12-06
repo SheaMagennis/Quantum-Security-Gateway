@@ -183,10 +183,10 @@ function validateIntrusionInput(msg) {
   let standardLen = 0;
   for (const val of vals) {
     if (headerNum===-1) {
-      standardLen = val.length;
+      standardLen = Object.keys(val).length;
     } else {
-      if (val.length !== standardLen) {
-        throw new Error(UNEVEN);
+      if (Object.keys(val).length !== standardLen) {
+        return new Error(UNEVEN);
       }
     }
     let subVal=Object.values(val);
