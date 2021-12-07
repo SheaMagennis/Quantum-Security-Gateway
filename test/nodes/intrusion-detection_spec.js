@@ -88,6 +88,14 @@ describe('IntrusionDetectionNode', function() {
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 
+  it('return error if incorrect subkey used', function(done) {
+    flow.add('intrusion-detection', 'n1', []);
+    let sub = `"id":{"bad":1,"1":2,"2":3}`;
+    const givenInput = JSON.parse(util.format(baseJSON, sub));
+    const expectedMessage = errors.BAD_SUBKEYS;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
   it('return success output on valid input', function(done) {// change
     flow.add('intrusion-detection', 'intrusionDetectionNode', [['helperNode']]);
     flow.addOutput('helperNode');

@@ -74,6 +74,9 @@ const NEEDS_MORE =
 const UNEVEN =
 'There should be the same number of key-value pairs for each header';
 
+const BAD_SUBKEYS =
+'The sub-keys must be sequential strings of incremental values, starting from 0';
+
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
 
@@ -194,6 +197,13 @@ function validateIntrusionInput(msg) {
       return new Error(NEEDS_MORE);
     }
     headerNum+=1;
+    let subKey = Object.keys(val);
+    let keyLen = subKey.length;
+    for (let i = 0; i<keyLen; i++) {
+      if (subKey[i]!==i.toString()) {
+        return new Error(BAD_SUBKEYS);
+      }
+    }
     for (const sinVal of subVal) {
       if (headerNum<2 || headerNum>4) {// number of string
         if (isNaN(sinVal) ) {
@@ -214,7 +224,6 @@ function validateIntrusionInput(msg) {
       }
     }
   }
-  // are the key names correct
   return null;
 };
 
@@ -238,6 +247,7 @@ module.exports = {
   BAD_FORMAT,
   UNEVEN,
   NEEDS_MORE,
+  BAD_SUBKEYS,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,
