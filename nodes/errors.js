@@ -163,6 +163,10 @@ function validateRandomInput(msg) {
   return null;
 };
 
+function validateAnomalyInput(msg) {
+  return null;
+};
+
 function validateIntrusionInput(msg) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
@@ -256,4 +260,5 @@ module.exports = {
   validateShorsInput,
   validateRandomInput,
   validateIntrusionInput,
+  validateAnomalyInput,
 };

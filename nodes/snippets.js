@@ -304,6 +304,44 @@ dec = list(counts.keys())[0]
 print(int(dec,2))
 `;
 
+const ANOM=`
+#%j
+from sklearn.cluster import SpectralClustering
+from sklearn.metrics import normalized_mutual_info_score
+
+from qiskit import BasicAer
+from qiskit.circuit.library import ZZFeatureMap
+from qiskit.utils import QuantumInstance, algorithm_globals
+from qiskit_machine_learning.kernels import QuantumKernel
+from qiskit_machine_learning.datasets import ad_hoc_data
+
+seed = 12345
+algorithm_globals.random_seed = seed
+
+adhoc_dimension = 2
+train_features, train_labels, test_features, test_labels, adhoc_total = ad_hoc_data(
+    training_size=25,
+    test_size=0,
+    n=adhoc_dimension,
+    gap=0.6,
+    plot_data=False, one_hot=False, include_sample_total=True
+)
+
+adhoc_feature_map = ZZFeatureMap(feature_dimension=adhoc_dimension,
+                                 reps=2, entanglement='linear')
+
+adhoc_backend = QuantumInstance(BasicAer.get_backend('qasm_simulator'), shots=1024,
+                                seed_simulator=seed, seed_transpiler=seed)
+
+adhoc_kernel = QuantumKernel(feature_map=adhoc_feature_map, quantum_instance=adhoc_backend)
+
+adhoc_matrix = adhoc_kernel.evaluate(x_vec=train_features)
+
+adhoc_spectral = SpectralClustering(2, affinity="precomputed")
+cluster_labels = adhoc_spectral.fit_predict(adhoc_matrix)
+print(cluster_labels)
+`;
+
 const QSVC =`
 import numpy as np
 import pandas as pd
@@ -430,4 +468,5 @@ module.exports = {
   HISTOGRAM,
   RAND,
   QSVC,
+  ANOM,
 };

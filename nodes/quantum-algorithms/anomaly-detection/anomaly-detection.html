@@ -1,0 +1,28 @@
+<script type="text/javascript">
+  RED.nodes.registerType("anomaly-detection", {
+    category: "quantum algorithms",
+    color: "#737177",
+    defaults: {
+      name: { value: "" },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-buromobelexperte",
+    align: "right",
+    paletteLabel: "anomaly-detection",
+    label: function () {
+      return this.name || "anomaly-detection";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="anomaly-detection">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+</script>
+
+
