@@ -88,7 +88,7 @@
       "portfolio-optimisation": "nodes/quantum-algorithms/portfolio-optimisation/portfolio-optimisation.js",
       "random": "nodes/quantum-algorithms/random/random.js",
       "intrusion-detection": "nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js",
-      "anomaly-detection": "nodes/quantum-algorithms/intrusion-detection/anomaly-detection.js"
+      "anomaly-detection": "nodes/quantum-algorithms/anomaly-detection/anomaly-detection.js"
     }
   }
 }
