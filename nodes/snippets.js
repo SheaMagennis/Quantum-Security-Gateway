@@ -342,6 +342,61 @@ cluster_labels = adhoc_spectral.fit_predict(adhoc_matrix)
 print(cluster_labels)
 `;
 
+const REGR = `
+import numpy as np
+import matplotlib.pyplot as plt
+
+from qiskit import Aer, QuantumCircuit
+from qiskit.utils import QuantumInstance
+from qiskit.circuit import Parameter
+from qiskit.algorithms.optimizers import L_BFGS_B
+
+from qiskit_machine_learning.neural_networks import TwoLayerQNN
+from qiskit_machine_learning.algorithms.regressors import VQR
+
+
+from IPython.display import clear_output
+#instance
+quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=1024)
+#dataset
+num_samples = 20
+eps = 0.2
+lb, ub = -np.pi, np.pi
+X_ = np.linspace(lb, ub, num=50).reshape(50, 1)
+f = lambda x: np.sin(x)
+
+X = (ub - lb)*np.random.rand(num_samples, 1) + lb
+y = f(X[:,0]) + eps*(2*np.random.rand(num_samples)-1)
+
+#vars set up
+# construct simple feature map
+param_x = Parameter('x')
+feature_map = QuantumCircuit(1, name='fm')
+feature_map.ry(param_x, 0)
+
+# construct simple ansatz
+param_y = Parameter('y')
+ansatz = QuantumCircuit(1, name='vf')
+ansatz.ry(param_y, 0)
+
+# construct QNN
+regression_opflow_qnn = TwoLayerQNN(1, feature_map, ansatz, quantum_instance=quantum_instance)
+
+
+#concrete below
+vqr = VQR(feature_map=feature_map,
+          ansatz=ansatz,
+          optimizer=L_BFGS_B(),
+          quantum_instance=quantum_instance)
+
+# fit regressor
+vqr.fit(X, y)
+
+# score result
+ans = vqr.score(X, y)
+print(ans)
+`;
+
 const QSVC =`
 import numpy as np
 import pandas as pd
