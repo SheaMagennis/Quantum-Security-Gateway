@@ -1,6 +1,7 @@
 'use strict';
 
 const NODES = {
+  'anomaly-detection': require('../nodes/quantum-algorithms/anomaly-detection/anomaly-detection.js'),
   'barrier': require('../nodes/quantum/barrier/barrier.js'),
   'bloch-sphere': require('../nodes/quantum/bloch-sphere/bloch-sphere.js'),
   'circuit-diagram': require('../nodes/quantum/circuit-diagram/circuit-diagram.js'),
