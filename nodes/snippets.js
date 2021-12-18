@@ -354,8 +354,7 @@ from qiskit.algorithms.optimizers import L_BFGS_B
 from qiskit_machine_learning.neural_networks import TwoLayerQNN
 from qiskit_machine_learning.algorithms.regressors import VQR
 
-
-from IPython.display import clear_output
+#%j
 #instance
 quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=1024)
 #dataset
@@ -524,4 +523,5 @@ module.exports = {
   RAND,
   QSVC,
   ANOM,
+  REGR,
 };
