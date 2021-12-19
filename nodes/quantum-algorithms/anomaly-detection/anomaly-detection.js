@@ -31,7 +31,6 @@ module.exports = function(RED) {
       });
       let params = msg.payload;
       let script = util.format(snippets.ANOM, params);
-      // logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
           .then((data) => {

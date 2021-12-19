@@ -30,7 +30,8 @@ module.exports = function(RED) {
         text: 'Classifying traffic...',
       });
       let params = msg.payload;
-      let script = util.format(snippets.QSVC, params);
+      let final = snippets.QSVC_IMPORTS+snippets.QSVC;
+      let script = util.format(final, params);
       // logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)

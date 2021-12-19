@@ -396,7 +396,7 @@ ans = vqr.score(X, y)
 print(ans)
 `;
 
-const QSVC =`
+const QSVC_IMPORTS=`
 import numpy as np
 import pandas as pd
 from qiskit import Aer
@@ -409,17 +409,18 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pickle
 import json
-from ast import literal_eval
+`;
 
+const QSVC =`
 model = pickle.load(open("./model_store/qsvcStore", 'rb')) 
 #get data inputted and convert to dataframe
 type=%j
-#lType=literal_eval(type)
 res=pd.DataFrame(data=type)
 #process data
 encoded = pd.get_dummies(res, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
 test = np.delete(final, 1, 1)
+
 scalar=StandardScaler()
 scalar.fit(test)
 test=scalar.transform(test)
@@ -427,6 +428,7 @@ pca=PCA(n_components=3)
 pca.fit(test)#needs more than 1 sample
 test = pca.transform(test)
 data = normalize(test, axis=0, norm='max')
+
 #print(data)
 #make prediction
 fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
@@ -440,19 +442,7 @@ for i in fin:
   
 `;
 
-const CREATE_QSVC =
-`import numpy as np
-import pandas as pd
-from qiskit import Aer
-from qiskit.utils import QuantumInstance
-from qiskit.circuit.library import ZZFeatureMap
-from qiskit_machine_learning.kernels import QuantumKernel
-from qiskit_machine_learning.algorithms import QSVC
-from sklearn.preprocessing import normalize
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
-import pickle
-
+const CREATE_QSVC = `
 df = pd.read_csv("/data_store/UNSW_NB15_training_ten.csv")#one-hot encoding
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
@@ -522,6 +512,7 @@ module.exports = {
   HISTOGRAM,
   RAND,
   QSVC,
+  QSVC_IMPORTS,
   ANOM,
   REGR,
 };
