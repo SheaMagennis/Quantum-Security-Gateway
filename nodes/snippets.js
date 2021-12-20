@@ -412,7 +412,7 @@ import json
 `;
 
 const QSVC =`
-modelName="./model_store/%s" #qsvcStore
+modelName="./model_store/qsvc%s" #qsvcStore
 model = pickle.load(open(modelName, 'rb')) 
 #get data inputted and convert to dataframe
 type=%j

@@ -5,6 +5,7 @@ const snippets = require('../../snippets');
 const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
+const fs = require('fs');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -12,8 +13,8 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'intrusion-detection';
     this.modelName = config.modelName || 'default';
+    this.modelNameList = fs.readdirSync('./model_store');
     const node = this;
-
     logger.trace(this.id, 'Initialised intrusion-detection system');
 
     this.on('input', async function(msg, send, done) {

@@ -8,6 +8,7 @@
         value: "",
         required: true
       },
+      modelNameList: { value: "" }
     },
     inputs: 1,
     outputs: 1,
@@ -31,6 +32,15 @@
     <label for="node-input-modelName">Model Name</label>
     <input type="text" id="node-input-modelName" placeholder="Model Name" />
   </div>
+  <div class="form-row">
+    <h1 id="testing">hello</h1>
+    <button onclick=trial()>List Existing Models</button>
+  </div>
 </script>
 
-
+<script type="text/javascript">
+  const fs = require("fs");
+  function trial() {
+    document.getElementById("testing").innerHTML = "hello!!!";
+}
+</script>
