@@ -11,6 +11,7 @@ module.exports = function(RED) {
   function IntrusionDetectionNode(config) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'intrusion-detection';
+    this.modelName = config.modelName || 'default';
     const node = this;
 
     logger.trace(this.id, 'Initialised intrusion-detection system');
@@ -29,9 +30,10 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Classifying traffic...',
       });
+      let firstParam = node.modelName;
       let params = msg.payload;
       let final = snippets.QSVC_IMPORTS+snippets.QSVC;
-      let script = util.format(final, params);
+      let script = util.format(final, firstParam, params);
       // logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
