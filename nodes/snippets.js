@@ -411,7 +411,7 @@ import pickle
 import json
 `;
 
-const QSVC =`
+const QSVC_START =`
 modelName="./model_store/qsvc%s" #qsvcStore
 model = pickle.load(open(modelName, 'rb')) 
 #get data inputted and convert to dataframe
@@ -421,15 +421,9 @@ res=pd.DataFrame(data=type)
 encoded = pd.get_dummies(res, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
 test = np.delete(final, 1, 1)
+`;
 
-scalar=StandardScaler()
-scalar.fit(test)
-test=scalar.transform(test)
-pca=PCA(n_components=3)
-pca.fit(test)#needs more than 1 sample
-test = pca.transform(test)
-data = normalize(test, axis=0, norm='max')
-
+const QSVC_END=`
 #print(data)
 #make prediction
 fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
@@ -443,7 +437,7 @@ for i in fin:
   
 `;
 
-const CREATE_QSVC = `
+const CREATE_QSVC_START = `
 df = pd.read_csv("/data_store/UNSW_NB15_training_ten.csv")#one-hot encoding
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
@@ -453,15 +447,9 @@ type = type.astype('int')#convert from object to usable
 arrOne = np.delete(final, 41, 1)#array, num, column/row
 arrTwo = np.delete(arrOne, 40, 1)
 test = np.delete(arrTwo, 1, 1)
+`;
 
-scalar=StandardScaler()#PCA for dimensionality reduction
-scalar.fit(test)
-test=scalar.transform(test)
-pca=PCA(n_components=3)
-pca.fit(test)
-test = pca.transform(test)
-data = normalize(test, axis=0, norm='max')#normalization
-
+const CREATE_QSVC_END=`
 backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
 shots = 8192  # Number of times the job will be run on the quantum device
@@ -475,8 +463,17 @@ pickle.dump(qsvc, open("./model_store/qsvcStore", 'wb'))
 print("done")#remove
 `;
 
-const LIST_MODELS =
-`
+const PCA =`
+scalar=StandardScaler()#PCA for dimensionality reduction
+scalar.fit(test)
+test=scalar.transform(test)
+pca=PCA(n_components=3)
+pca.fit(test)
+test = pca.transform(test)
+data = normalize(test, axis=0, norm='max')#normalization
+`;
+
+const LIST_MODELS = `
 import os
 x = os.listdir("./model_store")
 print(x)
@@ -519,7 +516,9 @@ module.exports = {
   SHORS,
   HISTOGRAM,
   RAND,
-  QSVC,
+  QSVC_START,
+  QSVC_END,
+  PCA,
   QSVC_IMPORTS,
   ANOM,
   REGR,

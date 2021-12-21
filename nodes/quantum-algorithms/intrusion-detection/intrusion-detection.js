@@ -33,7 +33,7 @@ module.exports = function(RED) {
       });
       let firstParam = node.modelName;
       let params = msg.payload;
-      let final = snippets.QSVC_IMPORTS+snippets.QSVC;
+      let final = snippets.QSVC_IMPORTS+snippets.QSVC_START+snippets.PCA+snippets.QSVC_END;
       let script = util.format(final, firstParam, params);
       // logger.trace(node.id, script); // testing
       shell.start();
