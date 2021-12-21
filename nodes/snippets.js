@@ -309,7 +309,7 @@ const ANOM=`
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics import normalized_mutual_info_score
 
-from qiskit import BasicAer
+from qiskit import Aer
 from qiskit.circuit.library import ZZFeatureMap
 from qiskit.utils import QuantumInstance, algorithm_globals
 from qiskit_machine_learning.kernels import QuantumKernel
@@ -330,7 +330,7 @@ train_features, train_labels, test_features, test_labels, adhoc_total = ad_hoc_d
 adhoc_feature_map = ZZFeatureMap(feature_dimension=adhoc_dimension,
                                  reps=2, entanglement='linear')
 
-adhoc_backend = QuantumInstance(BasicAer.get_backend('qasm_simulator'), shots=1024,
+adhoc_backend = QuantumInstance(Aer.get_backend('qasm_simulator'), shots=1024,
                                 seed_simulator=seed, seed_transpiler=seed)
 
 adhoc_kernel = QuantumKernel(feature_map=adhoc_feature_map, quantum_instance=adhoc_backend)
@@ -475,6 +475,13 @@ pickle.dump(qsvc, open("./model_store/qsvcStore", 'wb'))
 print("done")#remove
 `;
 
+const LIST_MODELS =
+`
+import os
+x = os.listdir("./model_store")
+print(x)
+`;
+
 module.exports = {
   IMPORTS,
   QUANTUM_CIRCUIT,
@@ -516,4 +523,5 @@ module.exports = {
   QSVC_IMPORTS,
   ANOM,
   REGR,
+  LIST_MODELS,
 };

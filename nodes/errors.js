@@ -171,6 +171,10 @@ function validateAttackInput(msg) {
   return null;
 };
 
+function validateListInput(msg) {
+  return null;
+};
+
 function validateIntrusionInput(msg) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
@@ -266,4 +270,5 @@ module.exports = {
   validateIntrusionInput,
   validateAnomalyInput,
   validateAttackInput,
+  validateListInput,
 };
