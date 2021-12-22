@@ -13,7 +13,6 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'intrusion-detection';
     this.modelName = config.modelName || 'default';
-    this.modelNameList = fs.readdirSync('./model_store').join();
     const node = this;
     logger.trace(this.id, 'Initialised intrusion-detection system');
 

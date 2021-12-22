@@ -479,6 +479,12 @@ x = os.listdir("./model_store")
 print(x)
 `;
 
+const DELETE_MODEL = `
+import os
+os.remove("./model_store/%s")
+print("model removed")
+`;
+
 module.exports = {
   IMPORTS,
   QUANTUM_CIRCUIT,
@@ -523,4 +529,5 @@ module.exports = {
   ANOM,
   REGR,
   LIST_MODELS,
+  DELETE_MODEL,
 };
