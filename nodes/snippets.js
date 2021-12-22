@@ -342,7 +342,7 @@ cluster_labels = adhoc_spectral.fit_predict(adhoc_matrix)
 print(cluster_labels)
 `;
 
-const REGR = `
+const REGR_IMPORTS = `
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -353,7 +353,10 @@ from qiskit.algorithms.optimizers import L_BFGS_B
 
 from qiskit_machine_learning.neural_networks import TwoLayerQNN
 from qiskit_machine_learning.algorithms.regressors import VQR
+import pickle
+`;
 
+const REGR_CREATE = `
 #%j
 #instance
 quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=1024)
@@ -390,9 +393,15 @@ vqr = VQR(feature_map=feature_map,
 
 # fit regressor
 vqr.fit(X, y)
-
+pickle.dump(vqr, open("./model_store/regr%s", 'wb'))
 # score result
 ans = vqr.score(X, y)
+print(ans)
+`;
+
+const REGR_USE=`
+model = pickle.load(open("./clustering", 'rb'))
+ans = model.predict(X)
 print(ans)
 `;
 
@@ -527,7 +536,8 @@ module.exports = {
   PCA,
   QSVC_IMPORTS,
   ANOM,
-  REGR,
+  REGR_CREATE,
+  REGR_IMPORTS,
   LIST_MODELS,
   DELETE_MODEL,
 };
