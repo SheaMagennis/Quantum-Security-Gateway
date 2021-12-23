@@ -1,0 +1,34 @@
+<script type="text/javascript">
+  RED.nodes.registerType("intrusion-detection-creation", {
+    category: "quantum algorithms",
+    color: "#737177",
+    defaults: {
+      name: { value: "" },
+      modelName: {
+        value: "",
+        required: true
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-eye",
+    align: "right",
+    paletteLabel: "intrusion-detection-creation",
+    label: function () {
+      return this.name || "intrusion-detection-creation";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="intrusion-detection-creation">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-modelName">Model Name</label>
+    <input type="text" id="node-input-modelName" placeholder="Model Name" />
+  </div>
+</script>
