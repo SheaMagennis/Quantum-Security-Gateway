@@ -540,6 +540,7 @@ module.exports = {
   ANOM,
   REGR_CREATE,
   REGR_IMPORTS,
+  REGR_USE,
   LIST_MODELS,
   DELETE_MODEL,
 };

@@ -30,7 +30,7 @@ module.exports = function(RED) {
         text: 'Predicting attacks...',
       });
       let params = msg.payload;
-      let full = snippets.REGR_IMPORTS+snippets.REGR_CREATE;
+      let full = snippets.REGR_IMPORTS+snippets.REGR_USE;
       let script = util.format(full, params);
       shell.start();
       await shell.execute(script)

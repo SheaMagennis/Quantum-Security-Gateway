@@ -8,17 +8,17 @@ const {PythonInteractive, PythonPath} = require('../../python');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
-  function IntrusionDetectionCreationNode(config) {
+  function AttackPredictionCreationNode(config) {
     RED.nodes.createNode(this, config);
-    this.name = config.name || 'intrusion-detection-creation';
-    this.modelName = config.modelName || 'default';
+    this.name = config.name || 'attack-prediction-creation';
     const node = this;
-    logger.trace(this.id, 'Initialised intrusion-detection-creation system');
+
+    logger.trace(this.id, 'Initialised attack-prediction-creation system');
 
     this.on('input', async function(msg, send, done) {
-      logger.trace(node.id, 'intrusion-detection-creation node received input');
+      logger.trace(node.id, 'attack-prediction-creation node received input');
 
-      let error = errors.validateIntrusionCreationInput(msg);// changeMe
+      let error = errors.validateAttackCreationInput(msg);// changeMe
       if (error) {
         logger.error(node.id, error);
         done(error);
@@ -27,20 +27,18 @@ module.exports = function(RED) {
       node.status({
         fill: 'orange',
         shape: 'dot',
-        text: 'Creating model...',
+        text: 'Building model...',
       });
-      let firstParam = node.modelName;
       let params = msg.payload;
-      let final = snippets.QSVC_IMPORTS+snippets.CREATE_QSVC_START+snippets.PCA+snippets.CREATE_QSVC_END;
-      let script = util.format(final, firstParam, params);
-      // logger.trace(node.id, script); // testing
+      let full = snippets.REGR_IMPORTS+snippets.REGR_CREATE;
+      let script = util.format(full, params);
       shell.start();
       await shell.execute(script)
           .then((data) => {
             node.status({
               fill: 'green',
               shape: 'dot',
-              text: 'Model created!',
+              text: 'Build complete!',
             });
             logger.trace(data);
             msg.payload = (data.slice(39, data.length));
@@ -50,16 +48,16 @@ module.exports = function(RED) {
             node.status({
               fill: 'red',
               shape: 'dot',
-              text: 'Model failed to create!',
+              text: 'Error; Build unable to complete!',
             });
             logger.error(node.id, err);
             done(err);
           }).finally(() => {
-            logger.trace(node.id, 'Executed intrusion-detection-creation command');
+            logger.trace(node.id, 'Executed attack-prediction-creation command');
             shell.stop();
           });
     });
   }
 
-  RED.nodes.registerType('intrusion-detection-creation', IntrusionDetectionCreationNode);
+  RED.nodes.registerType('attack-prediction-creation', AttackPredictionCreationNode);
 };

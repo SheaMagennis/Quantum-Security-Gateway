@@ -171,11 +171,19 @@ function validateAttackInput(msg) {
   return null;
 };
 
+function validateAttackCreationInput(msg) {
+  return null;
+};
+
 function validateListInput(msg) {
   return null;
 };
 
 function validateDeleteInput(msg) {
+  return null;
+};
+
+function validateIntrusionCreationInput(msg) {
   return null;
 };
 
@@ -276,4 +284,6 @@ module.exports = {
   validateAttackInput,
   validateListInput,
   validateDeleteInput,
+  validateIntrusionCreationInput,
+  validateAttackCreationInput,
 };
