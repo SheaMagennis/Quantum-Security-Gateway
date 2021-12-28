@@ -5,7 +5,6 @@ const snippets = require('../../snippets');
 const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
-const fs = require('fs');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {

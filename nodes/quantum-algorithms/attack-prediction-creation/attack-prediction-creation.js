@@ -11,6 +11,7 @@ module.exports = function(RED) {
   function AttackPredictionCreationNode(config) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'attack-prediction-creation';
+    this.modelName = config.modelName || 'default';
     const node = this;
 
     logger.trace(this.id, 'Initialised attack-prediction-creation system');
@@ -29,9 +30,10 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Building model...',
       });
+      let lastParam = node.modelName;
       let params = msg.payload;
       let full = snippets.REGR_IMPORTS+snippets.REGR_CREATE;
-      let script = util.format(full, params);
+      let script = util.format(full, params, lastParam);
       shell.start();
       await shell.execute(script)
           .then((data) => {

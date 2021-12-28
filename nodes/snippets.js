@@ -400,8 +400,8 @@ print(ans)
 `;
 
 const REGR_USE=`
-model = pickle.load(open("./clustering", 'rb'))
-ans = model.predict(X)
+model = pickle.load(open("./model_store/regr%s", 'rb'))
+ans = model.predict(X)#replace with input
 print(ans)
 `;
 
