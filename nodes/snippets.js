@@ -427,7 +427,7 @@ model = pickle.load(open(modelName, 'rb'))
 type=%j
 res=pd.DataFrame(data=type)
 #process data
-encoded = pd.get_dummies(res, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
+encoded = pd.get_dummies(res)
 final=encoded.to_numpy()
 test = np.delete(final, 1, 1)
 `;
