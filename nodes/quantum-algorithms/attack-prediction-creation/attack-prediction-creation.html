@@ -8,6 +8,18 @@
         value: "",
         required: true
       },
+      shots: {
+        value: "",
+        required: true,
+        validate: function (x) {
+          x = parseInt(x);
+          if (Number.isInteger(x) && x > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
     },
     inputs: 1,
     outputs: 1,
@@ -30,6 +42,10 @@
   <div class="form-row">
     <label for="node-input-modelName">Model Name</label>
     <input type="text" id="node-input-modelName" placeholder="Model Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-shots">Shots</label>
+    <input type="number" id="node-input-shots" placeholder="1000" min="1"/>
   </div>
 </script>
 

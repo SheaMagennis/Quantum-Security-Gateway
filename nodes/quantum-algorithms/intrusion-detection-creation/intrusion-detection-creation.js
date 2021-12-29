@@ -12,6 +12,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'intrusion-detection-creation';
     this.modelName = config.modelName || 'default';
+    this.shots = config.shots || 1;
     const node = this;
     logger.trace(this.id, 'Initialised intrusion-detection-creation system');
 
@@ -29,10 +30,11 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Creating model...',
       });
-      let firstParam = node.modelName;
+      let modelState = node.modelName;
       let params = msg.payload;
+      let shotVar = node.shots;
       let final = snippets.QSVC_IMPORTS+snippets.CREATE_QSVC_START+snippets.PCA+snippets.CREATE_QSVC_END;
-      let script = util.format(final, firstParam, params);
+      let script = util.format(final, params, shotVar, modelState);
       // logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)

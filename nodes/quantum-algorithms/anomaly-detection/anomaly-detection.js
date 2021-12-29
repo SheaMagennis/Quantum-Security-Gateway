@@ -11,6 +11,8 @@ module.exports = function(RED) {
   function AnomalyDetectionNode(config) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'anomaly-detection';
+    this.shots = config.shots || 1;
+
     const node = this;
 
     logger.trace(this.id, 'Initialised anomaly-detection system');
@@ -29,8 +31,9 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Looking for anomalies...',
       });
+      let shotVar = node.shots;
       let params = msg.payload;
-      let script = util.format(snippets.ANOM, params);
+      let script = util.format(snippets.ANOM, params, shotVar);
       shell.start();
       await shell.execute(script)
           .then((data) => {

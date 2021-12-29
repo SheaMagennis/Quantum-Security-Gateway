@@ -330,7 +330,7 @@ train_features, train_labels, test_features, test_labels, adhoc_total = ad_hoc_d
 adhoc_feature_map = ZZFeatureMap(feature_dimension=adhoc_dimension,
                                  reps=2, entanglement='linear')
 
-adhoc_backend = QuantumInstance(Aer.get_backend('qasm_simulator'), shots=1024,
+adhoc_backend = QuantumInstance(Aer.get_backend('qasm_simulator'), shots=%d,
                                 seed_simulator=seed, seed_transpiler=seed)
 
 adhoc_kernel = QuantumKernel(feature_map=adhoc_feature_map, quantum_instance=adhoc_backend)
@@ -359,7 +359,7 @@ import pickle
 const REGR_CREATE = `
 #%j
 #instance
-quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=1024)
+quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=%d)
 #dataset
 num_samples = 20
 eps = 0.2
@@ -447,6 +447,7 @@ for i in fin:
 `;
 
 const CREATE_QSVC_START = `
+#%s data
 df = pd.read_csv("/data_store/UNSW_NB15_training_ten.csv")#one-hot encoding
 encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
 final=encoded.to_numpy()
@@ -461,13 +462,14 @@ test = np.delete(arrTwo, 1, 1)
 const CREATE_QSVC_END=`
 backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
-shots = 8192  # Number of times the job will be run on the quantum device
+shots = %d  # Number of times the job will be run on the quantum device
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='full')  
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  
 train_features=data
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, type)
+#%s name
 pickle.dump(qsvc, open("./model_store/qsvcStore", 'wb'))
 print("done")#remove
 `;
