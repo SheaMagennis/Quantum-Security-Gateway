@@ -447,16 +447,15 @@ for i in fin:
 `;
 
 const CREATE_QSVC_START = `
-#%s data
-df = pd.read_csv("/data_store/UNSW_NB15_training_ten.csv")#one-hot encoding
-encoded = pd.get_dummies(df, columns=["proto", "service", "state"], prefix=["pro", "ser", "sta"])
+df=pd.DataFrame(%j)#one-hot encoding
+encoded = pd.get_dummies(df)
 final=encoded.to_numpy()
-type=final[:,41]
+index_no = encoded.columns.get_loc("label")
+type=final[:,index_no]
 type = type.astype('int')#convert from object to usable
 
-arrOne = np.delete(final, 41, 1)#array, num, column/row
-arrTwo = np.delete(arrOne, 40, 1)
-test = np.delete(arrTwo, 1, 1)
+arrOne = np.delete(final, index_no, 1)#array, num, column/row
+test = np.delete(arrOne, 1, 1)
 `;
 
 const CREATE_QSVC_END=`
@@ -469,8 +468,7 @@ basis = QuantumKernel(feature_map, quantum_instance=instance)
 train_features=data
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, type)
-#%s name
-pickle.dump(qsvc, open("./model_store/qsvcStore", 'wb'))
+pickle.dump(qsvc, open("./model_store/qsvc%s", 'wb'))
 print("done")#remove
 `;
 
