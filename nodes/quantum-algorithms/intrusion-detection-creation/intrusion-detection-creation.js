@@ -45,7 +45,7 @@ module.exports = function(RED) {
               text: 'Model created!',
             });
             logger.trace(data);
-            msg.payload = (data.slice(39, data.length));
+            msg.payload = (data.slice(1579, data.length));
             send(msg);
             done();
           }).catch((err) => {

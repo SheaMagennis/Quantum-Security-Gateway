@@ -447,7 +447,9 @@ for i in fin:
 `;
 
 const CREATE_QSVC_START = `
-df=pd.DataFrame(%j)#one-hot encoding
+import csv
+initial=%j
+df=pd.DataFrame(initial)#one-hot encoding
 encoded = pd.get_dummies(df)
 final=encoded.to_numpy()
 index_no = encoded.columns.get_loc("label")
@@ -469,7 +471,20 @@ train_features=data
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, type)
 pickle.dump(qsvc, open("./model_store/qsvc%s", 'wb'))
+f = open('./model_information/model_information.csv', 'w')
+writer = csv.writer(f)
+stuff=initial.keys()
+joined_string = ",".join(stuff)
+temporary=[]
+
+for val in stuff:  temporary.append(type(initial[val]["0"]).__name__)
+
+finalTypes=",".join(temporary)
+row = "name",joined_string,finalTypes
+writer.writerow(row)
+f.close()
 print("done")#remove
+    
 `;
 
 const PCA =`
