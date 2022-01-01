@@ -453,8 +453,8 @@ df=pd.DataFrame(initial)#one-hot encoding
 encoded = pd.get_dummies(df)
 final=encoded.to_numpy()
 index_no = encoded.columns.get_loc("label")
-type=final[:,index_no]
-type = type.astype('int')#convert from object to usable
+label=final[:,index_no]
+label = label.astype('int')#convert from object to usable
 
 arrOne = np.delete(final, index_no, 1)#array, num, column/row
 test = np.delete(arrOne, 1, 1)
@@ -469,7 +469,7 @@ instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # 
 basis = QuantumKernel(feature_map, quantum_instance=instance)  
 train_features=data
 qsvc= QSVC(quantum_kernel=basis)
-qsvc.fit(train_features, type)
+qsvc.fit(train_features, label)
 pickle.dump(qsvc, open("./model_store/qsvc%s", 'wb'))
 f = open('./model_information/model_information.csv', 'w')
 writer = csv.writer(f)
