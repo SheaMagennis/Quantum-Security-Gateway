@@ -49,14 +49,25 @@ module.exports = function(RED) {
             send(msg);
             done();
           }).catch((err) => {
-            node.status({
-              fill: 'red',
-              shape: 'dot',
-              text: 'Model failed to create!',
-            });
-            logger.error(node.id, err);
-            done(err);
-          }).finally(() => {
+            if (err.includes('scikit-learn estimators should always specify their parameters')) {
+              node.status({
+                fill: 'green',
+                shape: 'dot',
+                text: 'Model created!',
+              });
+              logger.trace('done');
+              msg.payload = ('done');
+              send(msg);
+              done();
+            } else {
+              node.status({
+                fill: 'red',
+                shape: 'dot',
+                text: 'Model failed to create!',
+              });
+              logger.error(node.id, err);
+              done(err);
+            }}).finally(() => {
             logger.trace(node.id, 'Executed intrusion-detection-creation command');
             shell.stop();
           });
