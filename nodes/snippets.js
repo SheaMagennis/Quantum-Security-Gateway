@@ -500,7 +500,11 @@ data = normalize(test, axis=0, norm='max')#normalization
 const LIST_MODELS = `
 import os
 x = os.listdir("./model_store")
-print(x)
+print("Intrusion-detection models:")
+for i in x:
+    if i.startswith("qsvc"):
+        print(i[4:])
+        
 `;
 
 const DELETE_MODEL = `
