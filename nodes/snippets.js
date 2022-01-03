@@ -513,13 +513,21 @@ import os
 import csv
 mName="%s"
 os.remove("./model_store/"+mName)
-with open('./model_information/model_information.csv', newline="") as inp, open('./model_information/model_information.csv', 'w', newline="") as out:
-    writer = csv.writer(out)
-    for row in csv.reader(inp):
-        print(row[0])
-        if row[0] != mName:
-            writer.writerow(row)
-         
+lines = list()
+with open('./model_information/model_information.csv', 'r', newline="") as readFile:
+    reader = csv.reader(readFile)
+    for row in reader:
+        lines.append(row)
+        if row[0] == mName:
+            lines.remove(row)
+          
+\n            
+with open('./model_information/model_information.csv', 'w', newline="") as writeFile:
+    writer = csv.writer(writeFile)
+    writer.writerows(lines)
+       
+\n
+print("model deleted")  
 `;
 
 module.exports = {
