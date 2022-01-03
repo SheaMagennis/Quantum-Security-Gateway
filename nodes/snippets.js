@@ -471,7 +471,7 @@ train_features=data
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, label)
 pickle.dump(qsvc, open("./model_store/qsvc%s", 'wb'))
-f = open('./model_information/model_information.csv', 'w')
+f = open('./model_information/model_information.csv', 'a+', newline='')
 writer = csv.writer(f)
 stuff=initial.keys()
 joined_string = ",".join(stuff)
