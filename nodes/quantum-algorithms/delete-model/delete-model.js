@@ -12,6 +12,8 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'delete-model';
     this.model_name = config.model_name || 'delete-model';
+    this.model_type = config.model_type;
+
     const node = this;
 
     logger.trace(this.id, 'Initialised delete');
@@ -25,7 +27,7 @@ module.exports = function(RED) {
         done(error);
         return;
       }
-      const params = node.model_name;
+      const params = node.model_type+node.model_name;
       let script = util.format(snippets.DELETE_MODEL, params);
       logger.trace(node.id, script); // testing
       shell.start();

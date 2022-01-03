@@ -4,7 +4,8 @@
     color: "#737177",
     defaults: {
       name: { value: "" },
-      model_name: { value: "" }
+      model_name: { value: "" },
+      model_type: { value: "" ,required: true },
     },
     inputs: 1,
     outputs: 1,
@@ -27,6 +28,13 @@
   <div class="form-row">
     <label for="node-input-model_name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-model_name" placeholder="Model Name" />
+  </div>
+  <div style="width:40%; text-align:center; float:left; margin-bottom: 40px;">
+    <label for="node-input-model_type">Model Type</label>
+    <select name="model_type" id="node-input-model_type" style="width:85%">
+      <option value="qsvc">Intrusion-Detection</option>
+      <option value="regr">Attack-Prediction</option>
+    </select>
   </div>
 </script>
 
