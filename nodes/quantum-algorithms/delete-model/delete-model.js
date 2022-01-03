@@ -21,7 +21,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'delete received input');
 
-      let error = errors.validateDeleteInput(msg);
+      let error = errors.validateDeleteInput(node.model_type+node.model_name);
       if (error) {
         logger.error(node.id, error);
         done(error);

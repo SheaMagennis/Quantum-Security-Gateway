@@ -1,4 +1,5 @@
 'use strict';
+const fs = require('fs');
 
 /*
  * Node-RED nodes error handling functions should be defined here for homogeneity and reuse.
@@ -76,6 +77,9 @@ const UNEVEN =
 
 const BAD_SUBKEYS =
 'The sub-keys must be sequential strings of incremental values, starting from 0';
+
+const NO_FILE =
+'There is no model by this name';
 
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
@@ -180,7 +184,11 @@ function validateListInput(msg) {
 };
 
 function validateDeleteInput(msg) {
-  return null;
+  const files = fs.readdirSync('./model_store');
+  console.log(files);
+  if (!files.includes(msg)) {
+    return new Error(NO_FILE);
+  }
 };
 
 function validateIntrusionCreationInput(msg) {
