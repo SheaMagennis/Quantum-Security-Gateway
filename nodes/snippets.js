@@ -470,7 +470,8 @@ basis = QuantumKernel(feature_map, quantum_instance=instance)
 train_features=data
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, label)
-pickle.dump(qsvc, open("./model_store/qsvc%s", 'wb'))
+hold="qsvc%s"
+pickle.dump(qsvc, open("./model_store/"+hold, 'wb'))
 f = open('./model_information/model_information.csv', 'a+', newline='')
 writer = csv.writer(f)
 stuff=initial.keys()
@@ -480,7 +481,7 @@ temporary=[]
 for val in stuff:  temporary.append(type(initial[val]["0"]).__name__)
 
 finalTypes=",".join(temporary)
-row = "name",joined_string,finalTypes
+row = hold,joined_string,finalTypes
 writer.writerow(row)
 f.close()
 print("done")#remove
@@ -509,8 +510,16 @@ for i in x:
 
 const DELETE_MODEL = `
 import os
-os.remove("./model_store/%s")
-print("model removed")
+import csv
+mName="%s"
+os.remove("./model_store/"+mName)
+with open('./model_information/model_information.csv', newline="") as inp, open('./model_information/model_information.csv', 'w', newline="") as out:
+    writer = csv.writer(out)
+    for row in csv.reader(inp):
+        print(row[0])
+        if row[0] != mName:
+            writer.writerow(row)
+         
 `;
 
 module.exports = {
