@@ -67,7 +67,8 @@ module.exports = function(RED) {
               });
               logger.error(node.id, err);
               done(err);
-            }}).finally(() => {
+            }
+          }).finally(() => {
             logger.trace(node.id, 'Executed intrusion-detection-creation command');
             shell.stop();
           });

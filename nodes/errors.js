@@ -81,6 +81,18 @@ const BAD_SUBKEYS =
 const NO_FILE =
 'There is no model by this name';
 
+const NO_LABEL =
+'No label field has been provided';
+
+const BAD_LABEL_VALUE =
+'Value in label must be either 0 or 1';
+
+const LACKING_LABEL_DIVERSITY =
+'The records must have at least one record labelled with 0 and one with 1, with the value in label must be either 0 or 1';
+
+const NOT_ENOUGH_FIELDS =
+'Value in label must be either 0 or 1';
+
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
 
@@ -192,7 +204,48 @@ function validateDeleteInput(msg) {
 };
 
 function validateIntrusionCreationInput(msg) {
-  return null;
+  if (typeof(msg.payload) !== 'object') {
+    return new Error(INPUT_JSON);
+  }
+  if (!Object.keys(msg.payload).includes('label')) {
+    return new Error(NO_LABEL);
+  }
+  if (Object.keys(msg.payload).length<2) {
+    return new Error(NOT_ENOUGH_FIELDS);
+  }
+  let label = msg.payload['label'];
+  let labelValues = Object.values(label);
+  let corrVals =[0, 1];
+  if (!labelValues.every((elem) => corrVals.includes(elem))) {
+    return new Error(BAD_LABEL_VALUE);
+  }
+  if (!(labelValues.includes(0)&&labelValues.includes(1))) {
+    return new Error(LACKING_LABEL_DIVERSITY);
+  }
+  let vals = Object.values(msg.payload);
+  let headerNum=-1;
+  let standardLen = 0;
+  for (const val of vals) {
+    if (headerNum===-1) {
+      standardLen = Object.keys(val).length;
+    } else {
+      if (Object.keys(val).length !== standardLen) {
+        return new Error(UNEVEN);
+      }
+    }
+    let subVal=Object.values(val);
+    if (subVal.length<3) {
+      return new Error(NEEDS_MORE);
+    }
+    headerNum+=1;
+    let subKey = Object.keys(val);
+    let keyLen = subKey.length;
+    for (let i = 0; i<keyLen; i++) {
+      if (subKey[i]!==i.toString()) {
+        return new Error(BAD_SUBKEYS);
+      }
+    }
+  }
 };
 
 function validateIntrusionInput(msg) {
