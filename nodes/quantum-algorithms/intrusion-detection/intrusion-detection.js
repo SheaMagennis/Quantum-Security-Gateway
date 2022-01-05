@@ -18,7 +18,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection node received input');
 
-      let error = errors.validateIntrusionInput(msg);// changeMe
+      let error = errors.validateIntrusionInput(msg, node.modelName);// changeMe
       if (error) {
         logger.error(node.id, error);
         done(error);

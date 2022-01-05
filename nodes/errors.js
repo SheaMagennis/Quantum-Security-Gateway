@@ -1,5 +1,6 @@
 'use strict';
 const fs = require('fs');
+const csv = require('csv-parser');
 
 /*
  * Node-RED nodes error handling functions should be defined here for homogeneity and reuse.
@@ -88,10 +89,12 @@ const BAD_LABEL_VALUE =
 'Value in label must be either 0 or 1';
 
 const LACKING_LABEL_DIVERSITY =
-'The records must have at least one record labelled with 0 and one with 1, with the value in label must be either 0 or 1';
+'The records must have at least one record labelled with 0 and one with 1, with the value in label being either 0 or 1';
 
 const NOT_ENOUGH_FIELDS =
 'Value in label must be either 0 or 1';
+
+const NO_MODEL = 'No model exists by this name';
 
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
@@ -248,29 +251,40 @@ function validateIntrusionCreationInput(msg) {
   }
 };
 
-function validateIntrusionInput(msg) {
+function validateIntrusionInput(msg, modelName) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
-  let headers = ['id', 'dur', 'proto', 'service', 'state', 'spkts',
-    'dpkts', 'sbytes', 'dbytes', 'rate', 'sttl', 'dttl', 'sload',
-    'dload', 'sloss', 'dloss', 'sinpkt', 'dinpkt', 'sjit', 'djit',
-    'swin', 'stcpb', 'dtcpb', 'dwin', 'tcprtt', 'synack', 'ackdat',
-    'smean', 'dmean', 'trans_depth', 'response_body_len', 'ct_srv_src',
-    'ct_state_ttl', 'ct_dst_ltm', 'ct_src_dport_ltm', 'ct_dst_sport_ltm',
-    'ct_dst_src_ltm', 'is_ftp_login', 'ct_ftp_cmd', 'ct_flw_http_mthd',
-    'ct_src_ltm', 'ct_srv_dst', 'is_sm_ips_ports'];
+  let headers=[];
+  let types=[];
+  let found=false;
+  fs.createReadStream('./model_information/model_information.csv')
+      .pipe(csv())
+      .on('data', function(data) {
+        try {
+          if (data.name === 'qsvc'+modelName) {
+            headers=data.headers.split(',');
+            types=data.types.split(',');
+            found=true;
+          }
+        } catch (err) {
+          return new Error('Could not open model information file');
+        }
+      })
+      .on('end', function() {
+        if (!found) {
+          return new Error(NO_MODEL);
+        }
+      });
+
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
     return new Error(BAD_HEADERS);
   }
   let vals = Object.values(msg.payload);
-  let headerNum=-1;
-  let protoVals=['udp', 'arp', 'tcp', 'ospf', 'sctp'];// and more
-  let serviceVals=['http', '-', 'ftp'];// and more
-  let stateVals=['FIN', 'INT'];
+  let headerNum=0;
   let standardLen = 0;
   for (const val of vals) {
-    if (headerNum===-1) {
+    if (headerNum===0) {
       standardLen = Object.keys(val).length;
     } else {
       if (Object.keys(val).length !== standardLen) {
@@ -289,23 +303,12 @@ function validateIntrusionInput(msg) {
         return new Error(BAD_SUBKEYS);
       }
     }
+    let oneType = types[headerNum];
     for (const sinVal of subVal) {
-      if (headerNum<2 || headerNum>4) {// number of string
-        if (isNaN(sinVal) ) {
-          return new Error(BAD_FORMAT);
-        }
-      } else if (headerNum===2) {
-        if (!protoVals.includes(sinVal)) {
-          return new Error(BAD_FORMAT);
-        }
-      } else if (headerNum===3) {
-        if (!serviceVals.includes(sinVal)) {
-          return new Error(BAD_FORMAT);
-        }
-      } else if (headerNum===4) {
-        if (!stateVals.includes(sinVal)) {
-          return new Error(BAD_FORMAT);
-        }
+      if (!(typeof (sinVal) === oneType)) {
+        console.log(typeof(sinVal));
+        console.log(oneType);
+        return new Error(BAD_FORMAT);
       }
     }
   }
