@@ -47,6 +47,17 @@ module.exports = function(RED) {
             send(msg);
             done();
           }).catch((err) => {
+            if (err.includes('Warning')) {
+              node.status({
+                fill: 'green',
+                shape: 'dot',
+                text: 'Model created!',
+              });
+              logger.trace('done');
+              msg.payload = ('done');
+              send(msg);
+              done();
+            }
             node.status({
               fill: 'red',
               shape: 'dot',

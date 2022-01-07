@@ -22,6 +22,11 @@ module.exports = function(RED) {
       let error = errors.validateIntrusionCreationInput(msg);// changeMe
       if (error) {
         logger.error(node.id, error);
+        node.status({
+          fill: 'red',
+          shape: 'dot',
+          text: 'Model failed to create!',
+        });
         done(error);
         return;
       }

@@ -277,12 +277,15 @@ function validateIntrusionInput(msg, modelName) {
       }
     }
   } catch (err) {
-    return new Error(err);
+    return new Error(NO_MODEL);
   }
 
   types = covertPythonTypeToJS(types);
 
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
+    console.log(JSON.stringify(Object.keys(msg.payload)));
+    console.log('from file:');
+    console.log(JSON.stringify(headers));
     return new Error(BAD_HEADERS);
   }
   let vals = Object.values(msg.payload);
