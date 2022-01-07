@@ -257,25 +257,30 @@ function validateIntrusionInput(msg, modelName) {
   }
   let headers=[];
   let types=[];
-  let found=false;
-  fs.createReadStream('./model_information/model_information.csv')
-      .pipe(csv())
-      .on('data', function(data) {
-        try {
-          if (data.name === 'qsvc'+modelName) {
-            headers=data.headers.split(',');
-            types=data.types.split(',');
-            found=true;
-          }
-        } catch (err) {
-          return new Error('Could not open model information file');
-        }
-      })
-      .on('end', function() {
-        if (!found) {
-          return new Error(NO_MODEL);
-        }
-      });
+
+  try {
+    let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
+    data = data.toString().split('\r\n');
+
+    for (let i = 0; i<data.length; i++) {
+      data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+    }
+
+    for (let j = 1; j<data.length-1; j++) {
+      if (data[j][0] === 'qsvc'+modelName) {
+        headers = data[j][1].split(',');
+        types = data[j][2].split(',');
+        headers[0] = headers[0].substr(1);
+        types[0] = types[0].substr(1);
+        headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
+        types[types.length-1] = types[types.length-1].slice(0, -1);
+      }
+    }
+  } catch (err) {
+    return new Error(err);
+  }
+
+  types = covertPythonTypeToJS(types);
 
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
     return new Error(BAD_HEADERS);
@@ -295,7 +300,6 @@ function validateIntrusionInput(msg, modelName) {
     if (subVal.length<3) {
       return new Error(NEEDS_MORE);
     }
-    headerNum+=1;
     let subKey = Object.keys(val);
     let keyLen = subKey.length;
     for (let i = 0; i<keyLen; i++) {
@@ -306,13 +310,27 @@ function validateIntrusionInput(msg, modelName) {
     let oneType = types[headerNum];
     for (const sinVal of subVal) {
       if (!(typeof (sinVal) === oneType)) {
-        console.log(typeof(sinVal));
+        console.log(sinVal);
+        console.log(typeof sinVal);
         console.log(oneType);
         return new Error(BAD_FORMAT);
       }
     }
+    headerNum+=1;
   }
   return null;
+};
+
+function covertPythonTypeToJS(inp) {
+  inp = inp.map( (inc) => {
+    if (inc === 'int' || inc === 'float') {
+      return 'number';
+    }
+    if (inc === 'str') {
+      return 'string';
+    }
+  });
+  return inp;
 };
 
 module.exports = {
@@ -336,6 +354,8 @@ module.exports = {
   UNEVEN,
   NEEDS_MORE,
   BAD_SUBKEYS,
+  NO_LABEL,
+  BAD_LABEL_VALUE,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,

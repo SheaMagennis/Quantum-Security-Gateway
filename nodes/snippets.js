@@ -428,8 +428,7 @@ type=%j
 res=pd.DataFrame(data=type)
 #process data
 encoded = pd.get_dummies(res)
-final=encoded.to_numpy()
-test = np.delete(final, 1, 1)
+test=encoded.to_numpy()
 `;
 
 const QSVC_END=`
@@ -456,8 +455,7 @@ index_no = encoded.columns.get_loc("label")
 label=final[:,index_no]
 label = label.astype('int')#convert from object to usable
 
-arrOne = np.delete(final, index_no, 1)#array, num, column/row
-test = np.delete(arrOne, 1, 1)
+test = np.delete(final, index_no, 1)#array, num, column/row
 `;
 
 const CREATE_QSVC_END=`
@@ -475,6 +473,8 @@ pickle.dump(qsvc, open("./model_store/"+hold, 'wb'))
 f = open('./model_information/model_information.csv', 'a+', newline='')
 writer = csv.writer(f)
 stuff=initial.keys()
+stuff=list(stuff)
+stuff.remove("label")
 joined_string = ",".join(stuff)
 temporary=[]
 

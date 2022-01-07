@@ -1,4 +1,4 @@
-const intrusionDetectionNode = require('../../nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js');
+const intrusionDetectionCreationNode = require('../../nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js');
 const testUtil = require('../test-util');
 const nodeTestHelper = testUtil.nodeTestHelper;
 const assert = require('chai').assert;
@@ -7,8 +7,8 @@ const {FlowBuilder} = require('../flow-builder');
 const util = require('util');
 
 const flow = new FlowBuilder();
-// ,"dur":{"0":0.000011,"1":0.000008,"2":0.000005}
-let baseJSON= `{"payload":{%s,"proto":{"0":"udp","1":"udp","2":"udp"},
+// 'label': {'0': 'error', '1': 2
+let baseJSON= `{"payload":{%s,"dur":{"0":0.000011,"1":0.000008,"2":0.000005},"proto":{"0":"udp","1":"udp","2":"udp"},
 "service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
 "spkts":{"0":2,"1":2,"2":2},"dpkts":{"0":0,"1":0,"2":0},"sbytes":{"0":496,"1":1762,"2":1068},
 "dbytes":{"0":0,"1":0,"2":0},"rate":{"0":90909.0902,"1":125000.0003,"2":200000.0051},"sttl":{"0":254,"1":254,"2":254},
@@ -24,7 +24,7 @@ let baseJSON= `{"payload":{%s,"proto":{"0":"udp","1":"udp","2":"udp"},
 "is_ftp_login":{"0":0,"1":0,"2":0},"ct_ftp_cmd":{"0":0,"1":0,"2":0},"ct_flw_http_mthd":{"0":0,"1":0,"2":0},
 "ct_src_ltm":{"0":1,"1":1,"2":1},"ct_srv_dst":{"0":2,"1":2,"2":3},"is_sm_ips_ports":{"0":0,"1":0,"2":0}}}`;
 
-describe('IntrusionDetectionNode', function() {
+describe('IntrusionDetectionCreationNode', function() {
   beforeEach(function(done) {
     nodeTestHelper.startServer(done);
   });
@@ -36,20 +36,20 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('load node', function(done) {
-    testUtil.isLoaded(intrusionDetectionNode, 'intrusion-detection', done);
+    testUtil.isLoaded(intrusionDetectionCreationNode, 'intrusion-detection-creation', done);
   });
 
   it('default name outputs correctly', function(done) {
-    flow.add('intrusion-detection', 'intrusionDetectionNode', [[]], {modelName: 'testing'});
+    flow.add('intrusion-detection-creation', 'intrusionDetectionCreationNode', [[]], {shots: '100'}, {modelName: 'testing'});
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
-      inputNode.should.have.property('name', 'intrusion detection');
+      inputNode.should.have.property('name', 'intrusion detection creation');
       done();
     });
   });
 
   it('return error if input is not json', function(done) {
-    flow.add('intrusion-detection', 'i1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection-creation', 'i1', [], {shots: '100'}, {modelName: 'testing'});
 
     const givenInput = {payload: 1};
     const expectedMessage = errors.INPUT_JSON;
@@ -57,52 +57,51 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if json has wrong headers', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection-creation', 'n1', [], {shots: '100'}, {modelName: 'testing'});
 
     const givenInput = {payload: {'name': 'Joe'}};
-    const expectedMessage = errors.BAD_HEADERS;
+    const expectedMessage = errors.NO_LABEL;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 
   it('return error if values are wrong type', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
-    let sub = `"dur":{"0":"error","1":0.000008,"2":0.000008}`;
+    flow.add('intrusion-detection-creation', 'n1', [], {shots: '100'}, {modelName: 'testing'});
+    let sub = `"label":{"0":"error","1":1,"2":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
-    const expectedMessage = errors.BAD_FORMAT;
+    const expectedMessage = errors.BAD_LABEL_VALUE;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 
   it('return error if uneven number of values', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
-    let sub = `"dur":{"0":0.000008,"1":0.000008,"2":0.000008,"3":0.000008}`;
+    flow.add('intrusion-detection-creation', 'n1', [], {shots: '100'}, {modelName: 'testing'});
+    let sub = `"label":{"0":1,"1":1,"2":0,"3":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.UNEVEN;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 
   it('return error if less than three packets sent for classification', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
-    let sub = `"dur":{"0":0.000008,"1":0.000008}`;
+    flow.add('intrusion-detection-creation', 'n1', [], {shots: '100'}, {modelName: 'testing'});
+    let sub = `"label":{"0":1,"1":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.NEEDS_MORE;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 
   it('return error if incorrect subkey used', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
-    let sub = `"dur":{"bad":0.000008,"1":0.000008,"2":0.000008}`;
+    flow.add('intrusion-detection-creation', 'n1', [], {shots: '100'}, {modelName: 'testing'});
+    let sub = `"label":{"bad":1,"1":0,"2":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_SUBKEYS;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('intrusion-detection', 'intrusionDetectionNode', [['helperNode']], {modelName: 'testing'});
+    flow.add('intrusion-detection-creation', 'intrusionDetectionNode', [['helperNode']], {shots: '100'}, {modelName: 'testing'});
     flow.addOutput('helperNode');
-    let temp = `"dur": {"0": 0.000008, "1": 0.000008, "2": 0.000008}`;
+    let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
-    const expectedOutput = 'Threat detected\r\nThreat detected\r\nThreat detected';
-    const otherExpectedOutput = 'Threat detected\nThreat detected\nThreat detected';
-    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, otherExpectedOutput, done);
+    const expectedOutput = 'done';
+    testUtil.correctOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 });
