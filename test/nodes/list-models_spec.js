@@ -49,7 +49,7 @@ describe('ListModelsNode', function() {
     flow.add('list-models', 'listModelsNode', [['helperNode']]);
     flow.addOutput('helperNode');
     let temp = `"dur": {"0": 0.000008, "1": 0.000008, "2": 0.000008}`;
-    const givenInput = JSON.parse(util.format(baseJSON, temp));
+    const givenInput = {payload: 0};
     const expectedOutput = 'testing';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);

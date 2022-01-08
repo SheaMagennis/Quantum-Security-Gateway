@@ -31,10 +31,12 @@ describe('DeleteModelNode', function() {
 
   it('delete setup', function(done) {
     flow.add('intrusion-detection-creation', 'intrusionDetectionNode',
-        [['helperNode']], {shots: '10', modelName: 'testing'});
+        [['helperNode']], {shots: '100', modelName: 'testing'});
     flow.addOutput('helperNode');
+    //let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON));
-    testUtil.executeFlow(flow, givenInput, done);
+    const expectedOutput = 'done';
+    testUtil.correctOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
   it('load node', function(done) {
@@ -54,7 +56,7 @@ describe('DeleteModelNode', function() {
     flow.add('delete-model', 'deleteModelNode', [['helperNode']], {modelName: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     let temp = `"dur": {"0": 0.000008, "1": 0.000008, "2": 0.000008}`;
-    const givenInput = JSON.parse(util.format(baseJSON, temp));
+    const givenInput = {payload: 0};
     const expectedOutput = 'model';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
