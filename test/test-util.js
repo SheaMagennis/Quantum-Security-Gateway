@@ -83,9 +83,6 @@ function aCorrectOutputReceived(flowBuilder, givenInput, expectedOutput, done) {
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
     outputNode.once('input', function(msg) {
       try {
-        console.log(msg);
-        console.log(msg.payload);
-        console.log(msg.payload.toLowerCase());
         assert(msg.payload.toLowerCase().includes(expectedOutput));
         done();
       } catch (err) {
@@ -134,7 +131,6 @@ function executeFlow(flowBuilder, givenInput, done) {
     const inputNode = nodeTestHelper.getNode(flowBuilder.inputId);
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
     outputNode.once('input', function(msg) {
-      console.log('output reached');
       assert.ok(true);
       done();
       shell.stop();
