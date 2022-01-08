@@ -29,7 +29,6 @@ module.exports = function(RED) {
       }
       const params = node.model_type+node.model_name;
       let script = util.format(snippets.DELETE_MODEL, params);
-      logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
           .then((data) => {

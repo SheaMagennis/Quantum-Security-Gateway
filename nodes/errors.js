@@ -200,9 +200,6 @@ function validateListInput(msg) {
 
 function validateDeleteInput(msg) {
   const files = fs.readdirSync('./model_store');
-  console.log('files then res');
-  console.log(files);
-  console.log(msg);
   if (!files.includes(msg)) {
     return new Error(NO_FILE);
   }

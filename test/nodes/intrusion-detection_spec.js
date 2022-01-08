@@ -10,11 +10,11 @@ const flow = new FlowBuilder();
 // ,"dur":{"0":0.000011,"1":0.000008,"2":0.000005}
 let baseJSON= `{"payload":{%s,"proto":{"0":"udp","1":"udp","2":"udp"},
 "service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
-"spkts":{"0":2,"1":2,"2":2}}}`;
+"spkts":{"0":2,"1":2,"2":5}}}`;
 
-let creationJSON = `{"label": {"0": 1, "1": 1, "2": 0},"payload":{"dur":{"0":0.000011,"1":0.000008,"2":0.000005},
+let creationJSON = `{"payload":{%s, "dur":{"0":0.11,"1":0.12,"2":0.9},
 "proto":{"0":"udp","1":"udp","2":"udp"},"service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
-"spkts":{"0":2,"1":2,"2":2}}}`;
+"spkts":{"0":2,"1":2,"2":5}}}`;
 
 describe('IntrusionDetectionNode', function() {
 
@@ -32,8 +32,10 @@ describe('IntrusionDetectionNode', function() {
     flow.add('intrusion-detection-creation', 'intrusionDetectionNode',
         [['helperNode']], {shots: '10', modelName: 'testing'});
     flow.addOutput('helperNode');
-    const givenInput = JSON.parse(util.format(creationJSON));
-    testUtil.executeFlow(flow, givenInput, done);
+    let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
+    const givenInput = JSON.parse(util.format(creationJSON, temp));
+    const expectedOutput = 'done';
+    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
   it('load node', function(done) {
@@ -98,17 +100,19 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('intrusion-detection', 'intrusionDetectionNode', [['helperNode']], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'n2', [['helperNode']], {modelName: 'testing'});
     flow.addOutput('helperNode');
-    let temp = `"dur": {"0": 0.000008, "1": 0.000008, "2": 0.000008}`;
+    let temp = `"dur":{"0":0.11,"1":0.12,"2":0.9}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
     const expectedOutput = 'threat';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
-  it('delete setup', function(done) {
+  it('delete intrusion setup', function(done) {// change
     flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
-    const givenInput = JSON.parse(util.format(creationJSON));
-    testUtil.executeFlow(flow, givenInput, done);
-  });
+    flow.addOutput('helperNode');
+    const givenInput = {payload: 'test'};
+    const expectedOutput = 'model';
+    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
+  }).timeout(25000);
 });

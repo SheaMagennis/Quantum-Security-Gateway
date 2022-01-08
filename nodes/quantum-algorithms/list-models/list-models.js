@@ -26,7 +26,6 @@ module.exports = function(RED) {
       }
 
       let script = util.format(snippets.LIST_MODELS);
-      logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
           .then((data) => {

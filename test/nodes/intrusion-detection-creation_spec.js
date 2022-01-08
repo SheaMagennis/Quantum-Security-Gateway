@@ -95,10 +95,11 @@ describe('IntrusionDetectionCreationNode', function() {
     testUtil.correctOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
-  it('intrusion creation deletion', function(done) {
+    it('intrusion creation deletion', function(done) {// change
     flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
-    const givenInput = 'execute';
     flow.addOutput('helperNode');
-    testUtil.executeFlow(flow, givenInput, done);
-  });
+    const givenInput = {payload: 'test'};
+    const expectedOutput = 'model';
+    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
+  }).timeout(25000);
 });
