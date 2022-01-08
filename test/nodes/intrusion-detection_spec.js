@@ -20,9 +20,24 @@ describe('IntrusionDetectionNode', function() {
 
   before(function(done) {
     nodeTestHelper.startServer(done);
-    flow.add('intrusion-detection-creation', 'intrusionDetectionCreationNode', [['helperNode']], {shots: '100', modelName: 'testing'});
+  });
+
+  before(function(done) {
+    /*flow.add('intrusion-detection-creation', 'intrusionDetectionCreationNode',
+        [['helperNode']], {shots: '10', modelName: 'newTesting'});
+    flow.addOutput('helperNode');
     const givenInput = JSON.parse(util.format(creationJSON));
-    testUtil.executeFlow(flow, givenInput, done);
+    testUtil.executeFlow(flow, givenInput, done);*/
+    flow.add('intrusion-detection-creation', 'intrusionDetectionNode',
+        [['helperNode']], {shots: '100', modelName: 'testingNew'});
+    flow.addOutput('helperNode');
+    let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
+    const givenInput = JSON.parse(util.format(baseJSON, temp));
+    const expectedOutput = 'done';
+    testUtil.correctOutputReceived(flow, givenInput, expectedOutput, done);
+  });
+
+  before(function(done) {
     flow.reset();
     nodeTestHelper.unload();
     nodeTestHelper.stopServer(done);
@@ -37,16 +52,23 @@ describe('IntrusionDetectionNode', function() {
     nodeTestHelper.unload();
     nodeTestHelper.stopServer(done);
   });
-
+/*
   after(function(done) {
     nodeTestHelper.startServer(done);
+  });
+
+  after(function(done) {
     flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     const givenInput = JSON.parse(util.format(creationJSON));
     testUtil.executeFlow(flow, givenInput, done);
+  });
+
+  after(function(done) {
     flow.reset();
     nodeTestHelper.unload();
     nodeTestHelper.stopServer(done);
   });
+*/
 
   it('load node', function(done) {
     testUtil.isLoaded(intrusionDetectionNode, 'intrusion-detection', done);
@@ -114,8 +136,7 @@ describe('IntrusionDetectionNode', function() {
     flow.addOutput('helperNode');
     let temp = `"dur": {"0": 0.000008, "1": 0.000008, "2": 0.000008}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
-    const expectedOutput = 'Threat detected\r\nThreat detected\r\nThreat detected';
-    const otherExpectedOutput = 'Threat detected\nThreat detected\nThreat detected';
-    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, otherExpectedOutput, done);
+    const expectedOutput = 'threat';
+    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
-});
+})

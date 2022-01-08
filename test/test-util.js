@@ -78,13 +78,13 @@ function correctOutputReceived(flowBuilder, givenInput, expectedOutput, done) {
   });
 }
 
-function aCorrectOutputReceived(flowBuilder, givenInput, expectedOutput, otherExpectedOutput, done) {
+function aCorrectOutputReceived(flowBuilder, givenInput, expectedOutput, done) {
   nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
     const inputNode = nodeTestHelper.getNode(flowBuilder.inputId);
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
     outputNode.once('input', function(msg) {
       try {
-        assert(msg.payload === expectedOutput || msg.payload === otherExpectedOutput);
+        assert(msg.payload.lower().contains(expectedOutput));
         done();
       } catch (err) {
         done(err);
@@ -102,7 +102,7 @@ function outputReceivedInCorrectRange(flowBuilder, givenInput, expectedLowerOutp
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
     outputNode.once('input', function(msg) {
       try {
-        assert.isAbove(msg.payload.randVal, expectedLowerOutput.randVal);
+        assert.isAbove(msg.payload.randVal, expectedLowerOutput.randVal-1);
         assert.isBelow(msg.payload.randVal, expectedHigherOutput.randVal);
         done();
       } catch (err) {
@@ -129,12 +129,14 @@ function nodeFailed(flowBuilder, givenInput, expectedMessage, done) {
 
 function executeFlow(flowBuilder, givenInput, done) {
   nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
-    let node = nodeTestHelper.getNode(flowBuilder.inputId);
-    outputNode.once('input', function(msg) {
+    const inputNode = nodeTestHelper.getNode(flowBuilder.inputId);
+    const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
+    /*outputNode.once('input', function(msg) {
+      console.log('output reached');
       done();
       shell.stop();
-    });
-    node.receive(givenInput);
+    });*/
+    inputNode.receive(givenInput);
   });
 }
 
