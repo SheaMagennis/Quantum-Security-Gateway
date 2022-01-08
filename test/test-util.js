@@ -3,7 +3,6 @@ const nodeTestHelper = require('node-red-node-test-helper');
 const shell = require('../nodes/python.js').PythonShell;
 nodeTestHelper.init(require.resolve('node-red'));
 
-
 // Test that node is successfully loaded into Node-RED.
 function isLoaded(node, nodeName, done) {
   let flow = [{id: '1', type: nodeName, name: nodeName}];
@@ -84,7 +83,7 @@ function aCorrectOutputReceived(flowBuilder, givenInput, expectedOutput, done) {
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
     outputNode.once('input', function(msg) {
       try {
-        assert(msg.payload.lower().contains(expectedOutput));
+        assert(msg.payload.toLowerCase().includes(expectedOutput));
         done();
       } catch (err) {
         done(err);

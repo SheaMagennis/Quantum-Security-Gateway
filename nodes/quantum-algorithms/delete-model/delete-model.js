@@ -11,7 +11,7 @@ module.exports = function(RED) {
   function DeleteNode(config) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'delete-model';
-    this.model_name = config.model_name || 'delete-model';
+    this.model_name = config.model_name;
     this.model_type = config.model_type;
 
     const node = this;
