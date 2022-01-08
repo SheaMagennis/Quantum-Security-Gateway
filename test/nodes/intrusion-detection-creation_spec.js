@@ -23,23 +23,13 @@ describe('IntrusionDetectionCreationNode', function() {
     nodeTestHelper.stopServer(done);
   });
 
-  /*after(function(done) {
-    nodeTestHelper.startServer(done);
-    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
-    const givenInput = 'execute';
-    flow.addOutput('helperNode');
-    testUtil.executeFlow(flow, givenInput, done);
-    flow.reset();
-    nodeTestHelper.unload();
-    nodeTestHelper.stopServer(done);
-  });*/
-
   it('load node', function(done) {
     testUtil.isLoaded(intrusionDetectionCreationNode, 'intrusion-detection-creation', done);
   });
 
   it('default name outputs correctly', function(done) {
-    flow.add('intrusion-detection-creation', 'intrusionDetectionCreationNode', [[]], {shots: '100', modelName: 'testing'});
+    flow.add('intrusion-detection-creation', 'intrusionDetectionCreationNode', [[]],
+        {shots: '100', modelName: 'testing'});
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
       inputNode.should.have.property('name', 'intrusion detection creation');
@@ -104,4 +94,11 @@ describe('IntrusionDetectionCreationNode', function() {
     const expectedOutput = 'done';
     testUtil.correctOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
+
+  it('intrusion creation deletion', function(done) {
+    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
+    const givenInput = 'execute';
+    flow.addOutput('helperNode');
+    testUtil.executeFlow(flow, givenInput, done);
+  });
 });

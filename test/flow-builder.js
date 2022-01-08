@@ -17,6 +17,7 @@ const NODES = {
   'identity-gate': require('../nodes/quantum/identity-gate/identity-gate.js'),
   'intrusion-detection-creation': require('../nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js'),
   'intrusion-detection': require('../nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js'),
+  'list-models': require('../nodes/quantum-algorithms/list-models/list-models.js'),
   'local-simulator': require('../nodes/quantum/local-simulator/local-simulator.js'),
   'measure': require('../nodes/quantum/measure/measure.js'),
   'multi-controlled-u-gate': require('../nodes/quantum/multi-controlled-u-gate/multi-controlled-u-gate.js'),

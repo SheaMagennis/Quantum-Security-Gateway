@@ -131,11 +131,12 @@ function executeFlow(flowBuilder, givenInput, done) {
   nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
     const inputNode = nodeTestHelper.getNode(flowBuilder.inputId);
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
-    /*outputNode.once('input', function(msg) {
+    outputNode.once('input', function(msg) {
       console.log('output reached');
+      assert.ok(true);
       done();
       shell.stop();
-    });*/
+    });
     inputNode.receive(givenInput);
   });
 }
