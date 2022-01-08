@@ -25,6 +25,10 @@ let baseJSON= `{"payload":{%s,"dur":{"0":0.000011,"1":0.000008,"2":0.000005},"pr
 "ct_src_ltm":{"0":1,"1":1,"2":1},"ct_srv_dst":{"0":2,"1":2,"2":3},"is_sm_ips_ports":{"0":0,"1":0,"2":0}}}`;
 
 describe('AnomalyDetectionNode', function() {
+  before(function() {
+    // eslint-disable-next-line
+      this.skip();
+  });
   beforeEach(function(done) {
     nodeTestHelper.startServer(done);
   });

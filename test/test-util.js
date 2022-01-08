@@ -127,6 +127,17 @@ function nodeFailed(flowBuilder, givenInput, expectedMessage, done) {
   });
 }
 
+function executeFlow(flowBuilder, givenInput, done) {
+  nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
+    let node = nodeTestHelper.getNode(flowBuilder.inputId);
+    outputNode.once('input', function(msg) {
+      done();
+      shell.stop();
+    });
+    node.receive(givenInput);
+  });
+}
+
 module.exports = {
   nodeTestHelper,
   isLoaded,
@@ -136,4 +147,5 @@ module.exports = {
   nodeFailed,
   outputReceivedInCorrectRange,
   aCorrectOutputReceived,
+  executeFlow,
 };
