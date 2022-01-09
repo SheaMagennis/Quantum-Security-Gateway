@@ -343,43 +343,39 @@ print(cluster_labels)
 `;
 
 const REGR_IMPORTS = `
+import datetime
+import json
 import numpy as np
-import matplotlib.pyplot as plt
+import pandas as pd
 
 from qiskit import Aer, QuantumCircuit
 from qiskit.utils import QuantumInstance
 from qiskit.circuit import Parameter
 from qiskit.algorithms.optimizers import L_BFGS_B
+from qiskit_machine_learning.algorithms import NeuralNetworkRegressor
 
 from qiskit_machine_learning.neural_networks import TwoLayerQNN
-from qiskit_machine_learning.algorithms.regressors import VQR
-import pickle
+import dill as pickle
 `;
 
-const REGR_CREATE = `
-#%j
-#instance
+const CREATE_REGR = `
+import csv
+
+initial=%j
+df=pd.DataFrame(initial)
+
 quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=%d)
-#dataset
-num_samples = 20
-eps = 0.2
-lb, ub = -np.pi, np.pi
-X_ = np.linspace(lb, ub, num=50).reshape(50, 1)
-f = lambda x: np.sin(x)
 
-X = (ub - lb)*np.random.rand(num_samples, 1) + lb
-y = f(X[:,0]) + eps*(2*np.random.rand(num_samples)-1)
+index_no = df.get_loc("DateTime")
+label=final[:,index_no]
+forTesting={"DateTime":{"0":"10/Dec/2019:13:55:36 -0700"}}
+val=forTesting['DateTime']["0"]
 
-#vars set up
-# construct simple feature map
-param_x = Parameter('x')
-feature_map = QuantumCircuit(1, name='fm')
-feature_map.ry(param_x, 0)
+res = datetime.datetime.strptime(val, '%d/%b/%Y:%H:%M:%S %z')
+dt_to_string = res.strftime('%Y-%m-%d %H:%M:%S')
 
-# construct simple ansatz
-param_y = Parameter('y')
-ansatz = QuantumCircuit(1, name='vf')
-ansatz.ry(param_y, 0)
+below=pd.to_datetime(dt_to_string)
+final=below.toordinal()
 
 # construct QNN
 regression_opflow_qnn = TwoLayerQNN(1, feature_map, ansatz, quantum_instance=quantum_instance)
@@ -427,7 +423,7 @@ model = pickle.load(open(modelName, 'rb'))
 type=%j
 res=pd.DataFrame(data=type)
 #process data
-encoded = pd.get_dummies(res)
+encoded = pd.get_dummies(res, drop_first=True)
 test=encoded.to_numpy()
 `;
 
@@ -448,8 +444,8 @@ for i in fin:
 const CREATE_QSVC_START = `
 import csv
 initial=%j
-df=pd.DataFrame(initial)#one-hot encoding
-encoded = pd.get_dummies(df)
+df=pd.DataFrame(initial)
+encoded = pd.get_dummies(df, drop_first=True)#one-hot encoding
 final=encoded.to_numpy()
 index_no = encoded.columns.get_loc("label")
 label=final[:,index_no]
