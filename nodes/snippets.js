@@ -366,16 +366,24 @@ df=pd.DataFrame(initial)
 
 quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=%d)
 
-index_no = df.get_loc("DateTime")
+val=df['DateTime']
+for x in range(len(val)):
+ temp=val[x]
+ res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S %z')
+ dt_to_string = res.strftime('%Y-%m-%d %H:%M:%S')
+ below = pd.to_datetime(dt_to_string)
+ final = below.toordinal()
+ val[x]=final
+\n
+df['Dataframe']=val
+
+encoded = pd.get_dummies(df, drop_first=True)#one-hot encoding
+final=encoded.to_numpy()
+index_no = encoded.columns.get_loc("count")
 label=final[:,index_no]
-forTesting={"DateTime":{"0":"10/Dec/2019:13:55:36 -0700"}}
-val=forTesting['DateTime']["0"]
+label = label.astype('int')#convert from object to usable
 
-res = datetime.datetime.strptime(val, '%d/%b/%Y:%H:%M:%S %z')
-dt_to_string = res.strftime('%Y-%m-%d %H:%M:%S')
-
-below=pd.to_datetime(dt_to_string)
-final=below.toordinal()
+test = np.delete(final, index_no, 1)#array, num, column/row
 
 # construct QNN
 regression_opflow_qnn = TwoLayerQNN(1, feature_map, ansatz, quantum_instance=quantum_instance)
@@ -388,11 +396,9 @@ vqr = VQR(feature_map=feature_map,
           quantum_instance=quantum_instance)
 
 # fit regressor
-vqr.fit(X, y)
+vqr.fit(test, label)
 pickle.dump(vqr, open("./model_store/regr%s", 'wb'))
-# score result
-ans = vqr.score(X, y)
-print(ans)
+
 `;
 
 const REGR_USE=`
