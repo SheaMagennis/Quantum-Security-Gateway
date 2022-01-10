@@ -303,9 +303,6 @@ function validateIntrusionInput(msg, modelName) {
   types = covertPythonTypeToJS(types);
 
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
-    console.log(JSON.stringify(Object.keys(msg.payload)));
-    console.log('from file:');
-    console.log(JSON.stringify(headers));
     return new Error(BAD_HEADERS);
   }
   let vals = Object.values(msg.payload);

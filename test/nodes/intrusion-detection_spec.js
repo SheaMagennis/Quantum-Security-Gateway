@@ -8,12 +8,12 @@ const util = require('util');
 
 const flow = new FlowBuilder();
 // ,"dur":{"0":0.000011,"1":0.000008,"2":0.000005}
-let baseJSON= `{"payload":{%s,"proto":{"0":"udp","1":"udp","2":"udp"},
+let baseJSON= `{"payload":{%s,"proto":{"0":"tcp","1":"udp","2":"udp"},
 "service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
 "spkts":{"0":2,"1":2,"2":5}}}`;
 
 let creationJSON = `{"payload":{%s, "dur":{"0":0.11,"1":0.12,"2":0.9},
-"proto":{"0":"udp","1":"udp","2":"udp"},"service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
+"proto":{"0":"tcp","1":"udp","2":"udp"},"service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
 "spkts":{"0":2,"1":2,"2":5}}}`;
 
 describe('IntrusionDetectionNode', function() {
