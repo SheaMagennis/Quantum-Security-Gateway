@@ -467,12 +467,14 @@ shots = %d  # Number of times the job will be run on the quantum device
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='full')  
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  
+
 train_features=data
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, label)
 hold="qsvc%s"
 pickle.dump(qsvc, open("./model_store/"+hold, 'wb'))
 f = open('./model_information/model_information.csv', 'a+', newline='')
+
 writer = csv.writer(f)
 stuff=initial.keys()
 stuff=list(stuff)

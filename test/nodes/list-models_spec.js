@@ -13,7 +13,6 @@ let baseJSON= `{"payload":{%s,"dur":{"0":0.000011,"1":0.000008,"2":0.000005},"pr
 "spkts":{"0":2,"1":2,"2":2}}}`;
 
 describe('ListModelsNode', function() {
-
   beforeEach(function(done) {
     nodeTestHelper.startServer(done);
   });
@@ -26,7 +25,7 @@ describe('ListModelsNode', function() {
 
   it('list setup', function(done) {
     flow.add('intrusion-detection-creation', 'intrusionDetectionNodeInList',
-        [['helperNode']], {shots: '10', modelName: 'testing4'});
+        [['helperNode']], {shots: '10', modelName: 'testing'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
@@ -50,14 +49,13 @@ describe('ListModelsNode', function() {
   it('return model names', function(done) {// change
     flow.add('list-models', 'listModelsNode', [['helperNode']]);
     flow.addOutput('helperNode');
-    let temp = `"dur": {"0": 0.000008, "1": 0.000008, "2": 0.000008}`;
     const givenInput = {payload: 'test'};
     const expectedOutput = 'testing';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
   it('return success output on valid input', function(done) {// change
-    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing4', model_type: 'qsvc'});
+    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
     const expectedOutput = 'model';

@@ -1,4 +1,5 @@
-const intrusionDetectionCreationNode = require('../../nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js');
+const intrusionDetectionCreationNode = require('../../nodes/quantum-algorithms/intrusion-detection-creation/' +
+    'intrusion-detection-creation.js');
 const testUtil = require('../test-util');
 const nodeTestHelper = testUtil.nodeTestHelper;
 const assert = require('chai').assert;
@@ -95,7 +96,7 @@ describe('IntrusionDetectionCreationNode', function() {
     testUtil.correctOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
-    it('intrusion creation deletion', function(done) {// change
+  it('intrusion creation deletion', function(done) {// change
     flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};

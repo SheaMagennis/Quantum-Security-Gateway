@@ -1,6 +1,5 @@
 'use strict';
 const fs = require('fs');
-const csv = require('csv-parser');
 
 /*
  * Node-RED nodes error handling functions should be defined here for homogeneity and reuse.
@@ -95,6 +94,8 @@ const NOT_ENOUGH_FIELDS =
 'Value in label must be either 0 or 1';
 
 const NO_MODEL = 'No model exists by this name';
+
+const EXISTING_MODEL = 'A model by this name already exists';
 
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
@@ -201,11 +202,30 @@ function validateListInput(msg) {
 function validateDeleteInput(msg) {
   const files = fs.readdirSync('./model_store');
   if (!files.includes(msg)) {
+    console.log(msg);
+    console.log(files);
     return new Error(NO_FILE);
   }
 };
 
-function validateIntrusionCreationInput(msg) {
+function validateIntrusionCreationInput(msg, modelName) {
+  let found=false;
+  let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
+  data = data.toString().split('\r\n');
+
+  for (let i = 0; i<data.length; i++) {
+    data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+  }
+
+  for (let j = 1; j<data.length-1; j++) {
+    if (data[j][0] === 'qsvc'+modelName) {
+      found=true;
+    }
+  }
+  if (found) {
+    return new Error(EXISTING_MODEL);
+  }
+
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
@@ -257,29 +277,26 @@ function validateIntrusionInput(msg, modelName) {
   let headers=[];
   let types=[];
   let found=false;
-  try {
-    let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
-    data = data.toString().split('\r\n');
 
-    for (let i = 0; i<data.length; i++) {
-      data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-    }
+  let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
+  data = data.toString().split('\r\n');
 
-    for (let j = 1; j<data.length-1; j++) {
-      if (data[j][0] === 'qsvc'+modelName) {
-        headers = data[j][1].split(',');
-        types = data[j][2].split(',');
-        headers[0] = headers[0].substr(1);
-        types[0] = types[0].substr(1);
-        headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
-        types[types.length-1] = types[types.length-1].slice(0, -1);
-        found=true;
-      }
+  for (let i = 0; i<data.length; i++) {
+    data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+  }
+
+  for (let j = 1; j<data.length-1; j++) {
+    if (data[j][0] === 'qsvc'+modelName) {
+      headers = data[j][1].split(',');
+      types = data[j][2].split(',');
+      headers[0] = headers[0].substr(1);
+      types[0] = types[0].substr(1);
+      headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
+      types[types.length-1] = types[types.length-1].slice(0, -1);
+      found=true;
     }
-    if (!found) {
-      return new Error(NO_MODEL);
-    }
-  } catch (err) {
+  }
+  if (!found) {
     return new Error(NO_MODEL);
   }
 
@@ -316,9 +333,6 @@ function validateIntrusionInput(msg, modelName) {
     let oneType = types[headerNum];
     for (const sinVal of subVal) {
       if (!(typeof (sinVal) === oneType)) {
-        console.log(sinVal);
-        console.log(typeof sinVal);
-        console.log(oneType);
         return new Error(BAD_FORMAT);
       }
     }

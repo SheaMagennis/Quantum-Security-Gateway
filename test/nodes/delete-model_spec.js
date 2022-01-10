@@ -25,7 +25,7 @@ describe('DeleteModelNode', function() {
 
   it('delete setup', function(done) {
     flow.add('intrusion-detection-creation', 'intrusionDetectionNodeInDel',
-        [['helperNode']], {shots: '10', modelName: 'testing4'});
+        [['helperNode']], {shots: '10', modelName: 'testing'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
@@ -47,7 +47,7 @@ describe('DeleteModelNode', function() {
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing4', model_type: 'qsvc'});
+    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
     const expectedOutput = 'model';

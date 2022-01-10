@@ -17,7 +17,6 @@ let creationJSON = `{"payload":{%s, "dur":{"0":0.11,"1":0.12,"2":0.9},
 "spkts":{"0":2,"1":2,"2":5}}}`;
 
 describe('IntrusionDetectionNode', function() {
-
   beforeEach(function(done) {
     nodeTestHelper.startServer(done);
   });

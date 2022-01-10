@@ -19,7 +19,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection-creation node received input');
 
-      let error = errors.validateIntrusionCreationInput(msg);// changeMe
+      let error = errors.validateIntrusionCreationInput(msg, node.modelName);// changeMe
       if (error) {
         logger.error(node.id, error);
         node.status({
@@ -54,7 +54,7 @@ module.exports = function(RED) {
             send(msg);
             done();
           }).catch((err) => {
-            if (err.includes('scikit-learn estimators should always specify their parameters')) {
+            if (!err.includes('error')) { // Don't fail on warnings
               node.status({
                 fill: 'green',
                 shape: 'dot',
