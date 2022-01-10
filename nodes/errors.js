@@ -208,31 +208,33 @@ function validateDeleteInput(msg) {
   }
 };
 
-function validateIntrusionCreationInput(msg, modelName) {
-  let found=false;
+function checkModelExists(modelName) {
+  let found = false;
   let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
   data = data.toString().split('\r\n');
-
-  for (let i = 0; i<data.length; i++) {
+  for (let i = 0; i < data.length; i++) {
     data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
   }
-
-  for (let j = 1; j<data.length-1; j++) {
-    if (data[j][0] === 'qsvc'+modelName) {
-      found=true;
+  for (let j = 1; j < data.length - 1; j++) {
+    if (data[j][0] === 'qsvc' + modelName) {
+      found = true;
     }
   }
+  return found;
+}
+
+function validateIntrusionCreationInput(msg, modelName) {
+  let found = checkModelExists(modelName);
   if (found) {
     return new Error(EXISTING_MODEL);
   }
-
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
   if (!Object.keys(msg.payload).includes('label')) {
     return new Error(NO_LABEL);
   }
-  if (Object.keys(msg.payload).length<2) {
+  if (Object.keys(msg.payload).length<4) {
     return new Error(NOT_ENOUGH_FIELDS);
   }
   let label = msg.payload['label'];
@@ -270,10 +272,7 @@ function validateIntrusionCreationInput(msg, modelName) {
   }
 };
 
-function validateIntrusionInput(msg, modelName) {
-  if (typeof(msg.payload) !== 'object') {
-    return new Error(INPUT_JSON);
-  }
+function getTypesHeader(modelName){
   let headers=[];
   let types=[];
   let found=false;
@@ -299,6 +298,17 @@ function validateIntrusionInput(msg, modelName) {
   if (!found) {
     return new Error(NO_MODEL);
   }
+  return [headers, types];
+}
+
+function validateIntrusionInput(msg, modelName) {
+  if (typeof(msg.payload) !== 'object') {
+    return new Error(INPUT_JSON);
+  }
+
+  let details = getTypesHeader(modelName);
+  let headers = details[0];
+  let types = details[1];
 
   types = covertPythonTypeToJS(types);
 
