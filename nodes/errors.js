@@ -256,7 +256,7 @@ function validateIntrusionInput(msg, modelName) {
   }
   let headers=[];
   let types=[];
-
+  let found=false;
   try {
     let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
     data = data.toString().split('\r\n');
@@ -273,7 +273,11 @@ function validateIntrusionInput(msg, modelName) {
         types[0] = types[0].substr(1);
         headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
         types[types.length-1] = types[types.length-1].slice(0, -1);
+        found=true;
       }
+    }
+    if (!found) {
+      return new Error(NO_MODEL);
     }
   } catch (err) {
     return new Error(NO_MODEL);

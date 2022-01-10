@@ -4,7 +4,20 @@
     color: "#737177",
     defaults: {
       name: { value: "" },
-      model_name: { value: "" },
+      model_name: {
+        value: "",
+      validate: function (s) {
+          const letters = /^[A-Za-z0-9_-]+$/;
+          if(s.match(letters)){
+            console.log(s)
+            console.log(s.value)
+            console.log(typeof(s.value))
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
       model_type: { value: "" ,required: true },
     },
     inputs: 1,

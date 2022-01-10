@@ -6,7 +6,18 @@
       name: { value: "" },
       modelName: {
         value: "",
-        required: true
+        required: true,
+        validate: function (s) {
+          const letters = /^[A-Za-z0-9_-]+$/;
+          if(s.match(letters)){
+            console.log(s)
+            console.log(s.value)
+            console.log(typeof(s.value))
+            return true;
+          } else {
+            return false;
+          }
+        },
       },
       shots: {
         value: "",

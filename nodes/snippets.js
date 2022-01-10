@@ -358,7 +358,7 @@ from qiskit_machine_learning.neural_networks import TwoLayerQNN
 import dill as pickle
 `;
 
-const CREATE_REGR = `
+const REGR_CREATE = `
 import csv
 
 initial=%j
