@@ -97,6 +97,8 @@ const NO_MODEL = 'No model exists by this name';
 
 const EXISTING_MODEL = 'A model by this name already exists';
 
+const BAD_PCA='The inputted JSON records are too similar for PCA reduction.';
+
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
 
@@ -223,6 +225,29 @@ function checkModelExists(modelName) {
   return found;
 }
 
+function validateForPCA(msg, first) {
+  let distinct=0;
+  let temp = Object.values(msg.payload);
+  for (const t of temp) {
+    let oTemp=Object.values(t);
+    console.log(oTemp);
+    let firstVal=oTemp[0];
+    for (const third of oTemp) {
+      if (third!==firstVal) {
+        distinct+=1;
+        break;
+      }
+    }
+  }
+  let val=3;
+  if (first) {
+    val=4;
+  }
+  if (distinct<val) {
+    return new Error(BAD_PCA);
+  }
+}
+
 function validateIntrusionCreationInput(msg, modelName) {
   let found = checkModelExists(modelName);
   if (found) {
@@ -272,7 +297,7 @@ function validateIntrusionCreationInput(msg, modelName) {
   }
 };
 
-function getTypesHeader(modelName){
+function getTypesHeader(modelName) {
   let headers=[];
   let types=[];
   let found=false;
