@@ -1,4 +1,4 @@
-const deleteModelNode = require('../../nodes/quantum-algorithms/delete-model/delete-model.js');
+const deleteModelNode = require('../../nodes/helper-nodes/delete-model/delete-model.js');
 const testUtil = require('../test-util');
 const nodeTestHelper = testUtil.nodeTestHelper;
 const assert = require('chai').assert;

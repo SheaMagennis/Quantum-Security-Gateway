@@ -1,4 +1,4 @@
-const listModelsNode = require('../../nodes/quantum-algorithms/list-models/list-models.js');
+const listModelsNode = require('../../nodes/helper-nodes/list-models/list-models.js');
 const testUtil = require('../test-util');
 const nodeTestHelper = testUtil.nodeTestHelper;
 const assert = require('chai').assert;
