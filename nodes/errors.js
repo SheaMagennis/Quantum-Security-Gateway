@@ -204,11 +204,35 @@ function validateListInput(msg) {
 function validateDeleteInput(msg) {
   const files = fs.readdirSync('./model_store');
   if (!files.includes(msg)) {
-    console.log(msg);
-    console.log(files);
     return new Error(NO_FILE);
   }
 };
+
+function validateIntrusionCreationInput(msg, modelName) {
+  let x = checkCreationJSON(msg, modelName);
+  let y = checkLabel(msg, modelName);
+  let z = checkPCA(msg, true);
+  if (x instanceof Error) {
+    return x;
+  }
+  if (y instanceof Error) {
+    return y;
+  }
+  if (z instanceof Error) {
+    return z;
+  }
+}
+
+function validateIntrusionInput(msg, modelName) {
+  let y = checkUseJSON(msg, modelName);
+  let z = checkPCA(msg, false);
+  if (y instanceof Error) {
+    return y;
+  }
+  if (z instanceof Error) {
+    return z;
+  }
+}
 
 function checkModelExists(modelName) {
   let found = false;
@@ -225,12 +249,11 @@ function checkModelExists(modelName) {
   return found;
 }
 
-function validateForPCA(msg, first) {
+function checkPCA(msg, first) {
   let distinct=0;
   let temp = Object.values(msg.payload);
   for (const t of temp) {
     let oTemp=Object.values(t);
-    console.log(oTemp);
     let firstVal=oTemp[0];
     for (const third of oTemp) {
       if (third!==firstVal) {
@@ -248,14 +271,7 @@ function validateForPCA(msg, first) {
   }
 }
 
-function validateIntrusionCreationInput(msg, modelName) {
-  let found = checkModelExists(modelName);
-  if (found) {
-    return new Error(EXISTING_MODEL);
-  }
-  if (typeof(msg.payload) !== 'object') {
-    return new Error(INPUT_JSON);
-  }
+function checkLabel(msg) {
   if (!Object.keys(msg.payload).includes('label')) {
     return new Error(NO_LABEL);
   }
@@ -270,6 +286,16 @@ function validateIntrusionCreationInput(msg, modelName) {
   }
   if (!(labelValues.includes(0)&&labelValues.includes(1))) {
     return new Error(LACKING_LABEL_DIVERSITY);
+  }
+}
+
+function checkCreationJSON(msg, modelName) {
+  let found = checkModelExists(modelName);
+  if (found) {
+    return new Error(EXISTING_MODEL);
+  }
+  if (typeof(msg.payload) !== 'object') {
+    return new Error(INPUT_JSON);
   }
   let vals = Object.values(msg.payload);
   let headerNum=-1;
@@ -326,7 +352,7 @@ function getTypesHeader(modelName) {
   return [headers, types];
 }
 
-function validateIntrusionInput(msg, modelName) {
+function checkUseJSON(msg, modelName) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
@@ -334,7 +360,6 @@ function validateIntrusionInput(msg, modelName) {
   let details = getTypesHeader(modelName);
   let headers = details[0];
   let types = details[1];
-
   types = covertPythonTypeToJS(types);
 
   if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {

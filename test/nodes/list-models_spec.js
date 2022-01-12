@@ -8,9 +8,9 @@ const util = require('util');
 
 const flow = new FlowBuilder();
 
-let baseJSON= `{"payload":{%s,"dur":{"0":0.000011,"1":0.000008,"2":0.000005},"proto":{"0":"udp","1":"udp","2":"udp"},
+let baseJSON= `{"payload":{%s,"dur":{"0":0.000011,"1":0.000008,"2":0.000005},"proto":{"0":"tcp","1":"udp","2":"udp"},
 "service":{"0":"-","1":"-","2":"-"},"state":{"0":"INT","1":"INT","2":"INT"},
-"spkts":{"0":2,"1":2,"2":2}}}`;
+"spkts":{"0":4,"1":2,"2":2}}}`;
 
 describe('ListModelsNode', function() {
   beforeEach(function(done) {
