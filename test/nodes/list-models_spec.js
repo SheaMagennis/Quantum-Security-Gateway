@@ -24,7 +24,7 @@ describe('ListModelsNode', function() {
   });
 
   it('list setup', function(done) {
-    flow.add('intrusion-detection-creation', 'intrusionDetectionNodeInList',
+    flow.add('intrusion-detection-creation', 'idc',
         [['helperNode']], {shots: '10', modelName: 'testing'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
@@ -38,7 +38,7 @@ describe('ListModelsNode', function() {
   });
 
   it('default name outputs correctly', function(done) {
-    flow.add('list-models', 'listModelsNode', [[]]);
+    flow.add('list-models', 'lm', [[]]);
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
       inputNode.should.have.property('name', 'list models');
@@ -47,7 +47,7 @@ describe('ListModelsNode', function() {
   });
 
   it('return model names', function(done) {// change
-    flow.add('list-models', 'listModelsNode', [['helperNode']]);
+    flow.add('list-models', 'lm', [['helperNode']]);
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
     const expectedOutput = 'testing';
@@ -55,7 +55,7 @@ describe('ListModelsNode', function() {
   }).timeout(25000);
 
   it('return success output on valid input', function(done) {// change
-    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
+    flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
     const expectedOutput = 'model';

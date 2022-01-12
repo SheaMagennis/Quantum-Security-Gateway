@@ -28,7 +28,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('intrusion setup', function(done) {
-    flow.add('intrusion-detection-creation', 'intrusionDetectionNode',
+    flow.add('intrusion-detection-creation', 'idc',
         [['helperNode']], {shots: '10', modelName: 'testing'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
@@ -42,7 +42,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('default name outputs correctly', function(done) {
-    flow.add('intrusion-detection', 'intrusionDetectionNode', [[]], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [[]], {modelName: 'testing'});
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
       inputNode.should.have.property('name', 'intrusion detection');
@@ -51,7 +51,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if input is not json', function(done) {
-    flow.add('intrusion-detection', 'i1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [], {modelName: 'testing'});
 
     const givenInput = {payload: 1};
     const expectedMessage = errors.INPUT_JSON;
@@ -59,7 +59,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if json has wrong headers', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [], {modelName: 'testing'});
 
     const givenInput = {payload: {'name': 'Joe'}};
     const expectedMessage = errors.BAD_HEADERS;
@@ -67,7 +67,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if values are wrong type', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [], {modelName: 'testing'});
     let sub = `"dur":{"0":"error","1":0.000008,"2":0.000008}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_FORMAT;
@@ -75,7 +75,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if uneven number of values', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [], {modelName: 'testing'});
     let sub = `"dur":{"0":0.000008,"1":0.000008,"2":0.000008,"3":0.000008}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.UNEVEN;
@@ -83,7 +83,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if less than three packets sent for classification', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [], {modelName: 'testing'});
     let sub = `"dur":{"0":0.000008,"1":0.000008}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.NEEDS_MORE;
@@ -91,7 +91,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return error if incorrect subkey used', function(done) {
-    flow.add('intrusion-detection', 'n1', [], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [], {modelName: 'testing'});
     let sub = `"dur":{"bad":0.000008,"1":0.000008,"2":0.000008}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_SUBKEYS;
@@ -99,7 +99,7 @@ describe('IntrusionDetectionNode', function() {
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('intrusion-detection', 'n2', [['helperNode']], {modelName: 'testing'});
+    flow.add('intrusion-detection', 'id1', [['helperNode']], {modelName: 'testing'});
     flow.addOutput('helperNode');
     let temp = `"dur":{"0":0.11,"1":0.12,"2":0.9}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
@@ -108,7 +108,7 @@ describe('IntrusionDetectionNode', function() {
   }).timeout(25000);
 
   it('delete intrusion setup', function(done) {// change
-    flow.add('delete-model', 'deleteModelNode', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
+    flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
     const expectedOutput = 'model';
