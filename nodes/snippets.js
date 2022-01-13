@@ -348,14 +348,16 @@ import json
 import numpy as np
 import pandas as pd
 
-from qiskit import Aer, QuantumCircuit
+from qiskit import Aer
 from qiskit.utils import QuantumInstance
-from qiskit.circuit import Parameter
-from qiskit.algorithms.optimizers import L_BFGS_B
-from qiskit_machine_learning.algorithms import NeuralNetworkRegressor
-
-from qiskit_machine_learning.neural_networks import TwoLayerQNN
-import dill as pickle
+from qiskit.circuit.library import ZZFeatureMap
+from qiskit_machine_learning.kernels import QuantumKernel
+from qiskit_machine_learning.algorithms import QSVR
+from sklearn.preprocessing import normalize
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+import pickle
+import json
 `;
 
 const REGR_CREATE = `
@@ -363,48 +365,87 @@ import csv
 
 initial=%j
 df=pd.DataFrame(initial)
+backend = Aer.get_backend('qasm_simulator')
 
-quantum_instance = QuantumInstance(Aer.get_backend('aer_simulator'), shots=%d)
+quantum_instance = QuantumInstance(backend, shots=%d)
+hold="regr%s"
 
 val=df['DateTime']
+years=[]
+months=[]
+days=[]
+hours=[]
 for x in range(len(val)):
  temp=val[x]
  res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S %z')
- dt_to_string = res.strftime('%Y-%m-%d %H:%M:%S')
- below = pd.to_datetime(dt_to_string)
- final = below.toordinal()
- val[x]=final
+ years.append(res.year)
+ months.append(res.month)
+ days.append(res.day)
+ hours.append(res.hour)
+
 \n
-df['Dataframe']=val
+df['year']=years
+df['month']=months
+df['day']=days
+df['hours']=hours
 
 encoded = pd.get_dummies(df, drop_first=True)#one-hot encoding
+
 final=encoded.to_numpy()
-index_no = encoded.columns.get_loc("count")
+dTime_no = df.columns.get_loc("DateTime")
+index_no = encoded.columns.get_loc("Target")
 label=final[:,index_no]
 label = label.astype('int')#convert from object to usable
 
 test = np.delete(final, index_no, 1)#array, num, column/row
+test = np.delete(test, dTime_no, 1)
 
-# construct QNN
-regression_opflow_qnn = TwoLayerQNN(1, feature_map, ansatz, quantum_instance=quantum_instance)
-
-
-#concrete below
-vqr = VQR(feature_map=feature_map,
-          ansatz=ansatz,
-          optimizer=L_BFGS_B(),
-          quantum_instance=quantum_instance)
+num_qubits = 3#2
+shots = 128  # Number of times the job will be run on the quantum device 8096
+feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='linear')#full
+instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
+basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
+num_inputs=3
+regr=QSVR(quantum_kernel=basis)
 
 # fit regressor
-vqr.fit(test, label)
-pickle.dump(vqr, open("./model_store/regr%s", 'wb'))
+regr.fit(test, label)
+pickle.dump(regr, open("./model_store/"+hold, 'wb'))
+
+f = open('./model_information/model_information.csv', 'a+', newline='')
+
+writer = csv.writer(f)
+stuff=initial.keys()
+stuff=list(stuff)
+stuff.remove("Target")
+joined_string = ",".join(stuff)
+temporary=[]
+
+for val in stuff:  temporary.append(type(initial[val]["0"]).__name__)
+
+finalTypes=",".join(temporary)
+row = hold,joined_string,finalTypes
+writer.writerow(row)
+f.close()
+print("Attack Prediction model successfully created")#remove
 
 `;
 
 const REGR_USE=`
-model = pickle.load(open("./model_store/regr%s", 'rb'))
-ans = model.predict(X)#replace with input
-print(ans)
+modelName="./model_store/regr%s" #qsvcStore
+model = pickle.load(open(modelName, 'rb')) 
+#get data inputted and convert to dataframe
+type=%j
+res=pd.DataFrame(data=type)
+#process data
+encoded = pd.get_dummies(res, drop_first=True)
+test=encoded.to_numpy()
+
+fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
+#print(fin)
+for i in fin:
+  print("The predicted value is: "+ i)
+
 `;
 
 const QSVC_IMPORTS=`

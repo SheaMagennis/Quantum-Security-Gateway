@@ -49,13 +49,25 @@ module.exports = function(RED) {
             send(msg);
             done();
           }).catch((err) => {
-            node.status({
-              fill: 'red',
-              shape: 'dot',
-              text: 'Error; Build unable to complete!',
-            });
-            logger.error(node.id, err);
-            done(err);
+            if (!err.includes('error')) { // Don't fail on warnings
+              node.status({
+                fill: 'green',
+                shape: 'dot',
+                text: 'Model created!',
+              });
+              logger.trace('Attack Prediction Model successfully created');
+              msg.payload = ('Attack Prediction Model successfully created');
+              send(msg);
+              done();
+            } else {
+              node.status({
+                fill: 'red',
+                shape: 'dot',
+                text: 'Error; Build unable to complete!',
+              });
+              logger.error(node.id, err);
+              done(err);
+            }
           }).finally(() => {
             logger.trace(node.id, 'Executed attack-prediction-creation command');
             shell.stop();
