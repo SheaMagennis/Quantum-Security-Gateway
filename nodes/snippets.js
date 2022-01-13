@@ -377,7 +377,7 @@ days=[]
 hours=[]
 for x in range(len(val)):
  temp=val[x]
- res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S %z')
+ res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S')
  years.append(res.year)
  months.append(res.month)
  days.append(res.day)
@@ -446,7 +446,7 @@ days=[]
 hours=[]
 for x in range(len(val)):
  temp=val[x]
- res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S %z')
+ res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S')
  years.append(res.year)
  months.append(res.month)
  days.append(res.day)

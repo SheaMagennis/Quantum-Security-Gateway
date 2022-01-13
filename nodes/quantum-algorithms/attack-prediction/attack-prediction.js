@@ -19,7 +19,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'attack-prediction node received input');
 
-      let error = errors.validateAttackInput(msg);// changeMe
+      let error = errors.validateAttackInput(msg, node.modelName);// changeMe
       if (error) {
         logger.error(node.id, error);
         done(error);

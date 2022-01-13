@@ -84,11 +84,17 @@ const NO_FILE =
 const NO_LABEL =
 'No label field has been provided';
 
+const NO_TARGET =
+'No label field has been provided';
+
 const BAD_LABEL_VALUE =
 'Value in label must be either 0 or 1';
 
 const LACKING_LABEL_DIVERSITY =
 'The records must have at least one record labelled with 0 and one with 1, with the value in label being either 0 or 1';
+
+const BAD_TARGET_DIVERSITY =
+'The records must have at least two differing targets';
 
 const NOT_ENOUGH_FIELDS =
 'Value in label must be either 0 or 1';
@@ -98,6 +104,8 @@ const NO_MODEL = 'No model exists by this name';
 const EXISTING_MODEL = 'A model by this name already exists';
 
 const BAD_PCA='The inputted JSON records are too similar for PCA reduction.';
+
+const BAD_TIME='The date/time entered is not in the correct format';
 
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
@@ -189,12 +197,30 @@ function validateAnomalyInput(msg) {
   return null;
 };
 
-function validateAttackInput(msg) {
-  return null;
+function validateAttackInput(msg, modelName) {
+  let y = checkUseJSON(msg, modelName);
+  let z = checkTime(msg);
+  if (y instanceof Error) {
+    return y;
+  }
+  if (z instanceof Error) {
+    return z;
+  }
 };
 
 function validateAttackCreationInput(msg) {
-  return null;
+  let x = checkCreationJSON(msg);
+  let y = checkTime(msg);
+  let z = checkTarget(msg);
+  if (x instanceof Error) {
+    return x;
+  }
+  if (y instanceof Error) {
+    return y;
+  }
+  if (z instanceof Error) {
+    return z;
+  }
 };
 
 function validateListInput(msg) {
@@ -231,6 +257,45 @@ function validateIntrusionInput(msg, modelName) {
   }
   if (z instanceof Error) {
     return z;
+  }
+}
+
+function checkTime(msg) {
+  if (!Object.keys(msg.payload).includes('DateTime')) {
+    return new Error(NO_TARGET);
+  }
+  let time = msg.payload['DateTime'];
+  let timeValues = Object.values(time);
+  let re = /^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01]) (0\d|1[01]):[0-5]\d:[0-5]\d$/;
+  for (let t=0; t<timeValues.length; t++) {
+    try {
+      if (!re.test(timeValues[t])) {
+        return new Error(BAD_TIME);
+      }
+    } catch (err) {
+      return new Error(BAD_TIME);
+    }
+  }
+}
+function checkTarget(msg) {
+  if (!Object.keys(msg.payload).includes('Target')) {
+    return new Error(NO_TARGET);
+  }
+  let target = msg.payload['Target'];
+  let targetValues = Object.values(target);
+  if (!targetValues.every((elem) => (!elem.isNaN))) {
+    return new Error(BAD_TARGET_VALUE);
+  }
+  let same=true;
+  let firstVal=target[0];
+  for (const aVal of firstVal) {
+    if (aVal!==firstVal) {
+      same=false;
+      break;
+    }
+  }
+  if (same) {
+    return new Error(BAD_TARGET_DIVERSITY);
   }
 }
 
