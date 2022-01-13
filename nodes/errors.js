@@ -201,7 +201,7 @@ function validateListInput(msg) {
   return null;
 };
 
-function validateDeleteInput(msg) {
+function validateHelperInput(msg) {
   const files = fs.readdirSync('./model_store');
   if (!files.includes(msg)) {
     return new Error(NO_FILE);
@@ -444,7 +444,7 @@ module.exports = {
   validateAnomalyInput,
   validateAttackInput,
   validateListInput,
-  validateDeleteInput,
+  validateHelperInput,
   validateIntrusionCreationInput,
   validateAttackCreationInput,
 };

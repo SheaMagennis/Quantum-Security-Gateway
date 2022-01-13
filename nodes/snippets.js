@@ -510,6 +510,24 @@ for i in x:
     if i.startswith("qsvc"):
         print(i[4:])
         
+\n         
+print("Attack-prediction models:")
+    if i.startswith("regr"):
+        print([4:])
+`;
+
+const DETAIL_MODEL = `
+import csv
+mName="%s"
+with open('./model_information/model_information.csv', 'r', newline="") as readFile:
+    reader = csv.reader(readFile)
+    for row in reader:
+        if row[0] == mName:
+          print("Model Headers:")
+          print(row[1])
+          print("Model Types:")
+          print(row[2])
+            
 `;
 
 const DELETE_MODEL = `
@@ -583,4 +601,5 @@ module.exports = {
   REGR_USE,
   LIST_MODELS,
   DELETE_MODEL,
+  DETAIL_MODEL,
 };

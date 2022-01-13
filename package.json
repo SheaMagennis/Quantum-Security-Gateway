@@ -92,8 +92,9 @@
       "intrusion-detection": "nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js",
       "anomaly-detection": "nodes/quantum-algorithms/anomaly-detection/anomaly-detection.js",
       "attack-prediction": "nodes/quantum-algorithms/attack-prediction/attack-prediction.js",
-      "list-models": "nodes/quantum-algorithms/list-models/list-models.js",
-      "delete-model": "nodes/quantum-algorithms/delete-model/delete-model.js",
+      "list-models": "nodes/helper-nodes/list-models/list-models.js",
+      "delete-model": "nodes/helper-nodes/delete-model/delete-model.js",
+      "detail-model": "nodes/helper-nodes/detail-model/detail-model.js",
       "intrusion-detection-creation": "nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js",
       "attack-prediction-creation": "nodes/quantum-algorithms/attack-prediction-creation/attack-prediction-creation.js"
     }
