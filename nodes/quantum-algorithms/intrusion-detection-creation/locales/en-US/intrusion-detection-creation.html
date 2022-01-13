@@ -1,6 +1,17 @@
 <script type="text/html" data-help-name="intrusion-detection-creation">
   <p>
       This node builds a model using classified data inputted by the user.
+      It performs One-Hot encoding and PCA dimensionality reduction on the input,
+      before training a QSVC on the processed data.
+  </p>
+  <p>
+    The number of shots refers to the number of times the circuit is run to obtain
+    a probability distribution of results. This is due to the probabilistic nature of qubit measurements.<br />
+    <br />
+      The Model Name refers to a name given to this model,
+      with which it can be accessed once trained by the intrusion-detection node.
+    <br />
+      <a href="https://qiskit.org/documentation/machine-learning/stubs/qiskit_machine_learning.algorithms.QSVC.html">QSVC - Qiskit documentation</a> <br/>
   </p>
 
   <h3>Inputs</h3>
@@ -10,10 +21,6 @@
         </dt>
         <dd>JSON with headers for each field, one of which must be 'label', which must hold at least one 0 and one 1. Each header holds an object of key:value pairs,
             one for each packet, with the key being a string index starting from '0'. At least 3 records are required.</dd>
-        <dt class="message-properties">Model Name
-          <span class="property-type">string</span>
-        </dt>
-        <dd>The name of the model to be created.</dd>
     </dl>
 
   <h3>Outputs</h3>
