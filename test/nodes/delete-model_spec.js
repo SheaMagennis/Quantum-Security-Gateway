@@ -23,13 +23,13 @@ describe('DeleteModelNode', function() {
     nodeTestHelper.stopServer(done);
   });
 
-  it('delete setup', function(done) {
+  it('delete start setup', function(done) {
     flow.add('intrusion-detection-creation', 'idc',
         [['helperNode']], {shots: '10', modelName: 'testing'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
-    const expectedOutput = 'done';
+    const expectedOutput = 'Intrusion Detection Model successfully created';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 

@@ -29,7 +29,7 @@ describe('ListModelsNode', function() {
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
-    const expectedOutput = 'done';
+    const expectedOutput = 'Intrusion Detection Model successfully created';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
@@ -54,11 +54,11 @@ describe('ListModelsNode', function() {
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
-  it('return success output on valid input', function(done) {// change
+  it('delete model created for testing', function(done) {// change
     flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
-    const expectedOutput = 'model';
+    const expectedOutput = 'Model testing deleted';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 });

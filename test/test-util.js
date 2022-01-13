@@ -83,7 +83,7 @@ function aCorrectOutputReceived(flowBuilder, givenInput, expectedOutput, done) {
     const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
     outputNode.once('input', function(msg) {
       try {
-        assert(msg.payload.toLowerCase().includes(expectedOutput));
+        assert(msg.payload.toLowerCase().includes((expectedOutput).toLowerCase()));
         done();
       } catch (err) {
         done(err);

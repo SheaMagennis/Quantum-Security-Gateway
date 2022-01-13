@@ -33,7 +33,7 @@ describe('IntrusionDetectionNode', function() {
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON, temp));
-    const expectedOutput = 'done';
+    const expectedOutput = 'Intrusion Detection Model successfully created';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
@@ -111,7 +111,7 @@ describe('IntrusionDetectionNode', function() {
     flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
-    const expectedOutput = 'model';
+    const expectedOutput = 'Model testing deleted';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 });

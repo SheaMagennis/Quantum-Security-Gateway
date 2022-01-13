@@ -60,8 +60,8 @@ module.exports = function(RED) {
                 shape: 'dot',
                 text: 'Model created!',
               });
-              logger.trace('done');
-              msg.payload = ('done');
+              logger.trace('Intrusion Detection Model successfully created');
+              msg.payload = ('Intrusion Detection Model successfully created');
               send(msg);
               done();
             } else {

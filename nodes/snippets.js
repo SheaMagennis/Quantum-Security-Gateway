@@ -488,7 +488,7 @@ finalTypes=",".join(temporary)
 row = hold,joined_string,finalTypes
 writer.writerow(row)
 f.close()
-print("done")#remove
+print("Intrusion Detection Model successfully created")#remove
     
 `;
 
@@ -558,7 +558,7 @@ with open('./model_information/model_information.csv', 'w', newline="") as write
     writer.writerows(lines)
        
 \n
-print("model deleted")  
+print("Model " +mName[4:] + " deleted")  
 `;
 
 module.exports = {
