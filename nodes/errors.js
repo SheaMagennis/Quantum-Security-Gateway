@@ -90,6 +90,9 @@ const NO_TARGET =
 const BAD_LABEL_VALUE =
 'Value in label must be either 0 or 1';
 
+const BAD_TARGET_VALUE =
+'The Value in target must be an integer';
+
 const LACKING_LABEL_DIVERSITY =
 'The records must have at least one record labelled with 0 and one with 1, with the value in label being either 0 or 1';
 
@@ -266,7 +269,7 @@ function checkTime(msg) {
   }
   let time = msg.payload['DateTime'];
   let timeValues = Object.values(time);
-  let re = /^\d{4}-(0[1-9]|1[0-2])-([0-2]\d|3[01]) (0\d|1[01]):[0-5]\d:[0-5]\d$/;
+  let re = /^\d{4}\/(0[1-9]|1[0-2])\/([0-2]\d|3[01]):(0\d|1[01]):[0-5]\d:[0-5]\d$/;
   for (let t=0; t<timeValues.length; t++) {
     try {
       if (!re.test(timeValues[t])) {
@@ -287,8 +290,8 @@ function checkTarget(msg) {
     return new Error(BAD_TARGET_VALUE);
   }
   let same=true;
-  let firstVal=target[0];
-  for (const aVal of firstVal) {
+  let firstVal=targetValues[0];
+  for (const aVal of targetValues) {
     if (aVal!==firstVal) {
       same=false;
       break;
