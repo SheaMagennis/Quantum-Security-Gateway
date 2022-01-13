@@ -389,7 +389,7 @@ df['month']=months
 df['day']=days
 df['hours']=hours
 
-encoded = pd.get_dummies(df, drop_first=True)#one-hot encoding
+encoded = pd.get_dummies(df)#
 
 final=encoded.to_numpy()
 dTime_no = df.columns.get_loc("DateTime")
@@ -427,7 +427,7 @@ finalTypes=",".join(temporary)
 row = hold,joined_string,finalTypes
 writer.writerow(row)
 f.close()
-print("Attack Prediction model successfully created")#remove
+print("Attack Prediction model successfully created")
 
 `;
 
@@ -436,15 +436,36 @@ modelName="./model_store/regr%s" #qsvcStore
 model = pickle.load(open(modelName, 'rb')) 
 #get data inputted and convert to dataframe
 type=%j
-res=pd.DataFrame(data=type)
+df=pd.DataFrame(data=type)
 #process data
-encoded = pd.get_dummies(res, drop_first=True)
-test=encoded.to_numpy()
 
-fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
-#print(fin)
+val=df['DateTime']
+years=[]
+months=[]
+days=[]
+hours=[]
+for x in range(len(val)):
+ temp=val[x]
+ res = datetime.datetime.strptime(temp, '%d/%b/%Y:%H:%M:%S %z')
+ years.append(res.year)
+ months.append(res.month)
+ days.append(res.day)
+ hours.append(res.hour)
+
+\n
+df['year']=years
+df['month']=months
+df['day']=days
+df['hours']=hours
+
+encoded = pd.get_dummies(df)
+test = encoded.to_numpy()
+
+dTime_no = df.columns.get_loc("DateTime")
+data = np.delete(test, dTime_no, 1)
+fin=model.predict(data)
 for i in fin:
-  print("The predicted value is: "+ i)
+  print("Predicted value : "+ "{}".format(i))
 
 `;
 
