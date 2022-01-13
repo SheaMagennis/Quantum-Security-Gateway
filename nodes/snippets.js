@@ -505,15 +505,24 @@ data = normalize(test, axis=0, norm='max')#normalization
 const LIST_MODELS = `
 import os
 x = os.listdir("./model_store")
-print("Intrusion-detection models:")
+apModels=[]
+idModels=[]
 for i in x:
     if i.startswith("qsvc"):
-        print(i[4:])
+        idModels.append(i[4:])
+    if i.startswith("regr"):
+        apModels.append(i[4:])
         
 \n         
+print("Intrusion-detection models:")
+for idVal in idModels:
+  print(idVal)
+  
+\n
 print("Attack-prediction models:")
-    if i.startswith("regr"):
-        print([4:])
+for apVal in apModels:
+  print(apVal)
+    
 `;
 
 const DETAIL_MODEL = `
