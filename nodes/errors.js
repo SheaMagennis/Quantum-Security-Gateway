@@ -269,7 +269,7 @@ function checkTime(msg) {
   }
   let time = msg.payload['DateTime'];
   let timeValues = Object.values(time);
-  let re = /^\d{4}\/(0[1-9]|1[0-2])\/([0-2]\d|3[01]):(0\d|1[01]):[0-5]\d:[0-5]\d$/;
+  let re = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]/;
   for (let t=0; t<timeValues.length; t++) {
     try {
       if (!re.test(timeValues[t])) {
@@ -286,7 +286,7 @@ function checkTarget(msg) {
   }
   let target = msg.payload['Target'];
   let targetValues = Object.values(target);
-  if (!targetValues.every((elem) => (!elem.isNaN))) {
+  if (targetValues.some((elem) => (typeof elem !== 'number'))) {
     return new Error(BAD_TARGET_VALUE);
   }
   let same=true;
@@ -501,6 +501,7 @@ module.exports = {
   BAD_SUBKEYS,
   NO_LABEL,
   BAD_LABEL_VALUE,
+  BAD_TARGET_VALUE,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,
