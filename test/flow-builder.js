@@ -4,6 +4,7 @@ const NODES = {
   'anomaly-detection': require('../nodes/quantum-algorithms/anomaly-detection/anomaly-detection.js'),
   'attack-prediction-creation': require('../nodes/quantum-algorithms/attack-prediction-creation/' +
       'attack-prediction-creation.js'),
+  'attack-prediction': require('../nodes/quantum-algorithms/attack-prediction/attack-prediction.js'),
   'barrier': require('../nodes/quantum/barrier/barrier.js'),
   'bloch-sphere': require('../nodes/quantum/bloch-sphere/bloch-sphere.js'),
   'circuit-diagram': require('../nodes/quantum/circuit-diagram/circuit-diagram.js'),
