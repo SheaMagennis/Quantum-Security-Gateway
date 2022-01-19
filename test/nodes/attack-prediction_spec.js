@@ -82,9 +82,9 @@ describe('AttackPredictionNode', function() {
   it('return success output on valid input', function(done) {// change
     flow.add('attack-prediction', 'ap1', [['helperNode']], {modelName: 'testing'});
     flow.addOutput('helperNode');
-    let temp = `""DateTime": {"0": "2010-10-19 13:55:36","1": "2025-11-29 13:55:36","2": "2010-12-19 13:55:36"}`;
+    let temp = `"DateTime": {"0": "2010-10-19 13:55:36","1": "2025-11-29 13:55:36","2": "2010-12-19 13:55:36"}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
-    const expectedOutput = 'threat';
+    const expectedOutput = 'predicted';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 

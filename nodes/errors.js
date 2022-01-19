@@ -201,7 +201,7 @@ function validateAnomalyInput(msg) {
 };
 
 function validateAttackInput(msg, modelName) {
-  let y = checkUseJSON(msg, modelName);
+  let y = checkUseJSON(msg, modelName, 'regr');
   let z = checkTime(msg);
   if (y instanceof Error) {
     return y;
@@ -253,7 +253,7 @@ function validateIntrusionCreationInput(msg, modelName) {
 }
 
 function validateIntrusionInput(msg, modelName) {
-  let y = checkUseJSON(msg, modelName);
+  let y = checkUseJSON(msg, modelName, 'qsvc');
   let z = checkPCA(msg, false);
   if (y instanceof Error) {
     return y;
@@ -391,7 +391,7 @@ function checkCreationJSON(msg, modelName) {
   }
 };
 
-function getTypesHeader(modelName) {
+function getTypesHeader(modelName, mType) {
   let headers=[];
   let types=[];
   let found=false;
@@ -404,13 +404,18 @@ function getTypesHeader(modelName) {
   }
 
   for (let j = 1; j<data.length-1; j++) {
-    if (data[j][0] === 'qsvc'+modelName) {
-      headers = data[j][1].split(',');
-      types = data[j][2].split(',');
-      headers[0] = headers[0].substr(1);
-      types[0] = types[0].substr(1);
-      headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
-      types[types.length-1] = types[types.length-1].slice(0, -1);
+    if (data[j][0] === mType+modelName) {
+      if (data[j][1].charAt(0)==='"') {
+        headers = data[j][1].split(',');
+        types = data[j][2].split(',');
+        headers[0] = headers[0].substr(1);
+        types[0] = types[0].substr(1);
+        headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
+        types[types.length-1] = types[types.length-1].slice(0, -1);
+      } else {
+        headers=[data[j][1]];
+        types=[data[j][2]];
+      }
       found=true;
     }
   }
@@ -420,12 +425,12 @@ function getTypesHeader(modelName) {
   return [headers, types];
 }
 
-function checkUseJSON(msg, modelName) {
+function checkUseJSON(msg, modelName, mType) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
 
-  let details = getTypesHeader(modelName);
+  let details = getTypesHeader(modelName, mType);
   let headers = details[0];
   let types = details[1];
   types = covertPythonTypeToJS(types);
