@@ -197,7 +197,10 @@ function validateRandomInput(msg) {
 };
 
 function validateAnomalyInput(msg) {
-  return null;
+  let z = checkCreationJSON(msg);
+  if (z instanceof Error) {
+    return z;
+  }
 };
 
 function validateAttackInput(msg, modelName) {
@@ -211,8 +214,8 @@ function validateAttackInput(msg, modelName) {
   }
 };
 
-function validateAttackCreationInput(msg) {
-  let x = checkCreationJSON(msg);
+function validateAttackCreationInput(msg, modelName) {
+  let x = checkCreationJSON(msg, modelName, 'regr');
   let y = checkTime(msg);
   let z = checkTarget(msg);
   if (x instanceof Error) {
@@ -238,7 +241,7 @@ function validateHelperInput(msg) {
 };
 
 function validateIntrusionCreationInput(msg, modelName) {
-  let x = checkCreationJSON(msg, modelName);
+  let x = checkCreationJSON(msg, modelName, 'qsvc');
   let y = checkLabel(msg, modelName);
   let z = checkPCA(msg, true);
   if (x instanceof Error) {
@@ -302,7 +305,7 @@ function checkTarget(msg) {
   }
 }
 
-function checkModelExists(modelName) {
+function checkModelExists(modelName, modelType) {
   let found = false;
   let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
   data = data.toString().split('\r\n');
@@ -310,7 +313,7 @@ function checkModelExists(modelName) {
     data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
   }
   for (let j = 1; j < data.length - 1; j++) {
-    if (data[j][0] === 'qsvc' + modelName) {
+    if (data[j][0] === modelType + modelName) {
       found = true;
     }
   }
@@ -357,8 +360,8 @@ function checkLabel(msg) {
   }
 }
 
-function checkCreationJSON(msg, modelName) {
-  let found = checkModelExists(modelName);
+function checkCreationJSON(msg, modelName, modelType) {
+  let found = checkModelExists(modelName, modelType);
   if (found) {
     return new Error(EXISTING_MODEL);
   }

@@ -305,41 +305,113 @@ print(int(dec,2))
 `;
 
 const ANOM=`
-#%j
-from sklearn.cluster import SpectralClustering
-from sklearn.metrics import normalized_mutual_info_score
+# Adaptation of https://github.com/GroenteLepel/qiskit-quantum-knn for anomaly detection on unsupervised data
+# This code uses the existing code from the above implementation to analyse the distance between
+# each value set in a given list and the other values. The outlier is identified as the point with the greatest 
+#distance, which is then outputted
+# Functions not shared as part of the package are redefined and modified for a single test input
 
-from qiskit import Aer
-from qiskit.circuit.library import ZZFeatureMap
-from qiskit.utils import QuantumInstance, algorithm_globals
-from qiskit_machine_learning.kernels import QuantumKernel
-from qiskit_machine_learning.datasets import ad_hoc_data
+import qiskit.aqua.utils.subsystem as ss
+import pandas as pd
+from qiskit_quantum_knn.qknn.qknn_construction import create_oracle
+from qiskit_quantum_knn.qknn import qknn_construction as qc
+import qiskit_quantum_knn.qknn.quantumgates as gates
+from qiskit_quantum_knn.qknn import QKNeighborsClassifier
+from qiskit_quantum_knn.qknn.qknn_construction import create_qknn
+import qiskit as qk
+from qiskit.utils import QuantumInstance
+import numpy as np
+import itertools
+from sklearn.preprocessing import OrdinalEncoder
+from qiskit_quantum_knn.encoding import analog
 
-seed = 12345
-algorithm_globals.random_seed = seed
+initial=%j
+df=pd.DataFrame(initial)
 
-adhoc_dimension = 2
-train_features, train_labels, test_features, test_labels, adhoc_total = ad_hoc_data(
-    training_size=25,
-    test_size=0,
-    n=adhoc_dimension,
-    gap=0.6,
-    plot_data=False, one_hot=False, include_sample_total=True
+def calculate_fidelities(counts) -> np.ndarray:
+    subsystem_counts = ss.get_subsystems_counts(counts)
+    control_counts = QKNeighborsClassifier.setup_control_counts(
+        subsystem_counts[1]
+    )
+    total_counts = control_counts['0'] + control_counts['1']
+    exp_fidelity = np.abs(control_counts['0'] - control_counts['1']) / total_counts
+    num_qubits = len(list(subsystem_counts[0].keys())[0])
+    comp_basis_states = list(itertools.product(['0', '1'], repeat=num_qubits))
+    fidelities = np.zeros(2 ** num_qubits, dtype=float)
+    for comp_state in comp_basis_states:
+        comp_state = ''.join(comp_state)
+        fidelity = 0.
+        for control_state in control_counts.keys():
+            state_str = comp_state + ' ' + control_state
+            if state_str not in counts:
+                fidelity += 0  # added for readability
+            else:
+                fidelity += (-1) ** int(control_state) * (counts[state_str]) / control_counts[control_state] * (
+                            1 - exp_fidelity ** 2)
+            \n                
+        index_state = int(comp_state, 2)
+        fidelity *= 2 ** num_qubits / 2
+        fidelity += exp_fidelity
+        fidelities[index_state] = fidelity
+    return fidelities
+\n
+
+def get_all_fidelities(circuit_results):  #: qres.Result
+    all_counts = circuit_results.get_counts()
+    num_qubits = len(list(all_counts.keys())) - 2
+    n_occurrences = len(all_counts)  # number of occurring states
+    n_datapoints = 2 ** num_qubits  # number of data points
+    all_fidelities = np.empty(
+        shape=(n_occurrences, n_datapoints),
+    )
+    all_fidelities = calculate_fidelities(all_counts)
+    return all_fidelities
+\n
+
+def getOutlier(n_queries, fidelities):
+    sorted_neighbors = np.argpartition(
+        1 - fidelities,
+        -n_queries
+    )
+    sorted_neighbors = sorted_neighbors[sorted_neighbors < n_queries]  
+    return sorted_neighbors
+\n
+
+backend = qk.BasicAer.get_backend('qasm_simulator')
+instance = QuantumInstance(backend, shots=%d)
+
+qknn = QKNeighborsClassifier(
+    n_neighbors=3,  # not used in this case, though could be used in getOutlier
+    quantum_instance=instance
 )
 
-adhoc_feature_map = ZZFeatureMap(feature_dimension=adhoc_dimension,
-                                 reps=2, entanglement='linear')
+example_data = [[0, 1], [1, 0], [1, 0]]  # perform ordinal+analog encoding on input to get data
 
-adhoc_backend = QuantumInstance(Aer.get_backend('qasm_simulator'), shots=%d,
-                                seed_simulator=seed, seed_transpiler=seed)
+encoder = OrdinalEncoder()
+encoded = encoder.fit_transform(df)
+example_data = analog.encode(encoded[:, :2]).tolist()
 
-adhoc_kernel = QuantumKernel(feature_map=adhoc_feature_map, quantum_instance=adhoc_backend)
+totals = []
+for i in range(len(example_data)):  # length of list
+    test_data = [example_data[i]]
+    use_data = example_data[:i] + example_data[i + 1:]
+    indVals = []
+    trainLen = len(use_data)
+    qknn = QKNeighborsClassifier(
+        n_neighbors=3,
+        quantum_instance=instance
+    )
+    first = qknn.construct_circuits(test_data, use_data)
+    second = qknn.get_circuit_results(first)
+    third = get_all_fidelities(second)  # qknn.
+    fourth = getOutlier(trainLen, third)
+    done = [third[i] for i in fourth]
+    val = sum(done)
+    totals.append(val)
+\n
 
-adhoc_matrix = adhoc_kernel.evaluate(x_vec=train_features)
-
-adhoc_spectral = SpectralClustering(2, affinity="precomputed")
-cluster_labels = adhoc_spectral.fit_predict(adhoc_matrix)
-print(cluster_labels)
+anomaly = totals.index(min(totals))
+print(example_data[anomaly])  # output most anomalous input
 `;
 
 const REGR_IMPORTS = `
