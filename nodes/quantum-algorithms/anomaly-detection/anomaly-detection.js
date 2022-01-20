@@ -33,8 +33,8 @@ module.exports = function(RED) {
       });
       let shotVar = node.shots;
       let params = msg.payload;
-      let script = util.format(snippets.ANOM, params, shotVar);
-      shell.start();
+      let script = util.format(snippets.WARN_TEST, params, shotVar); // snippets.ANOM
+      shell.start(['-x']);// -Wignore
       await shell.execute(script)
           .then((data) => {
             node.status({
@@ -43,7 +43,7 @@ module.exports = function(RED) {
               text: 'Detection complete!',
             });
             logger.trace(data);
-            msg.payload = (data.slice(39, data.length));
+            msg.payload = data;
             send(msg);
             done();
           }).catch((err) => {

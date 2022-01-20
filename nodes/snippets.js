@@ -695,6 +695,17 @@ with open('./model_information/model_information.csv', 'w', newline="") as write
 print("Model " +mName[4:] + " deleted")  
 `;
 
+const WARN_TEST=`
+#%j
+#%s
+from contextlib import redirect_stderr
+import io
+f = io.StringIO()
+with redirect_stderr(f):
+  from qiskit.aqua.algorithms import QuantumAlgorithm
+  print("success")
+`;
+
 module.exports = {
   IMPORTS,
   QUANTUM_CIRCUIT,
@@ -745,4 +756,5 @@ module.exports = {
   LIST_MODELS,
   DELETE_MODEL,
   DETAIL_MODEL,
+  WARN_TEST,
 };
