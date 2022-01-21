@@ -110,6 +110,9 @@ const BAD_PCA='The inputted JSON records are too similar for PCA reduction.';
 
 const BAD_TIME='The date/time entered is not in the correct format';
 
+const MISMATCHED_TYPES =
+'The types held by the sub-keys must be consistent';
+
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
 
@@ -197,7 +200,7 @@ function validateRandomInput(msg) {
 };
 
 function validateAnomalyInput(msg) {
-  let z = checkCreationJSON(msg);
+  let z = checkCreationJSON(msg, 'none', 'none');
   if (z instanceof Error) {
     return z;
   }
@@ -383,6 +386,10 @@ function checkCreationJSON(msg, modelName, modelType) {
     if (subVal.length<3) {
       return new Error(NEEDS_MORE);
     }
+    let firstType=typeof(subVal[0]);
+    if (!subVal.every((elem) => typeof(elem)===firstType)) {
+      return new Error(MISMATCHED_TYPES);
+    }
     headerNum+=1;
     let subKey = Object.keys(val);
     let keyLen = subKey.length;
@@ -510,6 +517,7 @@ module.exports = {
   NO_LABEL,
   BAD_LABEL_VALUE,
   BAD_TARGET_VALUE,
+  MISMATCHED_TYPES,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,

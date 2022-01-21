@@ -56,7 +56,7 @@ describe('IntrusionDetectionCreationNode', function() {
 
   it('return error if values are wrong type', function(done) {
     flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing'});
-    let sub = `"label":{"0":"error","1":1,"2":0}`;
+    let sub = `"label":{"0":2,"1":1,"2":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_LABEL_VALUE;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);

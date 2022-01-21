@@ -55,7 +55,7 @@ describe('AttackPredictionCreationNode', function() {
 
   it('return error if values are wrong type', function(done) {
     flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing'});
-    let sub = `"Target":{"0":"error","1":1,"2":0}`;
+    let sub = `"Target":{"0":"error","1":"1","2":"0"}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_TARGET_VALUE;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);

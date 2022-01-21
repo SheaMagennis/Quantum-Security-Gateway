@@ -328,6 +328,7 @@ with redirect_stderr(f):
   import itertools
   from sklearn.preprocessing import OrdinalEncoder
   from qiskit_quantum_knn.encoding import analog
+  import math
   initial=%j
   df=pd.DataFrame(initial)
   def calculate_fidelities(counts) -> np.ndarray:
@@ -385,7 +386,11 @@ with redirect_stderr(f):
   
   encoder = OrdinalEncoder()
   encoded = encoder.fit_transform(df)
-  example_data = analog.encode(encoded[:, :2]).tolist()
+  encoded=encoded+1
+  lSize=len(encoded[0])
+  p = int(math.log(lSize, 2))
+  cutPoint=int(pow(2, p))
+  example_data = analog.encode(encoded[:, :cutPoint]).tolist()
   
   totals = []
   for i in range(len(example_data)):  # length of list
@@ -399,7 +404,7 @@ with redirect_stderr(f):
       )
       first = qknn.construct_circuits(test_data, use_data)
       second = qknn.get_circuit_results(first)
-      third = get_all_fidelities(second)  # qknn.
+      third = get_all_fidelities(second)  
       fourth = getOutlier(trainLen, third)
       done = [third[i] for i in fourth]
       val = sum(done)
