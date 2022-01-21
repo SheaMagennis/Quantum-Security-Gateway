@@ -33,8 +33,8 @@ module.exports = function(RED) {
       });
       let shotVar = node.shots;
       let params = msg.payload;
-      let script = util.format(snippets.WARN_TEST, params, shotVar); // snippets.ANOM
-      shell.start(['-x']);// -Wignore
+      let script = util.format(snippets.ANOM, params, shotVar);
+      shell.start();
       await shell.execute(script)
           .then((data) => {
             node.status({
@@ -47,25 +47,13 @@ module.exports = function(RED) {
             send(msg);
             done();
           }).catch((err) => {
-            if (!err.includes('error')) { // Don't fail on warnings
-              node.status({
-                fill: 'green',
-                shape: 'dot',
-                text: 'Model created!',
-              });
-              logger.trace(err);
-              msg.payload = (err);
-              send(msg);
-              done();
-            } else {
-              node.status({
-                fill: 'red',
-                shape: 'dot',
-                text: 'Error; Anomaly not able to be identified!',
-              });
-              logger.error(node.id, err);
-              done(err);
-            }
+            node.status({
+              fill: 'red',
+              shape: 'dot',
+              text: 'Error; Anomaly not able to be identified!',
+            });
+            logger.error(node.id, err);
+            done(err);
           }).finally(() => {
             logger.trace(node.id, 'Executed anomaly-detection command');
             shell.stop();
