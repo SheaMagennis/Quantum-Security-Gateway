@@ -68,11 +68,10 @@ describe('AnomalyDetectionNode', function() {
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('anomaly-detection', 'anomalyDetectionNode', [['helperNode']]);
+    flow.add('anomaly-detection', 'anomalyDetectionNode', [['helperNode']],{shots: '100'});
     flow.addOutput('helperNode');
     let temp = `"Source":{"0":"194.168.11.251","1":"72:64:fe:c9:e7:3a","2":"130.82.12.26"}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
-    console.log(givenInput);
     const expectedOutput = 'Source';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
