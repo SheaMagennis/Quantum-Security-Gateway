@@ -432,7 +432,7 @@ import pickle
 import json
 `;
 
-const REGR_CREATE = `
+const CREATE_REGR_START = `
 import csv
 
 initial=%j
@@ -470,8 +470,9 @@ label=final[:,index_no]
 label = label.astype('int')#convert from object to usable
 
 test = np.delete(final, index_no, 1)#array, num, column/row
-test = np.delete(test, dTime_no, 1)
+test = np.delete(test, dTime_no, 1)`;
 
+const CREATE_REGR_END=`
 num_qubits = 3#2
 shots = 128  # Number of times the job will be run on the quantum device 8096
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='linear')#full
@@ -602,7 +603,7 @@ feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='f
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  
 
-train_features=data
+train_features=test
 qsvc= QSVC(quantum_kernel=basis)
 qsvc.fit(train_features, label)
 hold="qsvc%s"
@@ -633,7 +634,7 @@ test=scalar.transform(test)
 pca=PCA(n_components=3)
 pca.fit(test)
 test = pca.transform(test)
-data = normalize(test, axis=0, norm='max')#normalization
+test = normalize(test, axis=0, norm='max')#normalization
 `;
 
 const LIST_MODELS = `
@@ -740,7 +741,8 @@ module.exports = {
   CREATE_QSVC_START,
   CREATE_QSVC_END,
   ANOM,
-  REGR_CREATE,
+  CREATE_REGR_START,
+  CREATE_REGR_END,
   REGR_IMPORTS,
   REGR_USE,
   LIST_MODELS,

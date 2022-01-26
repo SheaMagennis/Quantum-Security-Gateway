@@ -1,9 +1,8 @@
 'use strict';
 
-const util = require('util');
-const snippets = require('../../snippets');
 const errors = require('../../errors');
 const logger = require('../../logger');
+const build = require('../../script-builder');
 const {PythonInteractive, PythonPath} = require('../../python');
 const shell = new PythonInteractive(PythonPath);
 
@@ -31,11 +30,11 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Building model...',
       });
-      let lastParam = node.modelName;
-      let params = msg.payload;
-      let shotVar = node.shots;
-      let full = snippets.REGR_IMPORTS+snippets.REGR_CREATE;
-      let script = util.format(full, params, shotVar, lastParam);
+
+      let params = [msg.payload, node.shots, node.modelName];
+      let script = build.constructSnippet('REGR', true, false, params);
+
+      console.log(script);
       shell.start();
       await shell.execute(script)
           .then((data) => {
