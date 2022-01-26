@@ -504,7 +504,7 @@ print("Attack Prediction model successfully created")
 
 `;
 
-const REGR_USE=`
+const REGR_START=`
 modelName="./model_store/regr%s" #qsvcStore
 model = pickle.load(open(modelName, 'rb')) 
 #get data inputted and convert to dataframe
@@ -536,6 +536,9 @@ test = encoded.to_numpy()
 
 dTime_no = df.columns.get_loc("DateTime")
 data = np.delete(test, dTime_no, 1)
+`;
+
+const REGR_END =`
 fin=model.predict(data)
 for i in fin:
   print("Predicted value : "+ "{}".format(i))
@@ -571,7 +574,7 @@ test=encoded.to_numpy()
 const QSVC_END=`
 #print(data)
 #make prediction
-fin=model.predict(data)#[[-0.74856406,-0.30061566, 0.19750934]]
+fin=model.predict(test)#[[-0.74856406,-0.30061566, 0.19750934]]
 #print(fin)
 for i in fin:
   if i == 0:  print("No threat present")
@@ -744,7 +747,8 @@ module.exports = {
   CREATE_REGR_START,
   CREATE_REGR_END,
   REGR_IMPORTS,
-  REGR_USE,
+  REGR_START,
+  REGR_END,
   LIST_MODELS,
   DELETE_MODEL,
   DETAIL_MODEL,

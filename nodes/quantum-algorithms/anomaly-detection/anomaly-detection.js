@@ -5,6 +5,7 @@ const snippets = require('../../snippets');
 const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
+const build = require("../../script-builder");
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -31,9 +32,10 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Looking for anomalies...',
       });
-      let shotVar = node.shots;
-      let params = msg.payload;
-      let script = util.format(snippets.ANOM, params, shotVar);
+
+      let params = [msg.payload, node.shots];
+      let script = build.constructSingleSnippet('ANOM', params);
+
       shell.start();
       await shell.execute(script)
           .then((data) => {

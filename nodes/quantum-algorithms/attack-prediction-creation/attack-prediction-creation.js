@@ -34,7 +34,6 @@ module.exports = function(RED) {
       let params = [msg.payload, node.shots, node.modelName];
       let script = build.constructSnippet('REGR', true, false, params);
 
-      console.log(script);
       shell.start();
       await shell.execute(script)
           .then((data) => {

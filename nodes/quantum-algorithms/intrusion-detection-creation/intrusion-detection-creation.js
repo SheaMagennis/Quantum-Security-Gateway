@@ -1,10 +1,9 @@
 'use strict';
 
-const util = require('util');
-const snippets = require('../../snippets');
 const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
+const build = require('../../script-builder');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -35,12 +34,9 @@ module.exports = function(RED) {
         shape: 'dot',
         text: 'Creating model...',
       });
-      let modelState = node.modelName;
-      let params = msg.payload;
-      let shotVar = node.shots;
-      let final = snippets.QSVC_IMPORTS+snippets.CREATE_QSVC_START+snippets.PCA+snippets.CREATE_QSVC_END;
-      let script = util.format(final, params, shotVar, modelState);
-      // logger.trace(node.id, script); // testing
+      let params = [msg.payload, node.shots, node.modelName];
+      let script = build.constructSnippet('QSVC', true, 'PCA', params);
+
       shell.start();
       await shell.execute(script)
           .then((data) => {
