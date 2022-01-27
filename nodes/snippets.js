@@ -317,17 +317,14 @@ f = io.StringIO()
 with redirect_stderr(f):
   import qiskit.aqua.utils.subsystem as ss
   import pandas as pd
-  from qiskit_quantum_knn.qknn.qknn_construction import create_oracle
-  from qiskit_quantum_knn.qknn import qknn_construction as qc
-  import qiskit_quantum_knn.qknn.quantumgates as gates
   from qiskit_quantum_knn.qknn import QKNeighborsClassifier
-  from qiskit_quantum_knn.qknn.qknn_construction import create_qknn
   import qiskit as qk
   from qiskit.utils import QuantumInstance
   import numpy as np
   import itertools
   from sklearn.preprocessing import OrdinalEncoder
   from qiskit_quantum_knn.encoding import analog
+  from qiskit import Aer
   import math
   initial=%j
   df=pd.DataFrame(initial)
@@ -374,7 +371,7 @@ with redirect_stderr(f):
       )
       sorted_neighbors = sorted_neighbors[sorted_neighbors < n_queries]  
       return sorted_neighbors
-  backend = qk.BasicAer.get_backend('qasm_simulator')
+  backend = Aer.get_backend('qasm_simulator')
   instance = QuantumInstance(backend, shots=%d)
   
   qknn = QKNeighborsClassifier(
@@ -382,7 +379,7 @@ with redirect_stderr(f):
       quantum_instance=instance
   )
   
-  example_data = [[0, 1], [1, 0], [1, 0]]  # perform ordinal+analog encoding on input to get data
+  #example_data = [[0, 1], [1, 0], [1, 0]]
   
   encoder = OrdinalEncoder()
   encoded = encoder.fit_transform(df)
@@ -410,8 +407,15 @@ with redirect_stderr(f):
       val = sum(done)
       totals.append(val)
   
-  anomaly = totals.index(min(totals))
-  print(df.iloc[anomaly].to_string())  # output most anomalous input
+  mean = np.mean(totals)
+  standard = np.std(totals)
+  divider = mean + (%d * standard)
+  anoms = [x for x,y in enumerate(totals) if y > divider]
+  if (len(anoms)==0): print("No Anomalies Found")
+  else:
+    print("Anomalies: ")
+    for x in anoms: 
+      print(df.iloc[x].to_string())
 `;
 
 const REGR_IMPORTS = `

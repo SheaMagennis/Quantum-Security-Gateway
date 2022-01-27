@@ -13,6 +13,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'anomaly-detection';
     this.shots = config.shots || 1;
+    this.deviations = config.deviations || 1;
 
     const node = this;
 
@@ -33,7 +34,7 @@ module.exports = function(RED) {
         text: 'Looking for anomalies...',
       });
 
-      let params = [msg.payload, node.shots];
+      let params = [msg.payload, node.shots, node.deviations];
       let script = build.constructSingleSnippet('ANOM', params);
 
       shell.start();

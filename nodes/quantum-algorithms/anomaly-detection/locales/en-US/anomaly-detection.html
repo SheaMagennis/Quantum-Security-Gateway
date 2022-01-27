@@ -1,6 +1,15 @@
 <script type="text/html" data-help-name="anomaly-detection">
   <p>
-      This node identifies anomalies in the data.
+      This node identifies the most anomalous values in the data.
+  </p>
+  <p>
+    The number of shots refers to the number of times the circuit is run on each value. The greater the number,
+      the greater the likelihood of successfully identifying anomalies, and the longer the execution time.
+      A minimum of 5 is constrained for this algorithm.<br />
+    <br />
+      The number of standard deviations refers to the number of standard deviations outside the mean an input must be to
+      be classified as an anomaly.<br />
+    <br />
   </p>
 
   <h3>Inputs</h3>
