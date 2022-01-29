@@ -17,10 +17,12 @@
         <dt>payload
             <span class="property-type">json</span>
         </dt>
+      <dd>JSON with headers for each field. Each header can hold an object of key:value pairs,
+            one for each packet, with the key being a string index starting from '0', or alternatively an array of values. </dd>
     </dl>
 
   <h3>Outputs</h3>
     <dl class="message-properties">
-      <dd>The output is an array, identifying the anomalous data</dd>
+      <dd>The output is an array, identifying the anomalous data (if present)</dd>
     </dl>
 </script>

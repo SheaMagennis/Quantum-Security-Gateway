@@ -1,6 +1,7 @@
 <script type="text/html" data-help-name="attack-prediction-creation">
   <p>
-      This node predicts values, predicting the precise value from the given input.
+      This node builds a model using classified data inputted by the user.
+      This node predicts values, using regression on the given input.
   </p>
   <p>
     The number of shots refers to the number of times the circuit is run to obtain
@@ -17,6 +18,8 @@
         <dt>payload
             <span class="property-type">json</span>
         </dt>
+      <dd>JSON with headers for each field, one of which must be 'target', which must hold the dependant values, as well as a 'DateTime' field, holding a string in the format:'%Y-%m-%d %H:%M:%S'. Each header can hold an object of key:value pairs,
+            one for each packet, with the key being a string index starting from '0', or alternatively an array of values. </dd>
     </dl>
 
   <h3>Outputs</h3>
