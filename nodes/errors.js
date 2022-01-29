@@ -391,11 +391,14 @@ function checkCreationJSON(msg, modelName, modelType) {
       return new Error(MISMATCHED_TYPES);
     }
     headerNum+=1;
-    let subKey = Object.keys(val);
-    let keyLen = subKey.length;
-    for (let i = 0; i<keyLen; i++) {
-      if (subKey[i]!==i.toString()) {
-        return new Error(BAD_SUBKEYS);
+    const hasKeys = !!Object.keys(val).length;
+    if (hasKeys) {
+      let subKey = Object.keys(val);
+      let keyLen = subKey.length;
+      for (let i = 0; i < keyLen; i++) {
+        if (subKey[i] !== i.toString()) {
+          return new Error(BAD_SUBKEYS);
+        }
       }
     }
   }
@@ -463,11 +466,14 @@ function checkUseJSON(msg, modelName, mType) {
     if (subVal.length<3) {
       return new Error(NEEDS_MORE);
     }
-    let subKey = Object.keys(val);
-    let keyLen = subKey.length;
-    for (let i = 0; i<keyLen; i++) {
-      if (subKey[i]!==i.toString()) {
-        return new Error(BAD_SUBKEYS);
+    const hasKeys = !!Object.keys(val).length;
+    if (hasKeys) {
+      let subKey = Object.keys(val);
+      let keyLen = subKey.length;
+      for (let i = 0; i<keyLen; i++) {
+        if (subKey[i]!==i.toString()) {
+          return new Error(BAD_SUBKEYS);
+        }
       }
     }
     let oneType = types[headerNum];

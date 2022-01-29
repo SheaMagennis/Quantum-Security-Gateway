@@ -498,8 +498,12 @@ stuff.remove("Target")
 joined_string = ",".join(stuff)
 temporary=[]
 
-for val in stuff:  temporary.append(type(initial[val]["0"]).__name__)
-
+for val in stuff:  
+  try:
+    temporary.append(type(initial[val]["0"]).__name__)
+  except:
+    temporary.append(type(initial[val][0]).__name__)
+\n
 finalTypes=",".join(temporary)
 row = hold,joined_string,finalTypes
 writer.writerow(row)
@@ -624,8 +628,12 @@ stuff.remove("label")
 joined_string = ",".join(stuff)
 temporary=[]
 
-for val in stuff:  temporary.append(type(initial[val]["0"]).__name__)
-
+for val in stuff:  
+  try:
+    temporary.append(type(initial[val]["0"]).__name__)
+  except:
+    temporary.append(type(initial[val][0]).__name__)
+\n
 finalTypes=",".join(temporary)
 row = hold,joined_string,finalTypes
 writer.writerow(row)
