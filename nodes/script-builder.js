@@ -2,14 +2,23 @@
 const snippets = require('./snippets');
 const util = require('util');
 
-function constructSnippet(name, build, reduction, params) {
+function constructSnippet(name, build, reduction, params, usage) {
   let imp = name + '_IMPORTS';
   if (build === true) {
     name = 'CREATE_' + name;
   }
   let sta = name + '_START';
-  let end = name + '_END';
+  let end = '';
+  if (usage==='test') {
+    end = name + '_TEST_END';
+  } else {
+    end = name + '_END';
+  }
   let sumCon = snippets[imp]+snippets[sta];
+  if (usage ==='test') {
+    let test = name + '_TEST';
+    sumCon = sumCon + snippets[test];
+  }
   if (reduction !== false) {
     sumCon = sumCon + snippets[reduction];
   }

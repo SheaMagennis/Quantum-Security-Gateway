@@ -579,6 +579,14 @@ encoded = pd.get_dummies(res, drop_first=True)
 test=encoded.to_numpy()
 `;
 
+const QSVC_TEST = `
+index_no = encoded.columns.get_loc("label")
+label=test[:,index_no]
+label = label.astype('int')#convert from object to usable
+
+test = np.delete(test, index_no, 1)#array, num, column/row
+`;
+
 const QSVC_END=`
 #print(data)
 #make prediction
@@ -591,6 +599,14 @@ for i in fin:
 #print("non-threats: "+str(nonThreats))
 #print("threats: "+str(threats))
   
+`;
+
+const QSVC_TEST_END=`
+#print(data)
+#make prediction
+fin=model.score(test,label)
+print("Accuracy: " + str(fin))
+   
 `;
 
 const CREATE_QSVC_START = `
@@ -751,6 +767,8 @@ module.exports = {
   RAND,
   QSVC_START,
   QSVC_END,
+  QSVC_TEST,
+  QSVC_TEST_END,
   PCA,
   QSVC_IMPORTS,
   CREATE_QSVC_START,

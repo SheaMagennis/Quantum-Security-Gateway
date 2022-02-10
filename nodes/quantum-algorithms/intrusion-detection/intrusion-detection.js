@@ -11,18 +11,19 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'intrusion-detection';
     this.modelName = config.modelName || 'default';
+    this.modelUsage = config.modelUsage;
     const node = this;
     logger.trace(this.id, 'Initialised intrusion-detection system');
 
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection node received input');
-
+      /*
       let error = errors.validateIntrusionInput(msg, node.modelName);// changeMe
       if (error) {
         logger.error(node.id, error);
         done(error);
         return;
-      }
+      }*/
       node.status({
         fill: 'orange',
         shape: 'dot',
@@ -30,7 +31,7 @@ module.exports = function(RED) {
       });
 
       let params = [node.modelName, msg.payload];
-      let script = build.constructSnippet('QSVC', false, 'PCA', params);
+      let script = build.constructSnippet('QSVC', false, 'PCA', params, node.modelUsage);
 
       shell.start();
       await shell.execute(script)
