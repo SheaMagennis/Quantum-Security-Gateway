@@ -546,11 +546,27 @@ dTime_no = df.columns.get_loc("DateTime")
 data = np.delete(test, dTime_no, 1)
 `;
 
+const REGR_TEST = `
+index_no = encoded.columns.get_loc("label")
+label=test[:,index_no]
+label = label.astype('int')#convert from object to usable
+
+data = np.delete(data, index_no, 1)#array, num, column/row
+`;
+
 const REGR_END =`
 fin=model.predict(data)
 for i in fin:
   print("Predicted value : "+ "{}".format(i))
 
+`;
+
+const REGR_TEST_END=`
+#print(data)
+#make prediction
+fin=model.score(test,label)
+print("Accuracy: " + str(fin))
+   
 `;
 
 const QSVC_IMPORTS=`
@@ -779,6 +795,8 @@ module.exports = {
   REGR_IMPORTS,
   REGR_START,
   REGR_END,
+  REGR_TEST,
+  REGR_TEST_END,
   LIST_MODELS,
   DELETE_MODEL,
   DETAIL_MODEL,
