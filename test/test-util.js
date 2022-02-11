@@ -114,6 +114,25 @@ function outputReceivedInCorrectRange(flowBuilder, givenInput, expectedLowerOutp
   });
 }
 
+function testOutputCorrectRange(flowBuilder, givenInput, expectedLowerOutput, expectedHigherOutput, done) {
+  nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
+    const inputNode = nodeTestHelper.getNode(flowBuilder.inputId);
+    const outputNode = nodeTestHelper.getNode(flowBuilder.outputId);
+    outputNode.once('input', function(msg) {
+      try {
+        assert.isAbove(Number(msg.payload), expectedLowerOutput);
+        assert.isBelow(Number(msg.payload), expectedHigherOutput);
+        done();
+      } catch (err) {
+        done(err);
+      } finally {
+        shell.stop();
+      }
+    });
+    inputNode.receive(givenInput);
+  });
+}
+
 function nodeFailed(flowBuilder, givenInput, expectedMessage, done) {
   nodeTestHelper.load(flowBuilder.nodes, flowBuilder.flow, function() {
     let node = nodeTestHelper.getNode(flowBuilder.inputId);
@@ -149,4 +168,5 @@ module.exports = {
   outputReceivedInCorrectRange,
   aCorrectOutputReceived,
   executeFlow,
+  testOutputCorrectRange,
 };

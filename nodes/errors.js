@@ -244,9 +244,13 @@ function validateHelperInput(msg) {
 };
 
 function validateIntrusionCreationInput(msg, modelName) {
-  let x = checkCreationJSON(msg, modelName, 'qsvc');
-  let y = checkLabel(msg, modelName);
+  let w = checkCreationJSON(msg, modelName, 'qsvc')
+  let x = checkLabel(msg);
+  let y = checkCreateLabel(msg);
   let z = checkPCA(msg, true);
+  if (w instanceof Error) {
+    return x;
+  }
   if (x instanceof Error) {
     return x;
   }
@@ -258,7 +262,13 @@ function validateIntrusionCreationInput(msg, modelName) {
   }
 }
 
-function validateIntrusionInput(msg, modelName) {
+function validateIntrusionInput(msg, modelName, usage) {
+  if (usage === 'test') {
+    let x = checkLabel(msg);
+    if (x instanceof Error) {
+      return x;
+    }
+  }
   let y = checkUseJSON(msg, modelName, 'qsvc');
   let z = checkPCA(msg, false);
   if (y instanceof Error) {
@@ -345,21 +355,26 @@ function checkPCA(msg, first) {
   }
 }
 
+function checkCreateLabel(msg) {
+  if (Object.keys(msg.payload).length<4) {
+    return new Error(NOT_ENOUGH_FIELDS);
+  }
+  let label = msg.payload['label'];
+  let labelValues = Object.values(label);
+  if (!(labelValues.includes(0)&&labelValues.includes(1))) {
+    return new Error(LACKING_LABEL_DIVERSITY);
+  }
+}
+
 function checkLabel(msg) {
   if (!Object.keys(msg.payload).includes('label')) {
     return new Error(NO_LABEL);
-  }
-  if (Object.keys(msg.payload).length<4) {
-    return new Error(NOT_ENOUGH_FIELDS);
   }
   let label = msg.payload['label'];
   let labelValues = Object.values(label);
   let corrVals =[0, 1];
   if (!labelValues.every((elem) => corrVals.includes(elem))) {
     return new Error(BAD_LABEL_VALUE);
-  }
-  if (!(labelValues.includes(0)&&labelValues.includes(1))) {
-    return new Error(LACKING_LABEL_DIVERSITY);
   }
 }
 
@@ -447,11 +462,14 @@ function checkUseJSON(msg, modelName, mType) {
   let headers = details[0];
   let types = details[1];
   types = covertPythonTypeToJS(types);
-
-  if (JSON.stringify(Object.keys(msg.payload))!==JSON.stringify(headers)) {
+  let pLoad=JSON.parse(JSON.stringify(msg.payload));
+  if (Object.keys(pLoad).includes('label')) {
+    delete pLoad['label'];
+  }
+  if (JSON.stringify(Object.keys(pLoad))!==JSON.stringify(headers)) {
     return new Error(BAD_HEADERS);
   }
-  let vals = Object.values(msg.payload);
+  let vals = Object.values(pLoad);
   let headerNum=0;
   let standardLen = 0;
   for (const val of vals) {

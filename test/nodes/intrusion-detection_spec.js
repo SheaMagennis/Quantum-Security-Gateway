@@ -107,6 +107,14 @@ describe('IntrusionDetectionNode', function() {
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
+  it('return success output on valid test input', function(done) {// change
+    flow.add('intrusion-detection', 'id1', [['helperNode']], {modelName: 'testing', modelUsage: 'test'});
+    flow.addOutput('helperNode');
+    let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
+    const givenInput = JSON.parse(util.format(creationJSON, temp));
+    testUtil.testOutputCorrectRange(flow, givenInput, -0.01, 1.01, done);
+  }).timeout(25000);
+
   it('delete intrusion setup', function(done) {// change
     flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
