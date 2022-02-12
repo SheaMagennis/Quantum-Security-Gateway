@@ -112,7 +112,8 @@ describe('IntrusionDetectionNode', function() {
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON, temp));
-    testUtil.testOutputCorrectRange(flow, givenInput, -0.01, 1.01, done);
+    const expectedOutput = 'accuracy';
+    testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 
   it('delete intrusion setup', function(done) {// change

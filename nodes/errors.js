@@ -206,7 +206,13 @@ function validateAnomalyInput(msg) {
   }
 };
 
-function validateAttackInput(msg, modelName) {
+function validateAttackInput(msg, modelName, usage) {
+  if (usage === 'test') {
+    let x = checkTarget(msg);
+    if (x instanceof Error) {
+      return x;
+    }
+  }
   let y = checkUseJSON(msg, modelName, 'regr');
   let z = checkTime(msg);
   if (y instanceof Error) {
@@ -218,9 +224,13 @@ function validateAttackInput(msg, modelName) {
 };
 
 function validateAttackCreationInput(msg, modelName) {
-  let x = checkCreationJSON(msg, modelName, 'regr');
-  let y = checkTime(msg);
-  let z = checkTarget(msg);
+  let w = checkCreationJSON(msg, modelName, 'regr');
+  let x = checkTime(msg);
+  let y = checkTarget(msg);
+  let z = targetDiverse(msg);
+  if (w instanceof Error) {
+    return w;
+  }
   if (x instanceof Error) {
     return x;
   }
@@ -244,7 +254,7 @@ function validateHelperInput(msg) {
 };
 
 function validateIntrusionCreationInput(msg, modelName) {
-  let w = checkCreationJSON(msg, modelName, 'qsvc')
+  let w = checkCreationJSON(msg, modelName, 'qsvc');
   let x = checkLabel(msg);
   let y = checkCreateLabel(msg);
   let z = checkPCA(msg, true);
@@ -296,6 +306,23 @@ function checkTime(msg) {
     }
   }
 }
+
+function targetDiverse(msg) {
+  let target = msg.payload['Target'];
+  let targetValues = Object.values(target);
+  let same = true;
+  let firstVal = targetValues[0];
+  for (const aVal of targetValues) {
+    if (aVal !== firstVal) {
+      same = false;
+      break;
+    }
+  }
+  if (same) {
+    return new Error(BAD_TARGET_DIVERSITY);
+  }
+}
+
 function checkTarget(msg) {
   if (!Object.keys(msg.payload).includes('Target')) {
     return new Error(NO_TARGET);
@@ -304,17 +331,6 @@ function checkTarget(msg) {
   let targetValues = Object.values(target);
   if (targetValues.some((elem) => (typeof elem !== 'number'))) {
     return new Error(BAD_TARGET_VALUE);
-  }
-  let same=true;
-  let firstVal=targetValues[0];
-  for (const aVal of targetValues) {
-    if (aVal!==firstVal) {
-      same=false;
-      break;
-    }
-  }
-  if (same) {
-    return new Error(BAD_TARGET_DIVERSITY);
   }
 }
 

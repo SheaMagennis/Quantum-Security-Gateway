@@ -11,6 +11,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'attack-prediction';
     this.modelName = config.modelName || 'default';
+    this.modelUsage = config.modelUsage;
     const node = this;
 
     logger.trace(this.id, 'Initialised attack-prediction system');
@@ -31,7 +32,7 @@ module.exports = function(RED) {
       });
 
       let params = [node.modelName, msg.payload];
-      let script = build.constructSnippet('REGR', false, false, params);
+      let script = build.constructSnippet('REGR', false, false, params, node.modelUsage);
 
       shell.start();
       await shell.execute(script)
