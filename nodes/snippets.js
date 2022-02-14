@@ -547,7 +547,7 @@ data = np.delete(test, dTime_no, 1)
 `;
 
 const REGR_TEST = `
-index_no = encoded.columns.get_loc("label")
+index_no = encoded.columns.get_loc("Target")
 label=test[:,index_no]
 label = label.astype('int')#convert from object to usable
 
@@ -564,7 +564,7 @@ for i in fin:
 const REGR_TEST_END=`
 #print(data)
 #make prediction
-fin=model.score(test,label)
+fin=model.score(data,label)
 print("Accuracy: " + str(fin))
    
 `;

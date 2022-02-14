@@ -43,7 +43,7 @@ module.exports = function(RED) {
               text: 'Prediction complete!',
             });
             logger.trace(data);
-            msg.payload = (data.slice(39, data.length));
+            msg.payload = (data);
             send(msg);
             done();
           }).catch((err) => {

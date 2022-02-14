@@ -213,7 +213,7 @@ function validateAttackInput(msg, modelName, usage) {
       return x;
     }
   }
-  let y = checkUseJSON(msg, modelName, 'regr');
+  let y = checkUseJSON(msg, modelName, 'regr', 'Target');
   let z = checkTime(msg);
   if (y instanceof Error) {
     return y;
@@ -279,7 +279,7 @@ function validateIntrusionInput(msg, modelName, usage) {
       return x;
     }
   }
-  let y = checkUseJSON(msg, modelName, 'qsvc');
+  let y = checkUseJSON(msg, modelName, 'qsvc', 'label');
   let z = checkPCA(msg, false);
   if (y instanceof Error) {
     return y;
@@ -469,7 +469,7 @@ function getTypesHeader(modelName, mType) {
   return [headers, types];
 }
 
-function checkUseJSON(msg, modelName, mType) {
+function checkUseJSON(msg, modelName, mType, ignore) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
@@ -479,8 +479,8 @@ function checkUseJSON(msg, modelName, mType) {
   let types = details[1];
   types = covertPythonTypeToJS(types);
   let pLoad=JSON.parse(JSON.stringify(msg.payload));
-  if (Object.keys(pLoad).includes('label')) {
-    delete pLoad['label'];
+  if (Object.keys(pLoad).includes(ignore)) {
+    delete pLoad[ignore];
   }
   if (JSON.stringify(Object.keys(pLoad))!==JSON.stringify(headers)) {
     return new Error(BAD_HEADERS);
