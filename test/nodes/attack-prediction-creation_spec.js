@@ -49,7 +49,7 @@ describe('AttackPredictionCreationNode', function() {
     flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing'});
 
     const givenInput = {payload: {'name': 'Joe'}};
-    const expectedMessage = errors.NO_LABEL;
+    const expectedMessage = errors.NO_TARGET;
     testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
   });
 

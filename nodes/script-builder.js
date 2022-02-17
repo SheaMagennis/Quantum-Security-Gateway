@@ -10,7 +10,7 @@ function constructSnippet(name, build, reduction, params, usage) {
   let sta = name + '_START';
   let end = '';
   if (usage==='test') {
-    end = name + '_TEST_END';
+    end = name + '_TEST_END'; // switch with other test
   } else {
     end = name + '_END';
   }

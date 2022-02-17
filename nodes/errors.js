@@ -214,10 +214,10 @@ function validateAttackInput(msg, modelName, usage) {
     }
   }
   let y = checkUseJSON(msg, modelName, 'regr', 'Target');
-  let z = checkTime(msg);
   if (y instanceof Error) {
     return y;
   }
+  let z = checkTime(msg);
   if (z instanceof Error) {
     return z;
   }
@@ -225,18 +225,18 @@ function validateAttackInput(msg, modelName, usage) {
 
 function validateAttackCreationInput(msg, modelName) {
   let w = checkCreationJSON(msg, modelName, 'regr');
-  let x = checkTime(msg);
-  let y = checkTarget(msg);
-  let z = targetDiverse(msg);
   if (w instanceof Error) {
     return w;
   }
+  let x = checkTime(msg);
   if (x instanceof Error) {
     return x;
   }
+  let y = checkTarget(msg);
   if (y instanceof Error) {
     return y;
   }
+  let z = targetDiverse(msg);
   if (z instanceof Error) {
     return z;
   }
@@ -255,18 +255,18 @@ function validateHelperInput(msg) {
 
 function validateIntrusionCreationInput(msg, modelName) {
   let w = checkCreationJSON(msg, modelName, 'qsvc');
-  let x = checkLabel(msg);
-  let y = checkCreateLabel(msg);
-  let z = checkPCA(msg, true);
   if (w instanceof Error) {
-    return x;
+    return w;
   }
+  let x = checkLabel(msg);
   if (x instanceof Error) {
     return x;
   }
+  let y = checkCreateLabel(msg);
   if (y instanceof Error) {
     return y;
   }
+  let z = checkPCA(msg, true);
   if (z instanceof Error) {
     return z;
   }
@@ -555,6 +555,7 @@ module.exports = {
   NEEDS_MORE,
   BAD_SUBKEYS,
   NO_LABEL,
+  NO_TARGET,
   BAD_LABEL_VALUE,
   BAD_TARGET_VALUE,
   MISMATCHED_TYPES,

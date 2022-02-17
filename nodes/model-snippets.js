@@ -38,7 +38,7 @@ initial=%j
 df=pd.DataFrame(initial)
 backend = Aer.get_backend('qasm_simulator')
 
-quantum_instance = QuantumInstance(backend, shots=%d)
+instance = QuantumInstance(backend, shots=%d, skip_qobj_validation=False)
 hold="regr%s"
 
 val=df['DateTime']
@@ -71,11 +71,20 @@ label = label.astype('int')#convert from object to usable
 test = np.delete(final, index_no, 1)#array, num, column/row
 test = np.delete(test, dTime_no, 1)`;
 
-const CREATE_REGR_END=`
+
+const MODEL_INSTANCE=`
 num_qubits = 3#2
 shots = 128  # Number of times the job will be run on the quantum device 8096
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='linear')#full
 instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
+basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
+`;
+
+const CREATE_REGR_END=`
+num_qubits = 3#2
+shots = 128  # Number of times the job will be run on the quantum device 8096
+feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='linear')#full
+#instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
 num_inputs=3
 regr=QSVR(quantum_kernel=basis)
@@ -148,6 +157,22 @@ for i in fin:
 
 `;
 
+const REGR_TEST = `
+index_no = encoded.columns.get_loc("Target")
+label=test[:,index_no]
+label = label.astype('int')#convert from object to usable
+
+data = np.delete(data, index_no, 1)#array, num, column/row
+`;
+
+const REGR_TEST_END=`
+#print(data)
+#make prediction
+fin=model.score(data,label)
+print("Accuracy: " + str(fin))
+   
+`;
+
 const QSVC_IMPORTS=`
 import numpy as np
 import pandas as pd
@@ -174,6 +199,14 @@ encoded = pd.get_dummies(res, drop_first=True)
 test=encoded.to_numpy()
 `;
 
+const QSVC_TEST = `
+index_no = encoded.columns.get_loc("label")
+label=test[:,index_no]
+label = label.astype('int')#convert from object to usable
+
+test = np.delete(test, index_no, 1)#array, num, column/row
+`;
+
 const QSVC_END=`
 #print(data)
 #make prediction
@@ -191,7 +224,7 @@ for i in fin:
 const QSVC_TEST_END=`
 #print(data)
 #make prediction
-fin=model.test(test,res)#[[-0.74856406,-0.30061566, 0.19750934]]
+fin=model.score(test,label)
 print("Accuracy: " + str(fin))
    
 `;
@@ -243,6 +276,16 @@ writer.writerow(row)
 f.close()
 print("Intrusion Detection Model successfully created")#remove
     
+`;
+
+const PCA =`
+scalar=StandardScaler()#PCA for dimensionality reduction
+scalar.fit(test)
+test=scalar.transform(test)
+pca=PCA(n_components=3)
+pca.fit(test)
+test = pca.transform(test)
+test = normalize(test, axis=0, norm='max')#normalization
 `;
 
 module.exports = {

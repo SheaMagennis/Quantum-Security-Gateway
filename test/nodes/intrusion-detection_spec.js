@@ -112,6 +112,7 @@ describe('IntrusionDetectionNode', function() {
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON, temp));
+    console.log(givenInput);
     const expectedOutput = 'accuracy';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
