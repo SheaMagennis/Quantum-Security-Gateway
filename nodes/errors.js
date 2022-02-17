@@ -473,7 +473,6 @@ function checkUseJSON(msg, modelName, mType, ignore) {
   if (typeof(msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
-
   let details = getTypesHeader(modelName, mType);
   let headers = details[0];
   let types = details[1];

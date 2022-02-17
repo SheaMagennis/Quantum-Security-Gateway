@@ -16,16 +16,20 @@ function imports(name) {
 
 function importOne(name) {
   let path = './snippets-new-solutions/'+name;
-  single = require(path+'create-snippet');
+  single = require(path);
 };
 
-function constructSnipppetEnd(sumCon, reduction, end){
+function constructSnipppetEnd(sumCon, reduction, end, build){
   let soFar=sumCon;
   if (reduction !== false) {
     soFar = shared[reduction+'_IMPORTS'] + soFar;
     soFar = soFar + shared[reduction];
   }
-  soFar = soFar + snippet[end];
+  if (build) {
+    soFar = soFar + create[end];
+  } else {
+    soFar = soFar + snippet[end];
+  }
   return soFar;
 }
 
@@ -54,7 +58,7 @@ function constructSnippet(name, build, reduction, params, usage) {
       sumCon = sumCon + snippet[test];
     }
   }
-  sumCon=constructSnipppetEnd(sumCon, reduction, end);
+  sumCon=constructSnipppetEnd(sumCon, reduction, end, build);
   sumCon=shared['SHARED_IMPORTS']+sumCon;
   return substituteSnippet(sumCon, params);
 };

@@ -53,7 +53,7 @@ module.exports = function(RED) {
                 shape: 'dot',
                 text: 'Model created!',
               });
-              logger.trace('Attack Prediction Model successfully created');
+              logger.trace(err);
               msg.payload = ('Attack Prediction Model successfully created');
               send(msg);
               done();
