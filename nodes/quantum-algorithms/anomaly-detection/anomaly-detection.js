@@ -5,7 +5,7 @@ const snippets = require('../../snippets');
 const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
-const build = require("../../script-builder");
+const build = require('../../script-builder');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -35,7 +35,7 @@ module.exports = function(RED) {
       });
 
       let params = [msg.payload, node.shots, node.deviations];
-      let script = build.constructSingleSnippet('ANOM', params);
+      let script = build.constructSingleSnippet('QKNN', params);
 
       shell.start();
       await shell.execute(script)

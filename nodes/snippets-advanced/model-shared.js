@@ -20,7 +20,7 @@ import pickle
 import json
 `;
 
-const PCR_IMPORTS=`
+const PCA_IMPORTS=`
 from sklearn.preprocessing import normalize
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
@@ -35,3 +35,9 @@ pca.fit(test)
 test = pca.transform(test)
 test = normalize(test, axis=0, norm='max')#normalization
 `;
+
+module.exports = {
+  PCA_IMPORTS,
+  PCA,
+  SHARED_IMPORTS,
+};

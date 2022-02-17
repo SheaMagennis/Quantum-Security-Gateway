@@ -1,10 +1,11 @@
 'use strict';
-//const snippets = require('./snippets');
+// const snippets = require('./snippets');
 const util = require('util');
 const shared = require('./snippets-advanced/model-shared');
 let create='';
 let between='';
 let snippet='';
+let single='';
 
 function imports(name) {
   let path = './snippets-advanced/'+name+'/'+name+'-';
@@ -13,36 +14,54 @@ function imports(name) {
   snippet = require(path+'snippet');
 };
 
-function constructSnippet(name, build, reduction, params, usage) {
+function importOne(name) {
+  let path = './snippets-new-solutions/'+name;
+  single = require(path+'create-snippet');
+};
 
+function constructSnipppetEnd(sumCon, reduction, end){
+  let soFar=sumCon;
+  if (reduction !== false) {
+    soFar = shared[reduction+'_IMPORTS'] + soFar;
+    soFar = soFar + shared[reduction];
+  }
+  soFar = soFar + snippet[end];
+  return soFar;
+}
+
+function constructSnippet(name, build, reduction, params, usage) {
   imports(name);
 
   let imp = name + '_IMPORTS';
-  if (build === true) {
-    name = 'CREATE_' + name;
-  }
-  let sta = name + '_START';
-  let end = '';
-  if (usage==='test') {
-    end = name + '_TEST_END'; // switch with other test
-  } else {
-    end = name + '_END';
-  }
-  let sumCon = snippets[imp]+snippets[sta];
-  if (usage ==='test') {
-    let test = name + '_TEST';
-    sumCon = sumCon + snippets[test];
-  }
-  if (reduction !== false) {
-    sumCon = sumCon + snippets[reduction];
-  }
-  sumCon = sumCon + snippets[end];
+  let sumCon=between[imp];
+  let end='';
 
+  if (build===true) {
+    name = 'CREATE_' + name;
+    let sta = name + '_START';
+    end = name + '_END';
+    sumCon = sumCon+create[sta];
+  } else {
+    let sta = name + '_START';
+    if (usage==='test') {
+      end = name + '_TEST_END'; // switch with other test
+    } else {
+      end = name + '_END';
+    }
+    sumCon = sumCon+snippet[sta];
+    if (usage ==='test') {
+      let test = name + '_TEST';
+      sumCon = sumCon + snippet[test];
+    }
+  }
+  sumCon=constructSnipppetEnd(sumCon, reduction, end);
+  sumCon=shared['SHARED_IMPORTS']+sumCon;
   return substituteSnippet(sumCon, params);
 };
 
 function constructSingleSnippet(name, params) {
-  let sub = snippets[name];
+  importOne(name);
+  let sub = single[name];
   return substituteSnippet(sub, params);
 }
 

@@ -56,7 +56,7 @@ module.exports = function(RED) {
                 shape: 'dot',
                 text: 'Model created!',
               });
-              logger.trace('Intrusion Detection Model successfully created');
+              logger.trace(err);
               msg.payload = ('Intrusion Detection Model successfully created');
               send(msg);
               done();
