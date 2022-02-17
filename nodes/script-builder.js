@@ -1,8 +1,22 @@
 'use strict';
-const snippets = require('./snippets');
+//const snippets = require('./snippets');
 const util = require('util');
+const shared = require('./snippets-advanced/model-shared');
+let create='';
+let between='';
+let snippet='';
+
+function imports(name) {
+  let path = './snippets-advanced/'+name+'/'+name+'-';
+  create = require(path+'create-snippet');
+  between = require(path+'shared');
+  snippet = require(path+'snippet');
+};
 
 function constructSnippet(name, build, reduction, params, usage) {
+
+  imports(name);
+
   let imp = name + '_IMPORTS';
   if (build === true) {
     name = 'CREATE_' + name;
