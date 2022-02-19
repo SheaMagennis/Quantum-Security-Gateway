@@ -471,9 +471,6 @@ function getTypesHeader(modelName, mType) {
 
 function orderIndex(saved, keys) {
   const keysIndex = [];
-  console.log("below")
-  console.log(saved)
-  console.log(keys)
   // eslint-disable-next-line guard-for-in
   for (const i of keys) {
     keysIndex.push(saved.indexOf(i));
@@ -494,21 +491,12 @@ function checkUseJSON(msg, modelName, mType, ignore) {
     delete pLoad[ignore];
   }
 
-  console.log("bLow")
-  console.log(headers)
-  console.log(Object.keys(pLoad))
   let pNew = Object.keys(pLoad).slice();
   let hNew=headers.slice();
-  console.log(pNew)
-  console.log(Object.keys(pLoad))
-  // console.log("bLow")
-  // console.log(headers)
-  // console.log(Object.keys(pLoad))
   if (JSON.stringify(pNew.sort())!==JSON.stringify(hNew.sort())) {
     return new Error(BAD_HEADERS);
   }
-  // console.log(headers)
-  // console.log(Object.keys(pLoad))
+
   let keyToHeaderMapping=orderIndex(headers, Object.keys(pLoad));
   let vals = Object.values(pLoad);
   let headerNum=0;
@@ -539,9 +527,6 @@ function checkUseJSON(msg, modelName, mType, ignore) {
     let oneType = types[qInd];
     for (const sinVal of subVal) {
       if (!(typeof (sinVal) === oneType)) {
-        console.log('here!')
-        console.log(oneType)
-        console.log(sinVal)
         return new Error(BAD_FORMAT);
       }
     }
