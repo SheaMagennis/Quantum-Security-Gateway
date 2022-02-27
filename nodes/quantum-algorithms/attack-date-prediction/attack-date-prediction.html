@@ -1,22 +1,10 @@
 <script type="text/javascript">
-  RED.nodes.registerType("anomaly-detection", {
+  RED.nodes.registerType("attack-date-prediction", {
     category: "model usage",
     color: "#FF007F",
     defaults: {
       name: { value: "" },
       shots: {
-        value: "",
-        required: true,
-        validate: function (x) {
-          x = parseInt(x);
-          if (Number.isInteger(x) && x > 5) {
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
-      deviations: {
         value: "",
         required: true,
         validate: function (x) {
@@ -33,16 +21,16 @@
     outputs: 1,
     icon: "font-awesome/fa-user-secret",
     align: "right",
-    paletteLabel: "anomaly-detection",
+    paletteLabel: "attack-date-prediction",
     label: function () {
-      return this.name || "anomaly-detection";
+      return this.name || "attack-date-prediction";
     },
     inputLabels: "Input",
     outputLabels: "Output",
   });
 </script>
 
-<script type="text/html" data-template-name="anomaly-detection">
+<script type="text/html" data-template-name="attack-date-prediction">
   <div class="form-row">
     <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
     <input type="text" id="node-input-name" placeholder="Name" />
@@ -50,10 +38,6 @@
   <div class="form-row">
     <label for="node-input-shots">Shots</label>
     <input type="number" id="node-input-shots" placeholder="100"/>
-  </div>
-  <div class="form-row">
-    <label for="node-input-deviations">Standard Deviations</label>
-    <input type="number" id="node-input-deviations" placeholder="1"/>
   </div>
 </script>
 

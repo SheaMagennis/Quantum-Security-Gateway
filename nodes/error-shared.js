@@ -61,6 +61,22 @@ const BAD_TIME='The date/time entered is not in the correct format';
 const MISMATCHED_TYPES =
 'The types held by the sub-keys must be consistent';
 
+function checkPredTime(msg) {
+  let key=Object.keys(msg.payload)[0];
+  let values = Object.values(msg.payload[key]);
+  console.log(values);
+  let re = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]/;
+  for (let t=0; t<values.length; t++) {
+    try {
+      if (!re.test(values[t])) {
+        return new Error(BAD_TIME);
+      }
+    } catch (err) {
+      return new Error(BAD_TIME);
+    }
+  }
+}
+
 function checkTime(msg) {
   if (!Object.keys(msg.payload).includes('DateTime')) {
     return new Error(NO_TARGET);
@@ -340,4 +356,5 @@ module.exports = {
   checkCreationJSON,
   checkModelExists,
   targetDiverse,
+  checkPredTime,
 };

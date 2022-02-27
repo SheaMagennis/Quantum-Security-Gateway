@@ -96,7 +96,8 @@
       "delete-model": "nodes/helper-nodes/delete-model/delete-model.js",
       "detail-model": "nodes/helper-nodes/detail-model/detail-model.js",
       "intrusion-detection-creation": "nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js",
-      "attack-prediction-creation": "nodes/quantum-algorithms/attack-prediction-creation/attack-prediction-creation.js"
+      "attack-prediction-creation": "nodes/quantum-algorithms/attack-prediction-creation/attack-prediction-creation.js",
+      "attack-date-prediction": "nodes/quantum-algorithms/attack-date-prediction/attack-date-prediction.js"
     }
   }
 }

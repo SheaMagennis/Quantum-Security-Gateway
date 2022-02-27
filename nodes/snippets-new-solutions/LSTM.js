@@ -28,6 +28,8 @@ from qiskit.opflow import Z, X, I, StateFn, CircuitStateFn, SummedOp
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler
 
+initial=%j
+
 class QLSTM:
     def __init__(self):
         self.data=[]
@@ -241,7 +243,6 @@ def transformData(data):
 x=QLSTM()
 #data=["2011-11-11 13:55:36","2011-11-13 13:55:36","2011-11-17 13:55:36"]
 
-initial=%j
 df = pd.DataFrame(initial)
 data=df.values.tolist()
 

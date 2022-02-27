@@ -241,6 +241,17 @@ function validateIntrusionInput(msg, modelName, usage) {
   }
 }
 
+function validateDatePredictionInput(msg) {
+  let y = eHelper.checkCreationJSON(msg, 'none', 'none');
+  if (y instanceof Error) {
+    return y;
+  }
+  let z = eHelper.checkPredTime(msg);
+  if (z instanceof Error) {
+    return z;
+  }
+}
+
 module.exports = {
   NOT_QUANTUM_NODE,
   USE_REGISTER_NODES,
@@ -271,4 +282,5 @@ module.exports = {
   validateHelperInput,
   validateIntrusionCreationInput,
   validateAttackCreationInput,
+  validateDatePredictionInput,
 };

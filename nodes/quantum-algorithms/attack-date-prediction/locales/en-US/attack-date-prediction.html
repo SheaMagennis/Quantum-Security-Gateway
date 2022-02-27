@@ -1,14 +1,11 @@
-<script type="text/html" data-help-name="anomaly-detection">
+<script type="text/html" data-help-name="attack-date-prediction">
   <p>
-      This node identifies any anomalous values in the data.
+      This node predicts the next date given a sequence of dates.
   </p>
   <p>
     The number of shots refers to the number of times the circuit is run on each value. The greater the number,
       the greater the likelihood of successfully identifying anomalies, and the longer the execution time.
-      A minimum of 5 is constrained for this algorithm.<br />
-    <br />
-      The number of standard deviations refers to the number of standard deviations outside the mean an input must be to
-      be classified as an anomaly.<br />
+      <br />
     <br />
   </p>
 
@@ -18,7 +15,9 @@
             <span class="property-type">json</span>
         </dt>
       <dd>JSON with headers for each field. Each header can hold an object of key:value pairs,
-            one for each packet, with the key being a string index starting from '0', or alternatively an array of values. </dd>
+            one for each packet, with the key being a string index starting from '0', or alternatively an array of values.
+          The JSON values must be in the format YYYY-MM-DD HH:MM:SS
+      </dd>
     </dl>
 
   <h3>Outputs</h3>
