@@ -2,7 +2,7 @@ const intrusionDetectionNode = require('../../nodes/quantum-algorithms/intrusion
 const testUtil = require('../test-util');
 const nodeTestHelper = testUtil.nodeTestHelper;
 const assert = require('chai').assert;
-const errors = require('../../nodes/errors');
+const errors = require('../../nodes/error-shared');
 const {FlowBuilder} = require('../flow-builder');
 const util = require('util');
 
