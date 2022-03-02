@@ -39,8 +39,8 @@ class QLSTM:
         self.depth=depth
     
     def _resolve(self,c,h,x):#recurse on this n times
-        print(x)
-        print(h)
+        #print(x)
+        #print(h)
         val = h+x
         #VQC1
         depth=self.depth
@@ -56,7 +56,6 @@ class QLSTM:
         #VQC4
         fourth=self._makeVQC(val,depth)
         fourthOut=self._sigmoid(fourth)
-
         #operate on 1
         #print(firstOut)
         tLeft=self._mult(firstOut,c)
@@ -64,15 +63,12 @@ class QLSTM:
         tMid=self._mult(secondOut,thirdOut)
         #sum above 2 -| ct output
         ct=self._elemAdd(tLeft,tMid)
-
         #above with 4
         tRight=self._mult(self._hyperTanSec(ct),fourthOut)
-
         #resulting
         #print(tRight)
         yt=self._makeVQC(tRight,depth)
         ht=self._makeVQC(tRight,depth)[:2]#res first or last 2?
-
         #print("results:")
         #print(yt)#this is the output that is processed
         #print(ht)
@@ -84,14 +80,10 @@ class QLSTM:
         classical=4
         quant=4
         qc = QuantumCircuit(quant, classical)
-
         self._initialVQC(val,qc,quant)
-
         for i in range(depth):
             self._performVariation(qc,quant,val)
-
         res = self._measureVQC(quant,qc,backend)
-        qc.draw()
         return res
     
     def _initialVQC(self,val,qc,quant):
@@ -125,13 +117,9 @@ class QLSTM:
     def _measureVQC(self,quant,qc,backend):
         for i in range(quant):
             qc.measure(i,i)
-        qc.draw()
-
         result = execute(qc, backend = backend, shots = %d).result()
         counts=result.get_counts()
-
         dec = list(counts.keys())[0]
-
         return dec
     
     def _elemAdd(self,val1,val2):
@@ -168,15 +156,11 @@ class QLSTM:
     def _optimisation(self,val): # apply gradient descent
         # Instantiate the Hamiltonian observable
         H = (2 * X) + Z #IS THIS CORRECT?
-
         quant=4
         qc = QuantumCircuit(quant)
-
         self._initialVQC(val,qc,quant)
-
         self._performVariationFirst(qc,quant)
         #performVariationSecond(qc,quant)
-
         a=Parameter(chr(ord('a') + 3*0))
         b=Parameter(chr(ord('b') + 3*0))
         c=Parameter(chr(ord('c') + 3*0))
@@ -193,15 +177,10 @@ class QLSTM:
         qc.u(d,e,f,1)
         qc.u(g,h,i,2)
         qc.u(j,k,l,3)
-
-        #qc.draw()
-
-
         # Combine the Hamiltonian observable and the state
         op = ~StateFn(H) @ CircuitStateFn(primitive=qc, coeff=1.)
         # Convert the expectation value into an operator corresponding to the gradient w.r.t. the state parameters using
         # the parameter shift method.
-
         params = [a, b, c, d, e, f, g, h, i, j, k, l]
         # Define the values to be assigned to the parameters
         value_dict = {a:1,b:1,c:1,d:1,e:1,f:1,g:1,h:1,i:1,j:1,k:1,l:1} #WHAT VALUES?
@@ -211,27 +190,24 @@ class QLSTM:
         # Assign the parameters and evaluate the gradient
         state_grad_result = state_grad.assign_parameters(value_dict).eval()
         #print('State gradient computed with parameter shift', state_grad_result)
-
-        qc.draw()
         return state_grad_result
     
     def getEstimation(self, data):#enter 2d array
         final=[]
         for x in range(len(data)):
-            print(x)
-            print(len(data))
             if(x==0):
                 temp = self._resolve([0,0,0,0],[0,0],data[x])#control bits, hidden bits, values
             else:
                 temp = self._resolve(temp[0],[float(temp[1][0]),float(temp[1][1])],data[x])
         return [float(temp[2][:2][0]),float(temp[2][:2][1])]
-    
+\n    
 def transformData(data):
     #data=["2011-11-11 13:55:36","2011-11-13 13:55:36","2011-11-17 13:55:36"]
     values=[]
+    #raise Exception(data[0])
     for x in range(len(data)):
-        val = (datetime.fromisoformat(data[x]))
-        tempvals=int(val.timestamp())#val.utcnow().timestamp()
+        val = (datetime.fromisoformat(data[x][0]))#datetime.fromisoformat(data[x])
+        tempvals=int(val.timestamp())
         values.append(tempvals)
         
     res=[]
@@ -255,18 +231,15 @@ val=scalar.transform(val)
 
 valScal=val.tolist()
 res=x.getEstimation(valScal)#only use first 
-print(res)
-print(type(res))
-lastVal=int(datetime.fromisoformat((data[-1])).timestamp())
+lastVal=int(datetime.fromisoformat((data[-1][0])).timestamp())#int(datetime.fromisoformat((data[-1])).timestamp())
 
 unscaled = scalar.inverse_transform([res])#[-1][0]
-print(unscaled)
 
 nextVal=lastVal+unscaled[0][0]
 
 date = datetime.fromtimestamp(nextVal)
+print("Predicted Date:")
 print(date)
-print("done!")
 `;
 
 module.exports = {
