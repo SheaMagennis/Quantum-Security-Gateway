@@ -61,10 +61,14 @@ const BAD_TIME='The date/time entered is not in the correct format';
 const MISMATCHED_TYPES =
 'The types held by the sub-keys must be consistent';
 
+const ONE_INPUT ='Only one input field permitted';
+
 function checkPredTime(msg) {
   let key=Object.keys(msg.payload)[0];
+  if (Object.keys(msg.payload).length>1) {
+    return new Error(ONE_INPUT);
+  }
   let values = Object.values(msg.payload[key]);
-  console.log(values);
   let re = /[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]:[0-5][0-9]/;
   for (let t=0; t<values.length; t++) {
     try {
@@ -347,6 +351,7 @@ module.exports = {
   BAD_LABEL_VALUE,
   BAD_TARGET_VALUE,
   MISMATCHED_TYPES,
+  ONE_INPUT,
   checkCreateLabel,
   checkTime,
   checkPCA,

@@ -19,7 +19,7 @@ function importOne(name) {
   single = require(path);
 };
 
-function constructSnipppetEnd(sumCon, reduction, end, build){
+function constructSnipppetEnd(sumCon, reduction, end, build) {
   let soFar=sumCon;
   if (reduction !== false) {
     soFar = shared[reduction+'_IMPORTS'] + soFar;

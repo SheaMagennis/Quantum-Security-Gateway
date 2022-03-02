@@ -2,6 +2,7 @@
 
 const NODES = {
   'anomaly-detection': require('../nodes/quantum-algorithms/anomaly-detection/anomaly-detection.js'),
+  'attack-date-prediction': require('../nodes/quantum-algorithms/attack-date-prediction/attack-date-prediction.js'),
   'attack-prediction-creation': require('../nodes/quantum-algorithms/attack-prediction-creation/' +
       'attack-prediction-creation.js'),
   'attack-prediction': require('../nodes/quantum-algorithms/attack-prediction/attack-prediction.js'),
