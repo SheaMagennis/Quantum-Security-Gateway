@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "is-online": "^9.0.1",
-    "python-interactive": "^0.3.2"
+    "python-interactive": "^0.3.2",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "chai": "^4.3.4",

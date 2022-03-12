@@ -11,6 +11,8 @@
  */
 
 const CREATE_QSVC_START = `
+import os
+
 import csv
 initial=%j
 df=pd.DataFrame(initial)

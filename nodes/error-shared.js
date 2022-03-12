@@ -232,6 +232,8 @@ function getTypesHeader(modelName, mType) {
   let types=[];
   let found=false;
 
+
+  /*
   let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
   data = data.toString().split('\r\n');
 
@@ -255,6 +257,8 @@ function getTypesHeader(modelName, mType) {
       found=true;
     }
   }
+  */
+
   if (!found) {
     return new Error(NO_MODEL);
   }
