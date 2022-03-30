@@ -5,6 +5,7 @@ const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
 const build = require('../../script-builder');
 const shell = new PythonInteractive(PythonPath);
+const dbQueries = require('../../database');
 
 module.exports = function(RED) {
   function IntrusionDetectionCreationNode(config) {
@@ -36,6 +37,8 @@ module.exports = function(RED) {
       });
       let params = [msg.payload, node.shots, node.modelName];
       let script = build.constructSnippet('QSVC', true, 'PCA', params);
+
+      dbQueries.addData()
 
       shell.start();
       await shell.execute(script)

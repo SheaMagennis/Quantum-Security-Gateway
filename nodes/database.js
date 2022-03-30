@@ -13,14 +13,14 @@ const getModelDetailQuery = db.prepare(`SELECT modelName,modelTypes from modelIn
 const getRMQuery = db.prepare(`DELETE from modelInput WHERE modelName=? AND modelType=?`);
 
 
-/*
-db.serialize(() => {
-  db.run(`DROP TABLE model`);
-  db.run(`DROP TABLE modelInput`);
-  db.run(`CREATE TABLE if not exists model (name VARCHAR(100), modelType CHAR(4), PRIMARY KEY(name, modelType))`);
-  db.run(`CREATE TABLE if not exists modelInput (name VARCHAR(100), header VARCHAR(100), type VARCHAR(100), modelType CHAR(4), PRIMARY KEY(name, modelType, header))`);
-});
-*/
+function initialize() {
+  db.serialize(() => {
+    db.run(`DROP TABLE model`);
+    db.run(`DROP TABLE modelInput`);
+    db.run(`CREATE TABLE if not exists model (name VARCHAR(100), modelType CHAR(4), PRIMARY KEY(name, modelType))`);
+    db.run(`CREATE TABLE if not exists modelInput (name VARCHAR(100), header VARCHAR(100), type VARCHAR(100), modelType CHAR(4), PRIMARY KEY(name, modelType, header))`);
+  });
+}
 
 function addData(modelName, modelType, headers, types) {
   for (let i = 0; i < headers.length; i++) {
