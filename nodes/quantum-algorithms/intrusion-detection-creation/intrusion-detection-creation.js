@@ -38,8 +38,6 @@ module.exports = function(RED) {
       let params = [msg.payload, node.shots, node.modelName];
       let script = build.constructSnippet('QSVC', true, 'PCA', params);
 
-      dbQueries.addData()
-
       shell.start();
       await shell.execute(script)
           .then((data) => {
