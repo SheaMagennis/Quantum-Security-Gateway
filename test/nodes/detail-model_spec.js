@@ -50,7 +50,7 @@ describe('DetailModelNode', function() {
     flow.add('detail-model', 'dm2', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');
     const givenInput = {payload: 'test'};
-    const expectedOutput = 'headers';
+    const expectedOutput = 'header';
     testUtil.aCorrectOutputReceived(flow, givenInput, expectedOutput, done);
   }).timeout(25000);
 

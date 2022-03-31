@@ -305,62 +305,63 @@ print(int(dec,2))
 `;
 
 const LIST_MODELS = `
+import sqlite3
 import os
-x = os.listdir("./model_store")
-apModels=[]
-idModels=[]
-for i in x:
-    if i.startswith("qsvc"):
-        idModels.append(i[4:])
-    if i.startswith("regr"):
-        apModels.append(i[4:])
-        
-\n         
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+c.execute('SELECT DISTINCT modelType,name from modelInput')
+conn.commit()
+ans=c.fetchall() 
+inMods=[]
+atMods=[]
+for x in range(len(ans)):
+  if(ans[x][0]=="qsvc"):
+    inMods.append(ans[x][1])
+  if(ans[x][0]=="regr"):
+    atMods.append(ans[x][1])    
+    
+\n               
 print("Intrusion-detection models:")
-for idVal in idModels:
+for idVal in inMods:
   print(idVal)
-  
 \n
 print("Attack-prediction models:")
-for apVal in apModels:
+for apVal in atMods:
   print(apVal)
-    
+
 `;
 
 const DETAIL_MODEL = `
 import csv
-mName="%s"
-with open('./model_information/model_information.csv', 'r', newline="") as readFile:
-    reader = csv.reader(readFile)
-    for row in reader:
-        if row[0] == mName:
-          print("Model Headers:")
-          print(row[1])
-          print("Model Types:")
-          print(row[2])
-            
+import sqlite3
+mName="%s"    
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+c.execute('SELECT DISTINCT header,type from modelInput WHERE name=? AND modelType=?',(mName[4:],mName[:4]))
+conn.commit()
+ans=c.fetchall()
+print("header | type") 
+for x in ans:
+  print(x[0]+ " | " + x[1])
 `;
 
-const DELETE_MODEL = `
+const DELETE_MODEL = ` 
+import sqlite3
 import os
-import csv
 mName="%s"
 os.remove("./model_store/"+mName)
-lines = list()
-with open('./model_information/model_information.csv', 'r', newline="") as readFile:
-    reader = csv.reader(readFile)
-    for row in reader:
-        lines.append(row)
-        if row[0] == mName:
-            lines.remove(row)
-          
-\n            
-with open('./model_information/model_information.csv', 'w', newline="") as writeFile:
-    writer = csv.writer(writeFile)
-    writer.writerows(lines)
-       
-\n
-print("Model " +mName[4:] + " deleted")  
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+#name header type modeltype
+c.execute('DELETE from modelInput WHERE name=? AND modelType=?',(mName[4:],mName[:4]))
+conn.commit()
+print("Model "+mName[4:] + " deleted")
 `;
 
 
