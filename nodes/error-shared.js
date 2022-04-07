@@ -1,6 +1,6 @@
 'use strict';
 const fs = require('fs');
-
+const queries = require('./database');
 /*
  * Node-RED nodes error handling functions should be defined here for homogeneity and reuse.
  *
@@ -128,6 +128,7 @@ function checkTarget(msg) {
 
 function checkModelExists(modelName, modelType) {
   let found = false;
+  /*
   let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
   data = data.toString().split('\r\n');
   for (let i = 0; i < data.length; i++) {
@@ -137,7 +138,7 @@ function checkModelExists(modelName, modelType) {
     if (data[j][0] === modelType + modelName) {
       found = true;
     }
-  }
+  }*/
   return found;
 }
 
@@ -227,13 +228,36 @@ function checkCreationJSON(msg, modelName, modelType) {
   }
 };
 
-function getTypesHeader(modelName, mType) {
-  let headers=[];
-  let types=[];
-  let found=false;
-
-
+function getTypesHeader(modelName, mType, callback) {
+  console.log("inputs:")
+  console.log(modelName);
+  console.log(mType);
+  let headers = [];
+  let types = [];
+  // let found=false;
+  queries.getModelDetail('testnu', 'qsvc', function(resp) {
+  // console.log("here")
+  // console.log(typeof(resp[0]))
+  // console.log(resp[0].header)
+  // console.log(resp.header)
+    console.log("in function")
+    console.log(resp);
+    headers = resp.map( (y) => y.header);
+    types = resp.map( (w) => w.type);
+    return callback([headers, types]);
+  });
   /*
+  console.log(ans);
+  for (let j = 0; j<ans.length-1; j++) {
+    headers.append(ans[j][0]);
+    types.append(ans[j][1]);
+  }*/
+  /*
+  console.log(types);
+  console.log(headers);
+  types=[];
+  headers=[];
+
   let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
   data = data.toString().split('\r\n');
 
@@ -257,12 +281,11 @@ function getTypesHeader(modelName, mType) {
       found=true;
     }
   }
-  */
-
-  if (!found) {
+*/
+  /*
+  if (ans === []) {
     return new Error(NO_MODEL);
-  }
-  return [headers, types];
+  }*/
 }
 
 function orderIndex(saved, keys) {
@@ -275,46 +298,101 @@ function orderIndex(saved, keys) {
 }
 
 function checkUseJSON(msg, modelName, mType, ignore) {
-  if (typeof(msg.payload) !== 'object') {
+  console.log(msg + modelName + mType + ignore)
+  if (typeof (msg.payload) !== 'object') {
     return new Error(INPUT_JSON);
   }
-  let details = getTypesHeader(modelName, mType);
+  getTypesHeader(modelName, mType, function(details) {
+    console.log(details);
+    console.log("here!")
+    let headers = details[0];
+    let types = details[1];
+    types = covertPythonTypeToJS(types);
+    let pLoad = JSON.parse(JSON.stringify(msg.payload));
+    if (Object.keys(pLoad).includes(ignore)) {
+      delete pLoad[ignore];
+    }
+
+    let pNew = Object.keys(pLoad).slice();
+    let hNew = headers.slice();
+    if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
+      return new Error(BAD_HEADERS);
+    }
+
+    let keyToHeaderMapping = orderIndex(headers, Object.keys(pLoad));
+    let vals = Object.values(pLoad);
+    let headerNum = 0;
+    let standardLen = 0;
+    for (const val of vals) {
+      if (headerNum === 0) {
+        standardLen = Object.keys(val).length;
+      } else {
+        if (Object.keys(val).length !== standardLen) {
+          return new Error(UNEVEN);
+        }
+      }
+      let subVal = Object.values(val);
+      if (subVal.length < 3) {
+        return new Error(NEEDS_MORE);
+      }
+      const hasKeys = !!Object.keys(val).length;
+      if (hasKeys) {
+        let subKey = Object.keys(val);
+        let keyLen = subKey.length;
+        for (let i = 0; i < keyLen; i++) {
+          if (subKey[i] !== i.toString()) {
+            return new Error(BAD_SUBKEYS);
+          }
+        }
+      }
+      let qInd = keyToHeaderMapping[headerNum];
+      let oneType = types[qInd];
+      for (const sinVal of subVal) {
+        if (!(typeof (sinVal) === oneType)) {
+          return new Error(BAD_FORMAT);
+        }
+      }
+      headerNum += 1;
+    }
+    return null;
+  });
+  /* console.log(details)
   let headers = details[0];
   let types = details[1];
   types = covertPythonTypeToJS(types);
-  let pLoad=JSON.parse(JSON.stringify(msg.payload));
+  let pLoad = JSON.parse(JSON.stringify(msg.payload));
   if (Object.keys(pLoad).includes(ignore)) {
     delete pLoad[ignore];
   }
 
   let pNew = Object.keys(pLoad).slice();
-  let hNew=headers.slice();
-  if (JSON.stringify(pNew.sort())!==JSON.stringify(hNew.sort())) {
+  let hNew = headers.slice();
+  if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
     return new Error(BAD_HEADERS);
   }
 
-  let keyToHeaderMapping=orderIndex(headers, Object.keys(pLoad));
+  let keyToHeaderMapping = orderIndex(headers, Object.keys(pLoad));
   let vals = Object.values(pLoad);
-  let headerNum=0;
+  let headerNum = 0;
   let standardLen = 0;
   for (const val of vals) {
-    if (headerNum===0) {
+    if (headerNum === 0) {
       standardLen = Object.keys(val).length;
     } else {
       if (Object.keys(val).length !== standardLen) {
         return new Error(UNEVEN);
       }
     }
-    let subVal=Object.values(val);
-    if (subVal.length<3) {
+    let subVal = Object.values(val);
+    if (subVal.length < 3) {
       return new Error(NEEDS_MORE);
     }
     const hasKeys = !!Object.keys(val).length;
     if (hasKeys) {
       let subKey = Object.keys(val);
       let keyLen = subKey.length;
-      for (let i = 0; i<keyLen; i++) {
-        if (subKey[i]!==i.toString()) {
+      for (let i = 0; i < keyLen; i++) {
+        if (subKey[i] !== i.toString()) {
           return new Error(BAD_SUBKEYS);
         }
       }
@@ -326,9 +404,9 @@ function checkUseJSON(msg, modelName, mType, ignore) {
         return new Error(BAD_FORMAT);
       }
     }
-    headerNum+=1;
+    headerNum += 1;
   }
-  return null;
+  return null;*/
 };
 
 function covertPythonTypeToJS(inp) {
@@ -343,6 +421,13 @@ function covertPythonTypeToJS(inp) {
   return inp;
 };
 
+//getTypesHeader("hi","yo", function(details) {
+//  console.log(details)})
+/*
+let v1 = checkUseJSON({firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"}, "testnu","qsvc","label")
+console.log(v1)
+console.log("above")
+*/
 module.exports = {
   INPUT_JSON,
   BAD_HEADERS,

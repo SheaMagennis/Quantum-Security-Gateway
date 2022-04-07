@@ -228,15 +228,18 @@ function validateIntrusionInput(msg, modelName, usage) {
   if (usage === 'test') {
     let x = eHelper.checkLabel(msg);
     if (x instanceof Error) {
+      console.log("1")
       return x;
     }
   }
   let y = eHelper.checkUseJSON(msg, modelName, 'qsvc', 'label');
   let z = eHelper.checkPCA(msg, false);
   if (y instanceof Error) {
+    console.log("2")
     return y;
   }
   if (z instanceof Error) {
+    console.log("3")
     return z;
   }
 }

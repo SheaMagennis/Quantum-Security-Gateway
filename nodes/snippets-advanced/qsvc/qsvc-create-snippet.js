@@ -13,7 +13,6 @@
 const CREATE_QSVC_START = `
 import os
 import sqlite3
-import csv
 initial=%j
 df=pd.DataFrame(initial)
 encoded = pd.get_dummies(df, drop_first=True)#one-hot encoding
@@ -38,13 +37,10 @@ qsvc.fit(train_features, label)
 mName="%s"
 hold="qsvc"+mName
 pickle.dump(qsvc, open("./model_store/"+hold, 'wb'))
-f = open('./model_information/model_information.csv', 'a+', newline='')
 
-writer = csv.writer(f)
 stuff=initial.keys()
 stuff=list(stuff)
 stuff.remove("label")
-joined_string = ",".join(stuff)
 temporary=[]
 
 for val in stuff:  
@@ -53,10 +49,6 @@ for val in stuff:
   except:
     temporary.append(type(initial[val][0]).__name__)
 \n
-finalTypes=",".join(temporary)
-row = hold,joined_string,finalTypes
-writer.writerow(row)
-f.close()
 conn = None
 database = "./DB/modelInfo"
 conn = sqlite3.connect(database)
