@@ -1,6 +1,6 @@
 'use strict';
-const fs = require('fs');
 const eHelper = require('./error-shared');
+const queries = require('./database');
 
 
 /*
@@ -62,7 +62,7 @@ const INPUT_AN_INTEGER =
 const NO_INTERNET =
 'Failed to connect to the internet.';
 
-const NO_FILE =
+const NO_MODEL =
 'There is no model by this name';
 
 function validateQubitInput(msg) {
@@ -151,108 +151,128 @@ function validateRandomInput(msg) {
   return null;
 };
 
-function validateAnomalyInput(msg) {
-  let z = eHelper.checkCreationJSON(msg, 'none', 'none');
-  if (z instanceof Error) {
-    return z;
-  }
+function validateAnomalyInput(msg, callback) {
+  eHelper.checkCreationJSON(msg, 'none', 'none', function(z) {
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
 };
 
-function validateAttackInput(msg, modelName, usage) {
+function validateAttackInput(msg, modelName, usage, callback) {
   if (usage === 'test') {
     let x = eHelper.checkTarget(msg);
     if (x instanceof Error) {
-      return x;
+      return callback(x);
     }
   }
-  let y = eHelper.checkUseJSON(msg, modelName, 'regr', 'Target');
-  if (y instanceof Error) {
-    return y;
-  }
-  let z = eHelper.checkTime(msg);
-  if (z instanceof Error) {
-    return z;
-  }
+  eHelper.checkUseJSON(msg, modelName, 'regr', 'Target', function(y) {
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.checkTime(msg);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
 };
 
-function validateAttackCreationInput(msg, modelName) {
-  let w = eHelper.checkCreationJSON(msg, modelName, 'regr');
-  if (w instanceof Error) {
-    return w;
-  }
-  let x = eHelper.checkTime(msg);
-  if (x instanceof Error) {
-    return x;
-  }
-  let y = eHelper.checkTarget(msg);
-  if (y instanceof Error) {
-    return y;
-  }
-  let z = eHelper.targetDiverse(msg);
-  if (z instanceof Error) {
-    return z;
-  }
+function validateAttackCreationInput(msg, modelName, callback) {
+  eHelper.checkCreationJSON(msg, modelName, 'regr', function(w) {
+    if (w instanceof Error) {
+      return callback(w);
+    }
+    let x = eHelper.checkTime(msg);
+    if (x instanceof Error) {
+      return callback(x);
+    }
+    let y = eHelper.checkTarget(msg);
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.targetDiverse(msg);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
 };
 
 function validateListInput(msg) {
   return null;
 };
 
-function validateHelperInput(msg) {
-  const files = fs.readdirSync('./model_store');
-  if (!files.includes(msg)) {
-    return new Error(NO_FILE);
-  }
+
+function validateHelperInput(type, name, callback) {
+  queries.modelExists(name, type, function(resp) {
+    let x = resp.map( (w) => w.value);
+    if (x[0]) {
+      return callback(null);
+    } else {
+      return callback(new Error(NO_MODEL));
+    }
+  });
 };
 
-function validateIntrusionCreationInput(msg, modelName) {
-  let w = eHelper.checkCreationJSON(msg, modelName, 'qsvc');
-  if (w instanceof Error) {
-    return w;
-  }
-  let x = eHelper.checkLabel(msg);
-  if (x instanceof Error) {
-    return x;
-  }
-  let y = eHelper.checkCreateLabel(msg);
-  if (y instanceof Error) {
-    return y;
-  }
-  let z = eHelper.checkPCA(msg, true);
-  if (z instanceof Error) {
-    return z;
-  }
+function validateIntrusionCreationInput(msg, modelName, callback) {
+  eHelper.checkCreationJSON(msg, modelName, 'qsvc', function(res) {
+    if (res instanceof Error) {
+      return callback(res);
+    }
+    let x = eHelper.checkLabel(msg);
+    if (x instanceof Error) {
+      return callback(x);
+    }
+    let y = eHelper.checkCreateLabel(msg);
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.checkPCA(msg, true);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
 }
 
-function validateIntrusionInput(msg, modelName, usage) {
+function validateIntrusionInput(msg, modelName, usage, callback) {
   if (usage === 'test') {
     let x = eHelper.checkLabel(msg);
     if (x instanceof Error) {
-      console.log("1")
-      return x;
+      return callback(x);
     }
   }
-  let y = eHelper.checkUseJSON(msg, modelName, 'qsvc', 'label');
-  let z = eHelper.checkPCA(msg, false);
-  if (y instanceof Error) {
-    console.log("2")
-    return y;
-  }
-  if (z instanceof Error) {
-    console.log("3")
-    return z;
-  }
+  eHelper.checkUseJSON(msg, modelName, 'qsvc', 'label', function(res) {
+    if (res instanceof Error) {
+      return callback(res);
+    }
+    let z = eHelper.checkPCA(msg, false);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
 }
 
-function validateDatePredictionInput(msg) {
-  let y = eHelper.checkCreationJSON(msg, 'none', 'none');
-  if (y instanceof Error) {
-    return y;
-  }
-  let z = eHelper.checkPredTime(msg);
-  if (z instanceof Error) {
-    return z;
-  }
+function validateDatePredictionInput(msg, callback) {
+  eHelper.checkCreationJSON(msg, 'none', 'none', function(y) {
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.checkPredTime(msg);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
 }
 
 module.exports = {
@@ -266,7 +286,7 @@ module.exports = {
   SAME_QUBIT_RECEIVED_TWICE,
   NOT_BIT_STRING,
   BLOCH_SPHERE_WITH_MEASUREMENT,
-  NO_FILE,
+  NO_MODEL,
   NO_INTERNET,
   GREATER_THAN_TWO,
   INPUT_ODD_INTEGER,

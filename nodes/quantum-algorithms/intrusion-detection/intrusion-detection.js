@@ -17,58 +17,63 @@ module.exports = function(RED) {
 
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection node received input');
+      console.log('in node');
+      errors.validateIntrusionInput(msg, node.modelName, node.modelUsage, async function(error) {
+        logger.trace(node.id, 'error checking for intrusion');
+        // changeMe
+        console.log('reached');
+        console.log('error ' + error);
+        if (error) {
+          logger.error(node.id, error);
+          done(error);
+          return;
+        }
 
-      let error = errors.validateIntrusionInput(msg, node.modelName, node.modelUsage);// changeMe
-      console.log("error "+error)
-      if (error) {
-        logger.error(node.id, error);
-        done(error);
-        return;
-      }
-      node.status({
-        fill: 'orange',
-        shape: 'dot',
-        text: 'Classifying traffic...',
-      });
+        node.status({
+          fill: 'orange',
+          shape: 'dot',
+          text: 'Classifying traffic...',
+        });
 
-      let params = [node.modelName, msg.payload];
-      let script = build.constructSnippet('QSVC', false, 'PCA', params, node.modelUsage);
+        let params = [node.modelName, msg.payload];
+        let script = build.constructSnippet('QSVC', false, 'PCA', params, node.modelUsage);
 
-      shell.start();
-      await shell.execute(script)
-          .then((data) => {
-            node.status({
-              fill: 'green',
-              shape: 'dot',
-              text: 'Traffic classified!',
-            });
-            logger.trace(data);
-            msg.payload = (data.slice(39, data.length));
-            send(msg);
-            done();
-          }).catch((err) => {
-            if (!err.includes('error')) {
+        shell.start();
+        await shell.execute(script)
+            .then((data) => {
               node.status({
                 fill: 'green',
                 shape: 'dot',
-                text: 'Model created!',
+                text: 'Traffic classified!',
               });
-              logger.trace('done');
-              msg.payload = ('done');
+              logger.trace(data);
+              msg.payload = (data.slice(39, data.length));
               send(msg);
               done();
-            }
-            node.status({
-              fill: 'red',
-              shape: 'dot',
-              text: 'Traffic failed to classify!',
+            }).catch((err) => {
+              if (!err.includes('error')) {
+                node.status({
+                  fill: 'green',
+                  shape: 'dot',
+                  text: 'Model created!',
+                });
+                logger.trace('done');
+                msg.payload = ('done');
+                send(msg);
+                done();
+              }
+              node.status({
+                fill: 'red',
+                shape: 'dot',
+                text: 'Traffic failed to classify!',
+              });
+              logger.error(node.id, err);
+              done(err);
+            }).finally(() => {
+              logger.trace(node.id, 'Executed intrusion-detection command');
+              shell.stop();
             });
-            logger.error(node.id, err);
-            done(err);
-          }).finally(() => {
-            logger.trace(node.id, 'Executed intrusion-detection command');
-            shell.stop();
-          });
+      });
     });
   }
 

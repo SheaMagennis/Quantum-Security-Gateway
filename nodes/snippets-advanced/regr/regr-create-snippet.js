@@ -11,14 +11,16 @@
  */
 
 const CREATE_REGR_START = `
-import csv
+import sqlite3
+import os
 
 initial=%j
 df=pd.DataFrame(initial)
 backend = Aer.get_backend('qasm_simulator')
 
 quantum_instance = QuantumInstance(backend, shots=%d)
-hold="regr%s"
+mName="%s"
+hold="regr"+mName
 
 val=df['DateTime']
 years=[]
@@ -63,13 +65,9 @@ regr=QSVR(quantum_kernel=basis)
 regr.fit(test, label)
 pickle.dump(regr, open("./model_store/"+hold, 'wb'))
 
-f = open('./model_information/model_information.csv', 'a+', newline='')
-
-writer = csv.writer(f)
 stuff=initial.keys()
 stuff=list(stuff)
 stuff.remove("Target")
-joined_string = ",".join(stuff)
 temporary=[]
 
 for val in stuff:  
@@ -78,10 +76,15 @@ for val in stuff:
   except:
     temporary.append(type(initial[val][0]).__name__)
 \n
-finalTypes=",".join(temporary)
-row = hold,joined_string,finalTypes
-writer.writerow(row)
-f.close()
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+#name header type modeltype
+for x in range(len(stuff)):
+  c.execute('INSERT INTO modelInput VALUES (?,?,?,?)',(mName,stuff[x],temporary[x],"regr"))
+\n
+conn.commit()
 print("Attack Prediction model successfully created")
 
 `;

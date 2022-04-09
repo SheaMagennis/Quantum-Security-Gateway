@@ -19,45 +19,46 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'attack-prediction node received input');
 
-      let error = errors.validateAttackInput(msg, node.modelName, node.modelUsage);// changeMe
-      if (error) {
-        logger.error(node.id, error);
-        done(error);
-        return;
-      }
-      node.status({
-        fill: 'orange',
-        shape: 'dot',
-        text: 'Predicting attacks...',
+      errors.validateAttackInput(msg, node.modelName, node.modelUsage, async function(error) {// changeMe
+        if (error) {
+          logger.error(node.id, error);
+          done(error);
+          return;
+        }
+        node.status({
+          fill: 'orange',
+          shape: 'dot',
+          text: 'Predicting attacks...',
+        });
+
+        let params = [node.modelName, msg.payload];
+        let script = build.constructSnippet('REGR', false, false, params, node.modelUsage);
+
+        shell.start();
+        await shell.execute(script)
+            .then((data) => {
+              node.status({
+                fill: 'green',
+                shape: 'dot',
+                text: 'Prediction complete!',
+              });
+              logger.trace(data);
+              msg.payload = (data);
+              send(msg);
+              done();
+            }).catch((err) => {
+              node.status({
+                fill: 'red',
+                shape: 'dot',
+                text: 'Error; Prediction unable to complete!',
+              });
+              logger.error(node.id, err);
+              done(err);
+            }).finally(() => {
+              logger.trace(node.id, 'Executed attack-prediction command');
+              shell.stop();
+            });
       });
-
-      let params = [node.modelName, msg.payload];
-      let script = build.constructSnippet('REGR', false, false, params, node.modelUsage);
-
-      shell.start();
-      await shell.execute(script)
-          .then((data) => {
-            node.status({
-              fill: 'green',
-              shape: 'dot',
-              text: 'Prediction complete!',
-            });
-            logger.trace(data);
-            msg.payload = (data);
-            send(msg);
-            done();
-          }).catch((err) => {
-            node.status({
-              fill: 'red',
-              shape: 'dot',
-              text: 'Error; Prediction unable to complete!',
-            });
-            logger.error(node.id, err);
-            done(err);
-          }).finally(() => {
-            logger.trace(node.id, 'Executed attack-prediction command');
-            shell.stop();
-          });
     });
   }
 

@@ -21,28 +21,29 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'detail received input');
 
-      let error = errors.validateHelperInput(node.model_type+node.model_name);
-      if (error) {
-        logger.error(node.id, error);
-        done(error);
-        return;
-      }
-      const params = node.model_type+node.model_name;
-      let script = util.format(snippets.DETAIL_MODEL, params);
-      shell.start();
-      await shell.execute(script)
-          .then((data) => {
-            logger.trace(data);
-            msg.payload = data;// (data.slice(924, data.length))
-            send(msg);
-            done();
-          }).catch((err) => {
-            logger.error(node.id, err);
-            done(err);
-          }).finally(() => {
-            logger.trace(node.id, 'Executed detail command');
-            shell.stop();
-          });
+      errors.validateHelperInput(node.model_type, node.model_name, async function(error) {
+        if (error) {
+          logger.error(node.id, error);
+          done(error);
+          return;
+        }
+        const params = node.model_type + node.model_name;
+        let script = util.format(snippets.DETAIL_MODEL, params);
+        shell.start();
+        await shell.execute(script)
+            .then((data) => {
+              logger.trace(data);
+              msg.payload = data;// (data.slice(924, data.length))
+              send(msg);
+              done();
+            }).catch((err) => {
+              logger.error(node.id, err);
+              done(err);
+            }).finally(() => {
+              logger.trace(node.id, 'Executed detail command');
+              shell.stop();
+            });
+      });
     });
   }
 

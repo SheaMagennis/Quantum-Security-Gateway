@@ -1,5 +1,4 @@
 'use strict';
-const fs = require('fs');
 const queries = require('./database');
 /*
  * Node-RED nodes error handling functions should be defined here for homogeneity and reuse.
@@ -126,20 +125,11 @@ function checkTarget(msg) {
   }
 }
 
-function checkModelExists(modelName, modelType) {
-  let found = false;
-  /*
-  let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
-  data = data.toString().split('\r\n');
-  for (let i = 0; i < data.length; i++) {
-    data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-  }
-  for (let j = 1; j < data.length - 1; j++) {
-    if (data[j][0] === modelType + modelName) {
-      found = true;
-    }
-  }*/
-  return found;
+function checkModelExists(modelName, modelType, callback) {
+  queries.modelExists(modelName, modelType, function(resp) {
+    let x = resp.map( (w) => w.value);
+    return callback(x[0]);
+  });
 }
 
 function checkPCA(msg, first) {
@@ -187,105 +177,57 @@ function checkLabel(msg) {
   }
 }
 
-function checkCreationJSON(msg, modelName, modelType) {
-  let found = checkModelExists(modelName, modelType);
-  if (found) {
-    return new Error(EXISTING_MODEL);
-  }
-  if (typeof(msg.payload) !== 'object') {
-    return new Error(INPUT_JSON);
-  }
-  let vals = Object.values(msg.payload);
-  let headerNum=-1;
-  let standardLen = 0;
-  for (const val of vals) {
-    if (headerNum===-1) {
-      standardLen = Object.keys(val).length;
-    } else {
-      if (Object.keys(val).length !== standardLen) {
-        return new Error(UNEVEN);
+function checkCreationJSON(msg, modelName, modelType, callback) {
+  checkModelExists(modelName, modelType, function(found) {
+    if (found) {
+      return callback(new Error(EXISTING_MODEL));
+    }
+    if (typeof(msg.payload) !== 'object') {
+      return callback(new Error(INPUT_JSON));
+    }
+    let vals = Object.values(msg.payload);
+    let headerNum=-1;
+    let standardLen = 0;
+    for (const val of vals) {
+      if (headerNum===-1) {
+        standardLen = Object.keys(val).length;
+      } else {
+        if (Object.keys(val).length !== standardLen) {
+          return callback(new Error(UNEVEN));
+        }
       }
-    }
-    let subVal=Object.values(val);
-    if (subVal.length<3) {
-      return new Error(NEEDS_MORE);
-    }
-    let firstType=typeof(subVal[0]);
-    if (!subVal.every((elem) => typeof(elem)===firstType)) {
-      return new Error(MISMATCHED_TYPES);
-    }
-    headerNum+=1;
-    const hasKeys = !!Object.keys(val).length;
-    if (hasKeys) {
-      let subKey = Object.keys(val);
-      let keyLen = subKey.length;
-      for (let i = 0; i < keyLen; i++) {
-        if (subKey[i] !== i.toString()) {
-          return new Error(BAD_SUBKEYS);
+      let subVal=Object.values(val);
+      if (subVal.length<3) {
+        return callback(new Error(NEEDS_MORE));
+      }
+      let firstType=typeof(subVal[0]);
+      if (!subVal.every((elem) => typeof(elem)===firstType)) {
+        return callback(new Error(MISMATCHED_TYPES));
+      }
+      headerNum+=1;
+      const hasKeys = !!Object.keys(val).length;
+      if (hasKeys) {
+        let subKey = Object.keys(val);
+        let keyLen = subKey.length;
+        for (let i = 0; i < keyLen; i++) {
+          if (subKey[i] !== i.toString()) {
+            return callback(new Error(BAD_SUBKEYS));
+          }
         }
       }
     }
-  }
+    return callback(null);
+  });
 };
 
 function getTypesHeader(modelName, mType, callback) {
-  console.log("inputs:")
-  console.log(modelName);
-  console.log(mType);
   let headers = [];
   let types = [];
-  // let found=false;
-  queries.getModelDetail('testnu', 'qsvc', function(resp) {
-  // console.log("here")
-  // console.log(typeof(resp[0]))
-  // console.log(resp[0].header)
-  // console.log(resp.header)
-    console.log("in function")
-    console.log(resp);
+  return queries.getModelDetail(modelName, mType, function(resp) {
     headers = resp.map( (y) => y.header);
     types = resp.map( (w) => w.type);
     return callback([headers, types]);
   });
-  /*
-  console.log(ans);
-  for (let j = 0; j<ans.length-1; j++) {
-    headers.append(ans[j][0]);
-    types.append(ans[j][1]);
-  }*/
-  /*
-  console.log(types);
-  console.log(headers);
-  types=[];
-  headers=[];
-
-  let data = fs.readFileSync('./model_information/model_information.csv', 'utf8');
-  data = data.toString().split('\r\n');
-
-  for (let i = 0; i<data.length; i++) {
-    data[i] = data[i].match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
-  }
-
-  for (let j = 1; j<data.length-1; j++) {
-    if (data[j][0] === mType+modelName) {
-      if (data[j][1].charAt(0)==='"') {
-        headers = data[j][1].split(',');
-        types = data[j][2].split(',');
-        headers[0] = headers[0].substr(1);
-        types[0] = types[0].substr(1);
-        headers[headers.length-1] = headers[headers.length-1].slice(0, -1);
-        types[types.length-1] = types[types.length-1].slice(0, -1);
-      } else {
-        headers=[data[j][1]];
-        types=[data[j][2]];
-      }
-      found=true;
-    }
-  }
-*/
-  /*
-  if (ans === []) {
-    return new Error(NO_MODEL);
-  }*/
 }
 
 function orderIndex(saved, keys) {
@@ -297,14 +239,11 @@ function orderIndex(saved, keys) {
   return keysIndex;
 }
 
-function checkUseJSON(msg, modelName, mType, ignore) {
-  console.log(msg + modelName + mType + ignore)
+function checkUseJSON(msg, modelName, mType, ignore, callback) {
   if (typeof (msg.payload) !== 'object') {
-    return new Error(INPUT_JSON);
+    return callback(new Error(INPUT_JSON));
   }
   getTypesHeader(modelName, mType, function(details) {
-    console.log(details);
-    console.log("here!")
     let headers = details[0];
     let types = details[1];
     types = covertPythonTypeToJS(types);
@@ -316,7 +255,7 @@ function checkUseJSON(msg, modelName, mType, ignore) {
     let pNew = Object.keys(pLoad).slice();
     let hNew = headers.slice();
     if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
-      return new Error(BAD_HEADERS);
+      return callback(new Error(BAD_HEADERS));
     }
 
     let keyToHeaderMapping = orderIndex(headers, Object.keys(pLoad));
@@ -328,12 +267,12 @@ function checkUseJSON(msg, modelName, mType, ignore) {
         standardLen = Object.keys(val).length;
       } else {
         if (Object.keys(val).length !== standardLen) {
-          return new Error(UNEVEN);
+          return callback(new Error(UNEVEN));
         }
       }
       let subVal = Object.values(val);
       if (subVal.length < 3) {
-        return new Error(NEEDS_MORE);
+        return callback(new Error(NEEDS_MORE));
       }
       const hasKeys = !!Object.keys(val).length;
       if (hasKeys) {
@@ -341,7 +280,7 @@ function checkUseJSON(msg, modelName, mType, ignore) {
         let keyLen = subKey.length;
         for (let i = 0; i < keyLen; i++) {
           if (subKey[i] !== i.toString()) {
-            return new Error(BAD_SUBKEYS);
+            return callback(new Error(BAD_SUBKEYS));
           }
         }
       }
@@ -349,64 +288,20 @@ function checkUseJSON(msg, modelName, mType, ignore) {
       let oneType = types[qInd];
       for (const sinVal of subVal) {
         if (!(typeof (sinVal) === oneType)) {
-          return new Error(BAD_FORMAT);
+          return callback(new Error(BAD_FORMAT));
         }
       }
       headerNum += 1;
     }
-    return null;
+    queries.modelExists(modelName, mType, function(resp) {
+      let x = resp.map( (w) => w.value);
+      if (x[0]) {
+        return callback(null);
+      } else {
+        return callback(new Error(NO_MODEL));
+      }
+    });
   });
-  /* console.log(details)
-  let headers = details[0];
-  let types = details[1];
-  types = covertPythonTypeToJS(types);
-  let pLoad = JSON.parse(JSON.stringify(msg.payload));
-  if (Object.keys(pLoad).includes(ignore)) {
-    delete pLoad[ignore];
-  }
-
-  let pNew = Object.keys(pLoad).slice();
-  let hNew = headers.slice();
-  if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
-    return new Error(BAD_HEADERS);
-  }
-
-  let keyToHeaderMapping = orderIndex(headers, Object.keys(pLoad));
-  let vals = Object.values(pLoad);
-  let headerNum = 0;
-  let standardLen = 0;
-  for (const val of vals) {
-    if (headerNum === 0) {
-      standardLen = Object.keys(val).length;
-    } else {
-      if (Object.keys(val).length !== standardLen) {
-        return new Error(UNEVEN);
-      }
-    }
-    let subVal = Object.values(val);
-    if (subVal.length < 3) {
-      return new Error(NEEDS_MORE);
-    }
-    const hasKeys = !!Object.keys(val).length;
-    if (hasKeys) {
-      let subKey = Object.keys(val);
-      let keyLen = subKey.length;
-      for (let i = 0; i < keyLen; i++) {
-        if (subKey[i] !== i.toString()) {
-          return new Error(BAD_SUBKEYS);
-        }
-      }
-    }
-    let qInd = keyToHeaderMapping[headerNum];
-    let oneType = types[qInd];
-    for (const sinVal of subVal) {
-      if (!(typeof (sinVal) === oneType)) {
-        return new Error(BAD_FORMAT);
-      }
-    }
-    headerNum += 1;
-  }
-  return null;*/
 };
 
 function covertPythonTypeToJS(inp) {
@@ -421,13 +316,6 @@ function covertPythonTypeToJS(inp) {
   return inp;
 };
 
-//getTypesHeader("hi","yo", function(details) {
-//  console.log(details)})
-/*
-let v1 = checkUseJSON({firstName:"John", lastName:"Doe", age:50, eyeColor:"blue"}, "testnu","qsvc","label")
-console.log(v1)
-console.log("above")
-*/
 module.exports = {
   INPUT_JSON,
   BAD_HEADERS,
