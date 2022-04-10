@@ -18,7 +18,8 @@ initial=%j
 df=pd.DataFrame(initial)
 backend = Aer.get_backend('qasm_simulator')
 
-quantum_instance = QuantumInstance(backend, shots=%d)
+instance = QuantumInstance(backend, shots=%d, skip_qobj_validation=False)
+
 mName="%s"
 hold="regr"+mName
 
@@ -54,9 +55,8 @@ test = np.delete(test, dTime_no, 1)`;
 
 const CREATE_REGR_END=`
 num_qubits = 3#2
-shots = 128  # Number of times the job will be run on the quantum device 8096
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='linear')#full
-instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
+#instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change
 num_inputs=3
 regr=QSVR(quantum_kernel=basis)

@@ -62,6 +62,8 @@ const MISMATCHED_TYPES =
 
 const ONE_INPUT ='Only one input field permitted';
 
+const FIELD_NAMES ='Fields cannot have share a name';
+
 function checkPredTime(msg) {
   let key=Object.keys(msg.payload)[0];
   if (Object.keys(msg.payload).length>1) {
@@ -251,7 +253,9 @@ function checkUseJSON(msg, modelName, mType, ignore, callback) {
     if (Object.keys(pLoad).includes(ignore)) {
       delete pLoad[ignore];
     }
-
+    if ((new Set(array)).size !== array.length) {
+      return callback(new Error(FIELD_NAMES));
+    }
     let pNew = Object.keys(pLoad).slice();
     let hNew = headers.slice();
     if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
