@@ -219,12 +219,12 @@ function validateHelperInput(type, name, callback) {
   });
 };
 
-function validateIntrusionCreationInput(msg, modelName, callback) {
+function validateIntrusionCreationInput(msg, modelName, label, callback) {
   eHelper.checkCreationJSON(msg, modelName, 'qsvc', function(res) {
     if (res instanceof Error) {
       return callback(res);
     }
-    let x = eHelper.checkLabel(msg);
+    let x = eHelper.checkLabel(msg, label);
     if (x instanceof Error) {
       return callback(x);
     }
@@ -248,7 +248,7 @@ function validateIntrusionInput(msg, modelName, usage, callback) {
       return callback(x);
     }
   }
-  eHelper.checkUseJSON(msg, modelName, 'qsvc', 'label', function(res) {
+  eHelper.checkUseJSON(msg, modelName, 'qsvc', usage, function(res) {
     if (res instanceof Error) {
       return callback(res);
     }
@@ -274,7 +274,18 @@ function validateDatePredictionInput(msg, callback) {
     }
   });
 }
-
+/*
+function validateLabelInclusion(label, msg){
+  let msgStr = JSON.parse(JSON.stringify(msg.payload));
+  let headers = Object.keys(msgStr).slice();
+  if (headers.includes(label)){
+    return null;
+  }
+  else {
+    return new error("training value not in JSON headers")
+  }
+}
+ */
 module.exports = {
   NOT_QUANTUM_NODE,
   USE_REGISTER_NODES,

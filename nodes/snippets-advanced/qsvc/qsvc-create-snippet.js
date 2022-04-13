@@ -14,10 +14,11 @@ const CREATE_QSVC_START = `
 import os
 import sqlite3
 initial=%j
+labelName="%s"
 df=pd.DataFrame(initial)
 encoded = pd.get_dummies(df, drop_first=True)#one-hot encoding
 final=encoded.to_numpy()
-index_no = encoded.columns.get_loc("label")
+index_no = encoded.columns.get_loc(labelName)
 label=final[:,index_no]
 label = label.astype('int')#convert from object to usable
 test = np.delete(final, index_no, 1)#array, num, column/row
@@ -40,7 +41,7 @@ pickle.dump(qsvc, open("./model_store/"+hold, 'wb'))
 
 stuff=initial.keys()
 stuff=list(stuff)
-stuff.remove("label")
+stuff.remove(labelName)
 temporary=[]
 
 for val in stuff:  
@@ -55,7 +56,7 @@ conn = sqlite3.connect(database)
 c = conn.cursor()
 #name header type modeltype
 for x in range(len(stuff)):
-  c.execute('INSERT INTO modelInput VALUES (?,?,?,?)',(mName,stuff[x],temporary[x],"qsvc"))
+  c.execute('INSERT INTO modelInput VALUES (?,?,?,?,?)',(mName,stuff[x],temporary[x],"qsvc",labelName))
 \n
 conn.commit()
 print("Intrusion Detection Model successfully created")#remove

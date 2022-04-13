@@ -29,7 +29,7 @@ const BAD_SUBKEYS =
 'The sub-keys must be sequential strings of incremental values, starting from 0';
 
 const NO_LABEL =
-'No label field has been provided';
+'The stated training/testing field for the model has not been provided';
 
 const NO_TARGET =
 'No label field has been provided';
@@ -62,7 +62,7 @@ const MISMATCHED_TYPES =
 
 const ONE_INPUT ='Only one input field permitted';
 
-const FIELD_NAMES ='Fields cannot have share a name';
+const FIELD_NAMES ='Fields cannot have a shared name';
 
 function checkPredTime(msg) {
   let key=Object.keys(msg.payload)[0];
@@ -167,11 +167,11 @@ function checkCreateLabel(msg) {
   }
 }
 
-function checkLabel(msg) {
-  if (!Object.keys(msg.payload).includes('label')) {
+function checkLabel(msg, label) {
+  if (!Object.keys(msg.payload).includes(label)) {
     return new Error(NO_LABEL);
   }
-  let label = msg.payload['label'];
+  label = msg.payload[label];
   let labelValues = Object.values(label);
   let corrVals =[0, 1];
   if (!labelValues.every((elem) => corrVals.includes(elem))) {
@@ -225,10 +225,12 @@ function checkCreationJSON(msg, modelName, modelType, callback) {
 function getTypesHeader(modelName, mType, callback) {
   let headers = [];
   let types = [];
+  let label=[]
   return queries.getModelDetail(modelName, mType, function(resp) {
     headers = resp.map( (y) => y.header);
     types = resp.map( (w) => w.type);
-    return callback([headers, types]);
+    label = resp.map( (z) => z.label);
+    return callback([headers, types, label]);
   });
 }
 
@@ -241,24 +243,28 @@ function orderIndex(saved, keys) {
   return keysIndex;
 }
 
-function checkUseJSON(msg, modelName, mType, ignore, callback) {
+function checkUseJSON(msg, modelName, mType, usage, callback) {
   if (typeof (msg.payload) !== 'object') {
     return callback(new Error(INPUT_JSON));
   }
   getTypesHeader(modelName, mType, function(details) {
     let headers = details[0];
     let types = details[1];
+    let label = details[2];
     types = covertPythonTypeToJS(types);
     let pLoad = JSON.parse(JSON.stringify(msg.payload));
-    if (Object.keys(pLoad).includes(ignore)) {
-      delete pLoad[ignore];
+
+    if (usage==='test') {
+      delete pLoad[label];
     }
-    if ((new Set(array)).size !== array.length) {
+    if ((new Set(Object.keys(pLoad)).size !== Object.keys(pLoad).length)) {
       return callback(new Error(FIELD_NAMES));
     }
     let pNew = Object.keys(pLoad).slice();
     let hNew = headers.slice();
     if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
+      console.log(JSON.stringify(pNew.sort()));
+      console.log(JSON.stringify(hNew.sort()));
       return callback(new Error(BAD_HEADERS));
     }
 

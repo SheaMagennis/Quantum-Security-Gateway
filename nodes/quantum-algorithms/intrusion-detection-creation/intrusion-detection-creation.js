@@ -12,13 +12,14 @@ module.exports = function(RED) {
     this.name = config.name || 'intrusion-detection-creation';
     this.modelName = config.modelName || 'default';
     this.shots = config.shots || 1;
+    this.label = config.label || 'label';
     const node = this;
     logger.trace(this.id, 'Initialised intrusion-detection-creation system');
 
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection-creation node received input');
 
-      errors.validateIntrusionCreationInput(msg, node.modelName, async function(error) {// changeMe
+      errors.validateIntrusionCreationInput(msg, node.modelName, node.label, async function(error) {// changeMe
         if (error) {
           logger.error(node.id, error);
           node.status({
@@ -34,7 +35,7 @@ module.exports = function(RED) {
           shape: 'dot',
           text: 'Creating model...',
         });
-        let params = [msg.payload, node.shots, node.modelName];
+        let params = [msg.payload, node.label, node.shots, node.modelName];
         let script = build.constructSnippet('QSVC', true, 'PCA', params);
 
         shell.start();

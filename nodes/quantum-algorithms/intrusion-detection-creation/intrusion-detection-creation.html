@@ -10,14 +10,15 @@
         validate: function (s) {
           const letters = /^[A-Za-z0-9_-]+$/;
           if(s.match(letters)){
-            console.log(s)
-            console.log(s.value)
-            console.log(typeof(s.value))
             return true;
           } else {
             return false;
           }
         },
+      },
+      label: {
+        value: "",
+        required: true
       },
       shots: {
         value: "",
@@ -53,6 +54,10 @@
   <div class="form-row">
     <label for="node-input-modelName">Model Name</label>
     <input type="text" id="node-input-modelName" placeholder="Model Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-label">Label Name</label>
+    <input type="text" id="node-input-label" placeholder="label" />
   </div>
   <div class="form-row">
     <label for="node-input-shots">Shots</label>

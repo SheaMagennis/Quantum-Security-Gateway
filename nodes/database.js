@@ -7,18 +7,20 @@ const db = new sqlite3.Database( path.resolve(__dirname, '../DB/modelInfo'), (er
   }
   console.log('Connected to the in-memory SQlite database.');
 });
+
 /*
 function initialize() {
   db.serialize(() => {
-    db.run(`DROP TABLE modelInput`);
+    db.run(`DROP TABLE if exists modelInput`);
     db.run(`CREATE TABLE if not exists modelInput
-    (name VARCHAR(100), header VARCHAR(100), type VARCHAR(100), modelType CHAR(4),
+    (name VARCHAR(100),header VARCHAR(100),type VARCHAR(100),modelType CHAR(4),label VARCHAR(100),
     PRIMARY KEY(name, modelType, header))`);
   });
 }
 */
+
 function getModelDetail(modelName, modelType, callback) {
-  db.all(`SELECT DISTINCT header,type from modelInput WHERE name=? AND modelType=?`,
+  db.all(`SELECT DISTINCT header,type,label from modelInput WHERE name=? AND modelType=?`,
       modelName, modelType, function(err, rows) {
         return callback(rows);
       });
@@ -40,6 +42,9 @@ function stopDB() {
   });
 }
 */
+
+// initialize();
+
 module.exports = {
   getModelDetail,
   modelExists,

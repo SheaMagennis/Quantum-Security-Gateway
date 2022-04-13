@@ -20,9 +20,6 @@ module.exports = function(RED) {
       console.log('in node');
       errors.validateIntrusionInput(msg, node.modelName, node.modelUsage, async function(error) {
         logger.trace(node.id, 'error checking for intrusion');
-        // changeMe
-        console.log('reached');
-        console.log('error ' + error);
         if (error) {
           logger.error(node.id, error);
           done(error);
