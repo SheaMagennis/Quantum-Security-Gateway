@@ -162,13 +162,7 @@ function validateAnomalyInput(msg, callback) {
 };
 
 function validateAttackInput(msg, modelName, usage, callback) {
-  if (usage === 'test') {
-    let x = eHelper.checkTarget(msg);
-    if (x instanceof Error) {
-      return callback(x);
-    }
-  }
-  eHelper.checkUseJSON(msg, modelName, 'regr', 'Target', function(y) {
+  eHelper.checkUseJSON(msg, modelName, 'regr', usage, function(y) {
     if (y instanceof Error) {
       return callback(y);
     }
@@ -181,7 +175,7 @@ function validateAttackInput(msg, modelName, usage, callback) {
   });
 };
 
-function validateAttackCreationInput(msg, modelName, callback) {
+function validateAttackCreationInput(msg, modelName, target, callback) {
   eHelper.checkCreationJSON(msg, modelName, 'regr', function(w) {
     if (w instanceof Error) {
       return callback(w);
@@ -190,7 +184,7 @@ function validateAttackCreationInput(msg, modelName, callback) {
     if (x instanceof Error) {
       return callback(x);
     }
-    let y = eHelper.checkTarget(msg);
+    let y = eHelper.checkTarget(msg, target);
     if (y instanceof Error) {
       return callback(y);
     }
@@ -242,12 +236,6 @@ function validateIntrusionCreationInput(msg, modelName, label, callback) {
 }
 
 function validateIntrusionInput(msg, modelName, usage, callback) {
-  if (usage === 'test') {
-    let x = eHelper.checkLabel(msg);
-    if (x instanceof Error) {
-      return callback(x);
-    }
-  }
   eHelper.checkUseJSON(msg, modelName, 'qsvc', usage, function(res) {
     if (res instanceof Error) {
       return callback(res);

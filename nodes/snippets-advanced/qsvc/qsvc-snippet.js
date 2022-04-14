@@ -11,7 +11,10 @@
  */
 
 const QSVC_START =`
-modelName="./model_store/qsvc%s" #qsvcStore
+import sqlite3
+
+name="%s"
+modelName="./model_store/qsvc"+name #qsvcStore
 model = pickle.load(open(modelName, 'rb')) 
 #get data inputted and convert to dataframe
 type=%j
@@ -22,7 +25,18 @@ test=encoded.to_numpy()
 `;
 
 const QSVC_TEST = `
-index_no = encoded.columns.get_loc("label")
+#get actual field name
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+#name header type modeltype
+c.execute('SELECT DISTINCT label from modelInput WHERE name=? AND modelType=?',(name,"qsvc"))
+labelName = c.fetchall()[0][0]
+\n
+
+
+index_no = encoded.columns.get_loc(labelName)
 label=test[:,index_no]
 label = label.astype('int')#convert from object to usable
 

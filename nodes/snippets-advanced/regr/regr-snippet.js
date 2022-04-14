@@ -11,7 +11,10 @@
  */
 
 const REGR_START=`
-modelName="./model_store/regr%s" #qsvcStore
+import sqlite3
+
+name="%s"
+modelName="./model_store/regr"+name #qsvcStore
 model = pickle.load(open(modelName, 'rb')) 
 #get data inputted and convert to dataframe
 type=%j
@@ -45,7 +48,15 @@ data = np.delete(test, dTime_no, 1)
 `;
 
 const REGR_TEST = `
-index_no = encoded.columns.get_loc("Target")
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+#name header type modeltype
+c.execute('SELECT DISTINCT label from modelInput WHERE name=? AND modelType=?',(name,"regr"))
+targetName = c.fetchall()[0][0]
+
+index_no = encoded.columns.get_loc(targetName)
 label=test[:,index_no]
 label = label.astype('int')#convert from object to usable
 
@@ -63,7 +74,7 @@ const REGR_TEST_END=`
 #print(data)
 #make prediction
 fin=model.score(data,label)
-print("Accuracy: " + str(fin))
+print("Accuracy: " + str(fin)) #Coafficient of determination
    
 `;
 

@@ -19,7 +19,7 @@ df=pd.DataFrame(initial)
 backend = Aer.get_backend('qasm_simulator')
 
 instance = QuantumInstance(backend, shots=%d, skip_qobj_validation=False)
-
+targetName="%s"
 mName="%s"
 hold="regr"+mName
 
@@ -44,11 +44,12 @@ df['hours']=hours
 
 encoded = pd.get_dummies(df)#
 
+
 final=encoded.to_numpy()
 dTime_no = df.columns.get_loc("DateTime")
-index_no = encoded.columns.get_loc("Target")
-label=final[:,index_no]
-label = label.astype('int')#convert from object to usable
+index_no = encoded.columns.get_loc(targetName)
+target=final[:,index_no]
+target = target.astype('int')#convert from object to usable
 
 test = np.delete(final, index_no, 1)#array, num, column/row
 test = np.delete(test, dTime_no, 1)`;
@@ -62,12 +63,12 @@ num_inputs=3
 regr=QSVR(quantum_kernel=basis)
 
 # fit regressor
-regr.fit(test, label)
+regr.fit(test, target)
 pickle.dump(regr, open("./model_store/"+hold, 'wb'))
 
 stuff=initial.keys()
 stuff=list(stuff)
-stuff.remove("Target")
+stuff.remove(targetName)
 temporary=[]
 
 for val in stuff:  
@@ -82,7 +83,7 @@ conn = sqlite3.connect(database)
 c = conn.cursor()
 #name header type modeltype
 for x in range(len(stuff)):
-  c.execute('INSERT INTO modelInput VALUES (?,?,?,?)',(mName,stuff[x],temporary[x],"regr"))
+  c.execute('INSERT INTO modelInput VALUES (?,?,?,?,?)',(mName,stuff[x],temporary[x],"regr", targetName))
 \n
 conn.commit()
 print("Attack Prediction model successfully created")

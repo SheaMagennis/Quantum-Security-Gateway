@@ -116,11 +116,11 @@ function targetDiverse(msg) {
   }
 }
 
-function checkTarget(msg) {
-  if (!Object.keys(msg.payload).includes('Target')) {
+function checkTarget(msg, target) {
+  if (!Object.keys(msg.payload).includes(target)) {
     return new Error(NO_TARGET);
   }
-  let target = msg.payload['Target'];
+  target = msg.payload[target];
   let targetValues = Object.values(target);
   if (targetValues.some((elem) => (typeof elem !== 'number'))) {
     return new Error(BAD_TARGET_VALUE);
@@ -251,15 +251,27 @@ function checkUseJSON(msg, modelName, mType, usage, callback) {
     let headers = details[0];
     let types = details[1];
     let label = details[2];
+    console.log(headers)
     types = covertPythonTypeToJS(types);
     let pLoad = JSON.parse(JSON.stringify(msg.payload));
-
     if (usage==='test') {
-      delete pLoad[label];
+      delete pLoad[label[0]];
+      if (mType==='qsvc') {
+        let x = checkLabel(msg, label[0]);
+        if (x instanceof Error) {
+          return callback(x);
+        }
+      } else {
+        let x = checkTarget(msg, label[0]);
+        if (x instanceof Error) {
+          return callback(x);
+        }
+      }
     }
     if ((new Set(Object.keys(pLoad)).size !== Object.keys(pLoad).length)) {
       return callback(new Error(FIELD_NAMES));
     }
+    console.log("pLoad2 :" + pLoad)
     let pNew = Object.keys(pLoad).slice();
     let hNew = headers.slice();
     if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {

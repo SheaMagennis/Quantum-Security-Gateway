@@ -11,6 +11,7 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'attack-prediction-creation';
     this.modelName = config.modelName || 'default';
+    this.target = config.target || 'default';
     this.shots = config.shots || 1;
     const node = this;
 
@@ -19,7 +20,7 @@ module.exports = function(RED) {
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'attack-prediction-creation node received input');
 
-      errors.validateAttackCreationInput(msg, node.modelName, async function(error) {// changeMe
+      errors.validateAttackCreationInput(msg, node.modelName, node.target, async function(error) {// changeMe
         if (error) {
           logger.error(node.id, error);
           done(error);
@@ -31,7 +32,7 @@ module.exports = function(RED) {
           text: 'Building model...',
         });
 
-        let params = [msg.payload, node.shots, node.modelName];
+        let params = [msg.payload, node.shots, node.target, node.modelName];
         let script = build.constructSnippet('REGR', true, false, params);
 
         shell.start();

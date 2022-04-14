@@ -26,7 +26,7 @@ describe('AttackPredictionNode', function() {
 
   it('attack setup', function(done) {
     flow.add('attack-prediction-creation', 'apc',
-        [['helperNode']], {shots: '10', modelName: 'testing'});
+        [['helperNode']], {shots: '10', modelName: 'testing', target: 'Target'});
     flow.addOutput('helperNode');
     let temp = `"Target": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON, temp));
@@ -39,7 +39,7 @@ describe('AttackPredictionNode', function() {
   });
 
   it('default name outputs correctly', function(done) {
-    flow.add('attack-prediction', 'ap1', [[]], {modelName: 'testing'});
+    flow.add('attack-prediction', 'ap1', [[]], {modelName: 'testing', modelUsage: 'predict'});
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
       inputNode.should.have.property('name', 'attack prediction');
@@ -48,7 +48,7 @@ describe('AttackPredictionNode', function() {
   });
 
   it('return error if input is not json', function(done) {
-    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing'});
+    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing', modelUsage: 'predict'});
 
     const givenInput = {payload: 1};
     const expectedMessage = errors.INPUT_JSON;
@@ -56,7 +56,7 @@ describe('AttackPredictionNode', function() {
   });
 
   it('return error if json has wrong headers', function(done) {
-    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing'});
+    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing', modelUsage: 'predict'});
 
     const givenInput = {payload: {'name': 'Joe'}};
     const expectedMessage = errors.BAD_HEADERS;
@@ -64,7 +64,7 @@ describe('AttackPredictionNode', function() {
   });
 
   it('return error if values are wrong type', function(done) {
-    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing'});
+    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing', modelUsage: 'predict'});
     let sub = `"DateTime":{"0":"error","1":0.000008,"2":0.000008}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_FORMAT;
@@ -72,7 +72,7 @@ describe('AttackPredictionNode', function() {
   });
 
   it('return error if incorrect subkey used', function(done) {
-    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing'});
+    flow.add('attack-prediction', 'ap1', [], {modelName: 'testing', modelUsage: 'predict'});
     let sub = `"DateTime": {"hi": "2010-10-19 13:55:36","1": "2025-11-29 13:55:36","2": "2010-12-19 13:55:36"}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_SUBKEYS;
@@ -80,7 +80,7 @@ describe('AttackPredictionNode', function() {
   });
 
   it('return success output on valid input', function(done) {// change
-    flow.add('attack-prediction', 'ap1', [['helperNode']], {modelName: 'testing'});
+    flow.add('attack-prediction', 'ap1', [['helperNode']], {modelName: 'testing', modelUsage: 'predict'});
     flow.addOutput('helperNode');
     let temp = `"DateTime": {"0": "2010-10-19 13:55:36","1": "2025-11-29 13:55:36","2": "2010-12-19 13:55:36"}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
