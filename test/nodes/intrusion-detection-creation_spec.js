@@ -39,7 +39,8 @@ describe('IntrusionDetectionCreationNode', function() {
   });
 
   it('return error if input is not json', function(done) {
-    flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing', label: 'label'});
+    flow.add('intrusion-detection-creation', 'idc', [],
+        {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
 
     const givenInput = {payload: 1};
     const expectedMessage = errors.INPUT_JSON;
@@ -47,7 +48,8 @@ describe('IntrusionDetectionCreationNode', function() {
   });
 
   it('return error if json has wrong headers', function(done) {
-    flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing', label: 'label'});
+    flow.add('intrusion-detection-creation', 'idc', [],
+        {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
 
     const givenInput = {payload: {'name': 'Joe'}};
     const expectedMessage = errors.NO_LABEL;
@@ -55,7 +57,8 @@ describe('IntrusionDetectionCreationNode', function() {
   });
 
   it('return error if values are wrong type', function(done) {
-    flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing', label: 'label'});
+    flow.add('intrusion-detection-creation', 'idc', [],
+        {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
     let sub = `"label":{"0":2,"1":1,"2":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_LABEL_VALUE;
@@ -63,7 +66,8 @@ describe('IntrusionDetectionCreationNode', function() {
   });
 
   it('return error if uneven number of values', function(done) {
-    flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing', label: 'label'});
+    flow.add('intrusion-detection-creation', 'idc', [],
+        {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
     let sub = `"label":{"0":1,"1":1,"2":0,"3":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.UNEVEN;
@@ -71,7 +75,8 @@ describe('IntrusionDetectionCreationNode', function() {
   });
 
   it('return error if less than three packets sent for classification', function(done) {
-    flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing', label: 'label'});
+    flow.add('intrusion-detection-creation', 'idc', [],
+        {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
     let sub = `"label":{"0":1,"1":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.NEEDS_MORE;
@@ -79,7 +84,8 @@ describe('IntrusionDetectionCreationNode', function() {
   });
 
   it('return error if incorrect subkey used', function(done) {
-    flow.add('intrusion-detection-creation', 'idc', [], {shots: '100', modelName: 'testing', label: 'label'});
+    flow.add('intrusion-detection-creation', 'idc', [],
+        {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
     let sub = `"label":{"bad":1,"1":0,"2":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_SUBKEYS;
@@ -88,7 +94,7 @@ describe('IntrusionDetectionCreationNode', function() {
 
   it('return success output on valid input', function(done) {// change
     flow.add('intrusion-detection-creation', 'idc',
-        [['helperNode']], {shots: '100', modelName: 'testing', label: 'label'});
+        [['helperNode']], {shots: '100', modelName: 'testing', label: 'label', backend: 'local'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));

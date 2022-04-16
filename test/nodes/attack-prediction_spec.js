@@ -26,7 +26,7 @@ describe('AttackPredictionNode', function() {
 
   it('attack setup', function(done) {
     flow.add('attack-prediction-creation', 'apc',
-        [['helperNode']], {shots: '10', modelName: 'testing', target: 'Target'});
+        [['helperNode']], {shots: '10', modelName: 'testing', target: 'Target', backend: 'local'});
     flow.addOutput('helperNode');
     let temp = `"Target": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON, temp));

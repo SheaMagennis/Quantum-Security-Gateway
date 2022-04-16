@@ -29,7 +29,7 @@ describe('AttackPredictionCreationNode', function() {
 
   it('default name outputs correctly', function(done) {
     flow.add('attack-prediction-creation', 'apc', [[]],
-        {shots: '100', modelName: 'testing'});
+        {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
     nodeTestHelper.load(flow.nodes, flow.flow, function() {
       let inputNode = nodeTestHelper.getNode(flow.inputId);
       inputNode.should.have.property('name', 'attack prediction creation');
@@ -38,7 +38,8 @@ describe('AttackPredictionCreationNode', function() {
   });
 
   it('return error if input is not json', function(done) {
-    flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing', target: 'Target'});
+    flow.add('attack-prediction-creation', 'apc', [],
+        {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
 
     const givenInput = {payload: 1};
     const expectedMessage = errors.INPUT_JSON;
@@ -46,7 +47,8 @@ describe('AttackPredictionCreationNode', function() {
   });
 
   it('return error if json has wrong headers', function(done) {
-    flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing', target: 'Target'});
+    flow.add('attack-prediction-creation', 'apc', [],
+        {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
 
     const givenInput = {payload: {'name': 'Joe'}};
     const expectedMessage = errors.NO_TARGET;
@@ -54,7 +56,8 @@ describe('AttackPredictionCreationNode', function() {
   });
 
   it('return error if values are wrong type', function(done) {
-    flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing', target: 'Target'});
+    flow.add('attack-prediction-creation', 'apc', [],
+        {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
     let sub = `"Target":{"0":"error","1":"1","2":"0"}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_TARGET_VALUE;
@@ -62,7 +65,8 @@ describe('AttackPredictionCreationNode', function() {
   });
 
   it('return error if uneven number of values', function(done) {
-    flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing', target: 'Target'});
+    flow.add('attack-prediction-creation', 'apc', [],
+        {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
     let sub = `"Target":{"0":1,"1":1,"2":0,"3":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.UNEVEN;
@@ -70,7 +74,8 @@ describe('AttackPredictionCreationNode', function() {
   });
 
   it('return error if incorrect subkey used', function(done) {
-    flow.add('attack-prediction-creation', 'apc', [], {shots: '100', modelName: 'testing', target: 'Target'});
+    flow.add('attack-prediction-creation', 'apc', [],
+        {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
     let sub = `"Target":{"bad":1,"1":0,"2":0}`;
     const givenInput = JSON.parse(util.format(baseJSON, sub));
     const expectedMessage = errors.BAD_SUBKEYS;
@@ -79,7 +84,7 @@ describe('AttackPredictionCreationNode', function() {
 
   it('return success output on valid input', function(done) {// change
     flow.add('attack-prediction-creation', 'apc',
-        [['helperNode']], {shots: '100', modelName: 'testing', target: 'Target'});
+        [['helperNode']], {shots: '100', modelName: 'testing', target: 'Target', backend: 'local'});
     flow.addOutput('helperNode');
     let temp = `"Target": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));

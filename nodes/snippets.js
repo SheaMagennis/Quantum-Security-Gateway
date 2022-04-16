@@ -49,6 +49,10 @@ const MEASURE =
 `qc.measure(%s)
 `;
 
+const LOCAL_BACKEND =
+`backend_service = Aer.get_backend('qasm_simulator')
+`;
+
 const LOCAL_SIMULATOR =
 `simulator = Aer.get_backend('qasm_simulator')
 result = execute(qc, backend = simulator, shots = %s).result()
@@ -382,6 +386,7 @@ module.exports = {
   IBMQ_SYSTEM_PREFERRED,
   IBMQ_SYSTEM_VERBOSE,
   IBMQ_SYSTEM_RESULT,
+  LOCAL_BACKEND,
   GROVERS,
   NOT_GATE,
   CIRCUIT_DIAGRAM,

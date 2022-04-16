@@ -23,6 +23,8 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 import pickle
 import json
+import os
+import sqlite3
 `;
 
 module.exports = {

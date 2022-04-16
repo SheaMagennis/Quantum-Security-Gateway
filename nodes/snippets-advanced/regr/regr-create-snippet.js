@@ -11,14 +11,11 @@
  */
 
 const CREATE_REGR_START = `
-import sqlite3
-import os
 
 initial=%j
 df=pd.DataFrame(initial)
-backend = Aer.get_backend('qasm_simulator')
 
-instance = QuantumInstance(backend, shots=%d, skip_qobj_validation=False)
+instance = QuantumInstance(backend_service, shots=%d, skip_qobj_validation=False)
 targetName="%s"
 mName="%s"
 hold="regr"+mName
@@ -55,7 +52,7 @@ test = np.delete(final, index_no, 1)#array, num, column/row
 test = np.delete(test, dTime_no, 1)`;
 
 const CREATE_REGR_END=`
-num_qubits = 3#2
+num_qubits = 2#3
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='linear')#full
 #instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  # Change

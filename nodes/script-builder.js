@@ -33,14 +33,14 @@ function constructSnipppetEnd(sumCon, reduction, end, build) {
   return soFar;
 }
 
-function constructSnippet(name, build, reduction, params, usage) {
+function constructSnippet(name, build, reduction, params, usage, buildText='hi') {
   imports(name);
-
   let imp = name + '_IMPORTS';
   let sumCon=between[imp];
   let end='';
 
   if (build===true) {
+    sumCon+=buildText;
     name = 'CREATE_' + name;
     let sta = name + '_START';
     end = name + '_END';
@@ -86,3 +86,6 @@ module.exports = {
   constructSnippet,
   constructSingleSnippet,
 };
+
+
+//constructSnippet('1','2','3','4','5','6')

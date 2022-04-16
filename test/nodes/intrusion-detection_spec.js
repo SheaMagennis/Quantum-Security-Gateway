@@ -29,7 +29,7 @@ describe('IntrusionDetectionNode', function() {
 
   it('intrusion setup', function(done) {
     flow.add('intrusion-detection-creation', 'idc',
-        [['helperNode']], {shots: '10', modelName: 'testing'});
+        [['helperNode']], {shots: '10', modelName: 'testing', backend: 'local'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(creationJSON, temp));

@@ -11,8 +11,6 @@
  */
 
 const CREATE_QSVC_START = `
-import os
-import sqlite3
 initial=%j
 labelName="%s"
 df=pd.DataFrame(initial)
@@ -25,11 +23,10 @@ test = np.delete(final, index_no, 1)#array, num, column/row
 `;
 
 const CREATE_QSVC_END=`
-backend = Aer.get_backend('qasm_simulator')
 num_qubits = 2
 shots = %d  # Number of times the job will be run on the quantum device
 feature_map = ZZFeatureMap(feature_dimension=num_qubits, reps=2, entanglement='full')  
-instance = QuantumInstance(backend, shots=shots, skip_qobj_validation=False)  # create instance on backend
+instance = QuantumInstance(backend_service, shots=shots, skip_qobj_validation=False)  # create instance on backend
 basis = QuantumKernel(feature_map, quantum_instance=instance)  
 
 train_features=test

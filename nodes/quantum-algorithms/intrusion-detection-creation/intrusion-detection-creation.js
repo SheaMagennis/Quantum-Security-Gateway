@@ -4,6 +4,8 @@ const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
 const build = require('../../script-builder');
+const util = require('util');
+const snippets = require('../../snippets');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -13,6 +15,10 @@ module.exports = function(RED) {
     this.modelName = config.modelName || 'default';
     this.shots = config.shots || 1;
     this.label = config.label || 'label';
+    this.apiToken = config.api_token;
+    this.chosenSystem = config.chosen_system;
+    this.preferredBackend = config.preferred_backend;
+    this.backend = config.backend;
     const node = this;
     logger.trace(this.id, 'Initialised intrusion-detection-creation system');
 
@@ -35,8 +41,25 @@ module.exports = function(RED) {
           shape: 'dot',
           text: 'Creating model...',
         });
+
+        let bEnd= '';
+        if (node.backend==='local') {
+          bEnd+=snippets.LOCAL_BACKEND;
+        } else {
+          if (node.preferredBackend) {
+            bEnd += util.format(snippets.IBMQ_SYSTEM_PREFERRED, node.apiToken, node.preferredBackend);
+          } else {
+            if (node.chosenSystem === 'Qubit_System') {
+              bEnd += util.format(snippets.IBMQ_SYSTEM_DEFAULT, node.apiToken, 2, 'False');
+            } else {
+              bEnd += util.format(snippets.IBMQ_SYSTEM_QASM, node.apiToken);
+            }
+          }
+        }
+
         let params = [msg.payload, node.label, node.shots, node.modelName];
-        let script = build.constructSnippet('QSVC', true, 'PCA', params);
+
+        let script = build.constructSnippet('QSVC', true, 'PCA', params, false, bEnd);
 
         shell.start();
         await shell.execute(script)

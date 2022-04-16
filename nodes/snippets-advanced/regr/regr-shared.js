@@ -15,6 +15,8 @@ import datetime
 import json
 import numpy as np
 import pandas as pd
+import sqlite3
+import os
 
 from qiskit import Aer
 from qiskit.utils import QuantumInstance

@@ -25,7 +25,7 @@ describe('DetailModelNode', function() {
 
   it('detail setup', function(done) {
     flow.add('intrusion-detection-creation', 'idc',
-        [['helperNode']], {shots: '10', modelName: 'testing'});
+        [['helperNode']], {shots: '10', modelName: 'testing', label: 'label', backend: 'local'});
     flow.addOutput('helperNode');
     let temp = `"label": {"0": 1, "1": 1, "2": 0}`;
     const givenInput = JSON.parse(util.format(baseJSON, temp));
