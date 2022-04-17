@@ -10,7 +10,7 @@
  * the values at runtime.
  */
 
-const QKNN=`
+const QKNNImport=`
 # Adaptation of https://github.com/GroenteLepel/qiskit-quantum-knn for anomaly detection on unsupervised data
 # This code uses the existing code from the above implementation to analyse the distance between
 # each value set in a given list and the other values. The outlier is identified as the point with the greatest 
@@ -30,8 +30,11 @@ with redirect_stderr(f):
   import itertools
   from sklearn.preprocessing import OrdinalEncoder
   from qiskit_quantum_knn.encoding import analog
-  from qiskit import Aer
   import math
+  
+`;
+
+const QKNN=`  
   initial=%j
   df=pd.DataFrame(initial)
   def calculate_fidelities(counts) -> np.ndarray:
@@ -77,8 +80,8 @@ with redirect_stderr(f):
       )
       sorted_neighbors = sorted_neighbors[sorted_neighbors < n_queries]  
       return sorted_neighbors
-  backend = Aer.get_backend('qasm_simulator')
-  instance = QuantumInstance(backend, shots=%d)
+  #backend = Aer.get_backend('qasm_simulator')
+  instance = QuantumInstance(backend_service, shots=%d)
   
   qknn = QKNeighborsClassifier(
       n_neighbors=3,  # not used in this case, though could be used in getOutlier
@@ -126,4 +129,5 @@ with redirect_stderr(f):
 
 module.exports = {
   QKNN,
+  QKNNImport,
 };

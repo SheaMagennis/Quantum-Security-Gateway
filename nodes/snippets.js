@@ -50,7 +50,8 @@ const MEASURE =
 `;
 
 const LOCAL_BACKEND =
-`backend_service = Aer.get_backend('qasm_simulator')
+`from qiskit import Aer
+backend_service = Aer.get_backend('qasm_simulator')
 `;
 
 const LOCAL_SIMULATOR =

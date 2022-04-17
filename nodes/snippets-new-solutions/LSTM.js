@@ -10,7 +10,7 @@
  * the values at runtime.
  */
 
-const LSTM=`
+const LSTMImport=`
 #algorithm outlined in https://arxiv.org/pdf/2009.01783.pdf - page 7 onwards
 import numpy as np
 import math
@@ -27,7 +27,8 @@ from qiskit.circuit import Parameter, ParameterVector, ParameterExpression
 from qiskit.opflow import Z, X, I, StateFn, CircuitStateFn, SummedOp
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler
-
+`;
+const LSTM=`
 initial=%j
 
 class QLSTM:
@@ -76,7 +77,8 @@ class QLSTM:
         return [ct,ht,yt]
     
     def _makeVQC(self,val,depth):
-        backend = Aer.get_backend('qasm_simulator')
+        #backend = Aer.get_backend('qasm_simulator')
+        backend=backend_service
         classical=4
         quant=4
         qc = QuantumCircuit(quant, classical)
@@ -244,4 +246,5 @@ print(date)
 
 module.exports = {
   LSTM,
+  LSTMImport,
 };

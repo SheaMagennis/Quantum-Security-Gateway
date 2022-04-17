@@ -4,6 +4,8 @@ const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
 const build = require('../../script-builder');
+const snippets = require("../../snippets");
+const util = require("util");
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -11,6 +13,10 @@ module.exports = function(RED) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'attack-date-prediction';
     this.shots = config.shots || 1;
+    this.apiToken = config.api_token;
+    this.chosenSystem = config.chosen_system;
+    this.preferredBackend = config.preferred_backend;
+    this.backend = config.backend;
 
     const node = this;
 
@@ -31,8 +37,23 @@ module.exports = function(RED) {
           text: 'Identifying next date...',
         });
 
+        let bEnd= '';
+        if (node.backend==='local') {
+          bEnd+=snippets.LOCAL_BACKEND;
+        } else {
+          if (node.preferredBackend) {
+            bEnd += util.format(snippets.IBMQ_SYSTEM_PREFERRED, node.apiToken, node.preferredBackend);
+          } else {
+            if (node.chosenSystem === 'Qubit_System') {
+              bEnd += util.format(snippets.IBMQ_SYSTEM_DEFAULT, node.apiToken, 2, 'False');
+            } else {
+              bEnd += util.format(snippets.IBMQ_SYSTEM_QASM, node.apiToken);
+            }
+          }
+        }
+
         let params = [msg.payload, node.shots];
-        let script = build.constructSingleSnippet('LSTM', params);
+        let script = build.constructSingleSnippet('LSTM', params, bEnd);
 
         shell.start();
         await shell.execute(script)

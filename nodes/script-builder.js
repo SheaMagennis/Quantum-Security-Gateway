@@ -33,7 +33,7 @@ function constructSnipppetEnd(sumCon, reduction, end, build) {
   return soFar;
 }
 
-function constructSnippet(name, build, reduction, params, usage, buildText='hi') {
+function constructSnippet(name, build, reduction, params, usage, buildText='') {
   imports(name);
   let imp = name + '_IMPORTS';
   let sumCon=between[imp];
@@ -63,9 +63,10 @@ function constructSnippet(name, build, reduction, params, usage, buildText='hi')
   return substituteSnippet(sumCon, params);
 };
 
-function constructSingleSnippet(name, params) {
+function constructSingleSnippet(name, params, backend='') {
   importOne(name);
-  let sub = single[name];
+  console.log(name+'Import');
+  let sub = backend+single[name+'Import']+single[name];
   return substituteSnippet(sub, params);
 }
 
