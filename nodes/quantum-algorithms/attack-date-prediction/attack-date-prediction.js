@@ -4,8 +4,8 @@ const errors = require('../../errors');
 const logger = require('../../logger');
 const {PythonInteractive, PythonPath} = require('../../python');
 const build = require('../../script-builder');
-const snippets = require("../../snippets");
-const util = require("util");
+const snippets = require('../../snippets');
+const util = require('util');
 const shell = new PythonInteractive(PythonPath);
 
 module.exports = function(RED) {
@@ -64,7 +64,7 @@ module.exports = function(RED) {
                 text: 'Prediction complete!',
               });
               logger.trace(data);
-              msg.payload = data;
+              msg.payload = data.slice(18, data.length);
               send(msg);
               done();
             }).catch((err) => {

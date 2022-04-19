@@ -44,7 +44,11 @@ module.exports = function(RED) {
                 text: 'Traffic classified!',
               });
               logger.trace(data);
-              msg.payload = (data.slice(39, data.length));
+              if (node.modelUsage === 'test') {
+                msg.payload = ('Accuracy:'+data.split('Accuracy:')[1]).toString();
+              } else {
+                msg.payload = ('Classifications:'+data.split('Classifications:')[1]).toString();
+              }
               send(msg);
               done();
             }).catch((err) => {

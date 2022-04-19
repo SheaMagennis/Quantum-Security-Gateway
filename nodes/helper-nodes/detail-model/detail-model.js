@@ -33,7 +33,12 @@ module.exports = function(RED) {
         await shell.execute(script)
             .then((data) => {
               logger.trace(data);
-              msg.payload = data;// (data.slice(924, data.length))
+              let temp = data.split('\n');
+              let result = '';
+              for (let y = 1; y < temp.length; y++) {
+                result+=temp[y] + '\n';
+              }
+              msg.payload = result;// (data.slice(924, data.length))
               send(msg);
               done();
             }).catch((err) => {

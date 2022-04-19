@@ -48,6 +48,7 @@ const QSVC_END=`
 #make prediction
 fin=model.predict(test)#[[-0.74856406,-0.30061566, 0.19750934]]
 #print(fin)
+print("Classifications:")
 for i in fin:
   if i == 0:  print("No threat present")
   else:  print("Threat detected")

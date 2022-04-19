@@ -59,7 +59,6 @@ module.exports = function(RED) {
 
         let params = [msg.payload, node.shots, node.deviations];
         let script = build.constructSingleSnippet('QKNN', params, bEnd);
-        console.log(script)
 
         shell.start();
         await shell.execute(script)

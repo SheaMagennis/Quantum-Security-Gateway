@@ -33,7 +33,7 @@ module.exports = function(RED) {
         await shell.execute(script)
             .then((data) => {
               logger.trace(data);
-              msg.payload = data;// (data.slice(924, data.length))
+              msg.payload = 'Model ' + node.model_name + ' deleted';// (data.slice(924, data.length))
               send(msg);
               done();
             }).catch((err) => {

@@ -225,7 +225,7 @@ function checkCreationJSON(msg, modelName, modelType, callback) {
 function getTypesHeader(modelName, mType, callback) {
   let headers = [];
   let types = [];
-  let label=[]
+  let label=[];
   return queries.getModelDetail(modelName, mType, function(resp) {
     headers = resp.map( (y) => y.header);
     types = resp.map( (w) => w.type);
@@ -247,82 +247,79 @@ function checkUseJSON(msg, modelName, mType, usage, callback) {
   if (typeof (msg.payload) !== 'object') {
     return callback(new Error(INPUT_JSON));
   }
-  getTypesHeader(modelName, mType, function(details) {
-    let headers = details[0];
-    let types = details[1];
-    let label = details[2];
-    console.log(headers)
-    types = covertPythonTypeToJS(types);
-    let pLoad = JSON.parse(JSON.stringify(msg.payload));
-    if (usage==='test') {
-      delete pLoad[label[0]];
-      if (mType==='qsvc') {
-        let x = checkLabel(msg, label[0]);
-        if (x instanceof Error) {
-          return callback(x);
-        }
-      } else {
-        let x = checkTarget(msg, label[0]);
-        if (x instanceof Error) {
-          return callback(x);
-        }
-      }
-    }
-    if ((new Set(Object.keys(pLoad)).size !== Object.keys(pLoad).length)) {
-      return callback(new Error(FIELD_NAMES));
-    }
-    console.log("pLoad2 :" + pLoad)
-    let pNew = Object.keys(pLoad).slice();
-    let hNew = headers.slice();
-    if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
-      console.log(JSON.stringify(pNew.sort()));
-      console.log(JSON.stringify(hNew.sort()));
-      return callback(new Error(BAD_HEADERS));
-    }
-
-    let keyToHeaderMapping = orderIndex(headers, Object.keys(pLoad));
-    let vals = Object.values(pLoad);
-    let headerNum = 0;
-    let standardLen = 0;
-    for (const val of vals) {
-      if (headerNum === 0) {
-        standardLen = Object.keys(val).length;
-      } else {
-        if (Object.keys(val).length !== standardLen) {
-          return callback(new Error(UNEVEN));
-        }
-      }
-      let subVal = Object.values(val);
-      if (subVal.length < 3) {
-        return callback(new Error(NEEDS_MORE));
-      }
-      const hasKeys = !!Object.keys(val).length;
-      if (hasKeys) {
-        let subKey = Object.keys(val);
-        let keyLen = subKey.length;
-        for (let i = 0; i < keyLen; i++) {
-          if (subKey[i] !== i.toString()) {
-            return callback(new Error(BAD_SUBKEYS));
+  checkModelExists(modelName, mType, function(resp) {
+    if (!resp) {
+      return callback(new Error(NO_MODEL));
+    } else {
+      getTypesHeader(modelName, mType, function(details) {
+        let headers = details[0];
+        let types = details[1];
+        let label = details[2];
+        types = covertPythonTypeToJS(types);
+        let pLoad = JSON.parse(JSON.stringify(msg.payload));
+        if (usage === 'test') {
+          delete pLoad[label[0]];
+          if (mType === 'qsvc') {
+            let x = checkLabel(msg, label[0]);
+            if (x instanceof Error) {
+              return callback(x);
+            }
+          } else {
+            let x = checkTarget(msg, label[0]);
+            if (x instanceof Error) {
+              return callback(x);
+            }
           }
         }
-      }
-      let qInd = keyToHeaderMapping[headerNum];
-      let oneType = types[qInd];
-      for (const sinVal of subVal) {
-        if (!(typeof (sinVal) === oneType)) {
-          return callback(new Error(BAD_FORMAT));
+        if ((new Set(Object.keys(pLoad)).size !== Object.keys(pLoad).length)) {
+          return callback(new Error(FIELD_NAMES));
         }
-      }
-      headerNum += 1;
-    }
-    queries.modelExists(modelName, mType, function(resp) {
-      let x = resp.map( (w) => w.value);
-      if (x[0]) {
+        let pNew = Object.keys(pLoad).slice();
+        let hNew = headers.slice();
+        if (JSON.stringify(pNew.sort()) !== JSON.stringify(hNew.sort())) {
+          console.log(JSON.stringify(pNew.sort()));
+          console.log(JSON.stringify(hNew.sort()));
+          return callback(new Error(BAD_HEADERS));
+        }
+
+        let keyToHeaderMapping = orderIndex(headers, Object.keys(pLoad));
+        let vals = Object.values(pLoad);
+        let headerNum = 0;
+        let standardLen = 0;
+        for (const val of vals) {
+          if (headerNum === 0) {
+            standardLen = Object.keys(val).length;
+          } else {
+            if (Object.keys(val).length !== standardLen) {
+              return callback(new Error(UNEVEN));
+            }
+          }
+          let subVal = Object.values(val);
+          if (subVal.length < 3) {
+            return callback(new Error(NEEDS_MORE));
+          }
+          const hasKeys = !!Object.keys(val).length;
+          if (hasKeys) {
+            let subKey = Object.keys(val);
+            let keyLen = subKey.length;
+            for (let i = 0; i < keyLen; i++) {
+              if (subKey[i] !== i.toString()) {
+                return callback(new Error(BAD_SUBKEYS));
+              }
+            }
+          }
+          let qInd = keyToHeaderMapping[headerNum];
+          let oneType = types[qInd];
+          for (const sinVal of subVal) {
+            if (!(typeof (sinVal) === oneType)) {
+              return callback(new Error(BAD_FORMAT));
+            }
+          }
+          headerNum += 1;
+        }
         return callback(null);
-      } else {
-        return callback(new Error(NO_MODEL));
-      }
-    });
+      });
+    }
   });
 };
 

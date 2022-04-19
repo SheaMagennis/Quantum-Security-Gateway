@@ -65,7 +65,6 @@ function constructSnippet(name, build, reduction, params, usage, buildText='') {
 
 function constructSingleSnippet(name, params, backend='') {
   importOne(name);
-  console.log(name+'Import');
   let sub = backend+single[name+'Import']+single[name];
   return substituteSnippet(sub, params);
 }
@@ -89,4 +88,4 @@ module.exports = {
 };
 
 
-//constructSnippet('1','2','3','4','5','6')
+// constructSnippet('1','2','3','4','5','6')
