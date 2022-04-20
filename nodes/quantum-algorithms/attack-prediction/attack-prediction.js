@@ -43,7 +43,12 @@ module.exports = function(RED) {
                 text: 'Prediction complete!',
               });
               logger.trace(data);
-              msg.payload = (data);
+              if (node.modelUsage === 'test') {
+                msg.payload = ('Coefficient of Determination:'+data.split('Determination:')[1]).toString();
+                console.log(msg.payload)
+              } else {
+                msg.payload = ('Predicted value:'+data.split('Predicted value:')[1]).toString();
+              }
               send(msg);
               done();
             }).catch((err) => {

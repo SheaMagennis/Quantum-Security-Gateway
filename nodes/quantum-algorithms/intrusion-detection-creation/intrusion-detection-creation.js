@@ -74,7 +74,7 @@ module.exports = function(RED) {
               send(msg);
               done();
             }).catch((err) => {
-              if (!err.includes('error')) { // Don't fail on warnings
+              if (err.split('Error').length<=3) { // Don't fail on warnings
                 node.status({
                   fill: 'green',
                   shape: 'dot',

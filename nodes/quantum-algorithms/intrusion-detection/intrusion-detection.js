@@ -17,7 +17,6 @@ module.exports = function(RED) {
 
     this.on('input', async function(msg, send, done) {
       logger.trace(node.id, 'intrusion-detection node received input');
-      console.log('in node');
       errors.validateIntrusionInput(msg, node.modelName, node.modelUsage, async function(error) {
         logger.trace(node.id, 'error checking for intrusion');
         if (error) {
@@ -52,17 +51,6 @@ module.exports = function(RED) {
               send(msg);
               done();
             }).catch((err) => {
-              if (!err.includes('error')) {
-                node.status({
-                  fill: 'green',
-                  shape: 'dot',
-                  text: 'Model created!',
-                });
-                logger.trace('done');
-                msg.payload = ('done');
-                send(msg);
-                done();
-              }
               node.status({
                 fill: 'red',
                 shape: 'dot',

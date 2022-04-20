@@ -20,36 +20,36 @@ targetName="%s"
 mName="%s"
 hold="regr"+mName
 
-val=df['DateTime']
-years=[]
-months=[]
-days=[]
-hours=[]
-for x in range(len(val)):
- temp=val[x]
- res = datetime.datetime.strptime(temp, '%Y-%m-%d %H:%M:%S')
- years.append(res.year)
- months.append(res.month)
- days.append(res.day)
- hours.append(res.hour)
+#val=df['DateTime']
+#years=[]
+#months=[]
+#days=[]
+#hours=[]
+#for x in range(len(val)):
+# temp=val[x]
+# res = datetime.datetime.strptime(temp, '%Y-%m-%d %H:%M:%S')
+# years.append(res.year)
+# months.append(res.month)
+# days.append(res.day)
+# hours.append(res.hour)
 
 \n
-df['year']=years
-df['month']=months
-df['day']=days
-df['hours']=hours
+#df['year']=years
+#df['month']=months
+#df['day']=days
+#df['hours']=hours
 
 encoded = pd.get_dummies(df)#
 
 
 final=encoded.to_numpy()
-dTime_no = df.columns.get_loc("DateTime")
+#dTime_no = df.columns.get_loc("DateTime")
 index_no = encoded.columns.get_loc(targetName)
 target=final[:,index_no]
 target = target.astype('int')#convert from object to usable
 
 test = np.delete(final, index_no, 1)#array, num, column/row
-test = np.delete(test, dTime_no, 1)`;
+#test = np.delete(test, dTime_no, 1)`;
 
 const CREATE_REGR_END=`
 num_qubits = 2#3

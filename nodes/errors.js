@@ -165,11 +165,12 @@ function validateAttackInput(msg, modelName, usage, callback) {
   eHelper.checkUseJSON(msg, modelName, 'regr', usage, function(y) {
     if (y instanceof Error) {
       return callback(y);
-    }
+      // eslint-disable-next-line brace-style
+    }/*
     let z = eHelper.checkTime(msg);
     if (z instanceof Error) {
-      return callback(z);
-    } else {
+      return callback(z);}*/
+    else {
       return callback(null);
     }
   });
