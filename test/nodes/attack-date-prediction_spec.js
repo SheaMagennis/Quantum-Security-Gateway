@@ -1,4 +1,5 @@
-const AttackDatePredictionNode = require('../../nodes/quantum-algorithms/attack-date-prediction/attack-date-prediction.js');
+const AttackDatePredictionNode =
+    require('../../nodes/quantum-algorithms/attack-date-prediction/attack-date-prediction.js');
 const testUtil = require('../test-util');
 const nodeTestHelper = testUtil.nodeTestHelper;
 const assert = require('chai').assert;

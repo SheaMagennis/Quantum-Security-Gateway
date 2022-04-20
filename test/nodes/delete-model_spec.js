@@ -46,6 +46,13 @@ describe('DeleteModelNode', function() {
     });
   });
 
+  it('return error if model not existing', function(done) {
+    flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'nonExist', model_type: 'qsvc'});
+    const givenInput = {payload: 'test'};
+    const expectedMessage = errors.NO_MODEL;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
   it('return success output on valid input', function(done) {// change
     flow.add('delete-model', 'dm', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');

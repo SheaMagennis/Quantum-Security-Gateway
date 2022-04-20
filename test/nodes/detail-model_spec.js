@@ -46,6 +46,13 @@ describe('DetailModelNode', function() {
     });
   });
 
+  it('return error if model not existing', function(done) {
+    flow.add('detail-model', 'dm2', [['helperNode']], {model_name: 'nonExist', model_type: 'qsvc'});
+    const givenInput = {payload: 'test'};
+    const expectedMessage = errors.NO_MODEL;
+    testUtil.nodeFailed(flow, givenInput, expectedMessage, done);
+  });
+
   it('returns correct output on valid input', function(done) {// change
     flow.add('detail-model', 'dm2', [['helperNode']], {model_name: 'testing', model_type: 'qsvc'});
     flow.addOutput('helperNode');

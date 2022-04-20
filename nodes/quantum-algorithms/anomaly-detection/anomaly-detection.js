@@ -47,7 +47,7 @@ module.exports = function(RED) {
             if (node.chosenSystem === 'Qubit_System') {
               bEnd += util.format(snippets.IBMQ_SYSTEM_DEFAULT, node.apiToken, 2, 'False');
             } else {
-              let qLen = Object.keys(msg.payload).length
+              let qLen = Object.keys(msg.payload).length;
               if (qLen > 32) {
                 bEnd += util.format(snippets.IBMQ_SYSTEM_DEFAULT, node.apiToken, qLen, 'True');
               } else {

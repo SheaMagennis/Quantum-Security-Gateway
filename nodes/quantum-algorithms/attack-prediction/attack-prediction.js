@@ -45,7 +45,7 @@ module.exports = function(RED) {
               logger.trace(data);
               if (node.modelUsage === 'test') {
                 msg.payload = ('Coefficient of Determination:'+data.split('Determination:')[1]).toString();
-                console.log(msg.payload)
+                console.log(msg.payload);
               } else {
                 msg.payload = ('Predicted value:'+data.split('Predicted value:')[1]).toString();
               }
