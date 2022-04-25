@@ -1,0 +1,44 @@
+<script type="text/javascript">
+  RED.nodes.registerType("message-generation", {
+    category: "quantum key distribution",
+    color: "#DC143C",
+    defaults: {
+      name: { value: "" },
+      bits: {
+        value: "",
+        required: true,
+        validate: function (x) {
+          x = parseInt(x);
+          if (Number.isInteger(x) && x > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-play",
+    align: "right",
+    paletteLabel: "message-generation",
+    label: function () {
+      return this.name || "message-generation";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="message-generation">
+  <div class="form-row">
+    <label for="node-input-name"> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-bits"><i class="fa fa-tag"></i> Number of bits</label>
+    <input type="text" id="node-input-bits" placeholder="1" />
+  </div>
+</script>
+
+

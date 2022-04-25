@@ -151,6 +151,10 @@ function validateRandomInput(msg) {
   return null;
 };
 
+function validateKeys(msg) {
+  return null;
+};
+
 function validateAnomalyInput(msg, callback) {
   eHelper.checkCreationJSON(msg, 'none', 'none', function(z) {
     if (z instanceof Error) {
@@ -306,4 +310,5 @@ module.exports = {
   validateIntrusionCreationInput,
   validateAttackCreationInput,
   validateDatePredictionInput,
+  validateKeys,
 };

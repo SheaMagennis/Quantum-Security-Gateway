@@ -26,6 +26,7 @@ const NODES = {
   'list-models': require('../nodes/helper-nodes/list-models/list-models.js'),
   'local-simulator': require('../nodes/quantum/local-simulator/local-simulator.js'),
   'measure': require('../nodes/quantum/measure/measure.js'),
+  'message-generation': require('../nodes/quantum-keys/message-generation/message-generation.js'),
   'multi-controlled-u-gate': require('../nodes/quantum/multi-controlled-u-gate/multi-controlled-u-gate.js'),
   'not-gate': require('../nodes/quantum/not-gate/not-gate.js'),
   'phase-gate': require('../nodes/quantum/phase-gate/phase-gate.js'),
