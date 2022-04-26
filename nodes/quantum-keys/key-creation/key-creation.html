@@ -1,0 +1,43 @@
+<script type="text/javascript">
+  RED.nodes.registerType("key-creation", {
+    category: "quantum key distribution",
+    color: "#DC143C",
+    defaults: {
+      name: { value: "" },
+      firstBases : { value: "", required: true},
+      secondBases : { value: "", required: true},
+      privateValue : { value: "", required: true}
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-play",
+    align: "right",
+    paletteLabel: "key-creation",
+    label: function () {
+      return this.name || "key-creation";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="key-creation">
+  <div class="form-row">
+    <label for="node-input-name"> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-firstBases"> First Bases</label>
+    <input type="text" id="node-input-firstBases" placeholder="0 1 1" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-secondBases"> Second Bases</label>
+    <input type="text" id="node-input-secondBases" placeholder="1 1 0" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-privateValue"> Private Value</label>
+    <input type="text" id="node-input-privateValue" placeholder="1, 1, 0" />
+  </div>
+</script>
+
+

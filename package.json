@@ -99,7 +99,10 @@
       "intrusion-detection-creation": "nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js",
       "attack-prediction-creation": "nodes/quantum-algorithms/attack-prediction-creation/attack-prediction-creation.js",
       "attack-date-prediction": "nodes/quantum-algorithms/attack-date-prediction/attack-date-prediction.js",
-      "message-generation": "nodes/quantum-keys/message-generation/message-generation.js"
+      "message-generation": "nodes/quantum-keys/message-generation/message-generation.js",
+      "second-bases-generation": "nodes/quantum-keys/second-bases-generation/second-bases-generation.js",
+      "key-creation": "nodes/quantum-keys/key-creation/key-creation.js",
+      "key-comparison": "nodes/quantum-keys/key-comparison/key-comparison.js"
     }
   }
 }

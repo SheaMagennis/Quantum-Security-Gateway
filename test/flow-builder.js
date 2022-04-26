@@ -23,6 +23,8 @@ const NODES = {
   'intrusion-detection-creation': require('../nodes/quantum-algorithms/intrusion-detection-creation/' +
       'intrusion-detection-creation.js'),
   'intrusion-detection': require('../nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js'),
+  'key-comparison': require('../nodes/quantum-keys/key-comparison/key-comparison.js'),
+  'key-creation': require('../nodes/quantum-keys/key-creation/key-creation.js'),
   'list-models': require('../nodes/helper-nodes/list-models/list-models.js'),
   'local-simulator': require('../nodes/quantum/local-simulator/local-simulator.js'),
   'measure': require('../nodes/quantum/measure/measure.js'),
@@ -37,6 +39,7 @@ const NODES = {
   'random': require('../nodes/quantum-algorithms/random/random.js'),
   'reset': require('../nodes/quantum/reset/reset.js'),
   'rotation-gate': require('../nodes/quantum/rotation-gate/rotation-gate.js'),
+  'second-bases-generation': require('../nodes/quantum-keys/second-bases-generation/second-bases-generation.js'),
   'script': require('../nodes/quantum/script/script.js'),
   'swap': require('../nodes/quantum/swap/swap.js'),
   'toffoli-gate': require('../nodes/quantum/toffoli-gate/toffoli-gate.js'),
