@@ -1,7 +1,17 @@
 <script type="text/html" data-help-name="key-creation">
   <p>
-    This node generates a true key-creation number between the values 0 and 63 inclusive.
+    This node creates a key and returns it to the user.
   </p>
+  <p>
+    First bases refers to the first base provided to the user; it takes a sequence of 1's and zeros with a space between each digit.
+  </p>
+  <p>
+    Second bases refers to the first base provided to the user; it takes a sequence of 1's and zeros with a space between each digit.
+  </p>
+  <p>
+    The private value is the value given to a user when they execute the preceding nodes.
+  </p>
+
 
   <h3>Inputs</h3>
     <dl class="message-properties">
@@ -13,9 +23,6 @@
 
   <h3>Outputs</h3>
     <dl class="message-properties">
-      <dt>payload.randVal
-          <span class="property-type">string</span>
-      </dt>
-      <dd>randVal is the key-creation integer result of the algorithm</dd>
+      <dd>The quantum key, made up of a sequence of 1's and 0's</dd>
     </dl>
 </script>

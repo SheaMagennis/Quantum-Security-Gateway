@@ -1,6 +1,9 @@
 <script type="text/html" data-help-name="key-comparison">
   <p>
-    This node generates a true key-comparison number between the values 0 and 63 inclusive.
+    This node relays if two keys are matching by checking a third of their bits.
+  </p>
+  <p>
+    The first and second keys are sequences of space-seperated 1's and 0's making up the user keys.
   </p>
 
   <h3>Inputs</h3>
@@ -13,9 +16,7 @@
 
   <h3>Outputs</h3>
     <dl class="message-properties">
-      <dt>payload.randVal
-          <span class="property-type">string</span>
-      </dt>
-      <dd>randVal is the key-comparison integer result of the algorithm</dd>
+      <dd>A message indicating if the keys match</dd>
+    </dl>
     </dl>
 </script>
