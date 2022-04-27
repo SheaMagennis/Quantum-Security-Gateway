@@ -1,0 +1,54 @@
+<script type="text/javascript">
+  RED.nodes.registerType("delete-model", {
+    category: "model handling",
+    color: "#FF8000",
+    defaults: {
+      name: { value: "" },
+      model_name: {
+        value: "",
+      validate: function (s) {
+          const letters = /^[A-Za-z0-9_-]+$/;
+          if(s.match(letters)){
+            console.log(s)
+            console.log(s.value)
+            console.log(typeof(s.value))
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      model_type: { value: "" ,required: true },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-remove",
+    align: "right",
+    paletteLabel: "delete-model",
+    label: function () {
+      return this.name || "delete-model";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="delete-model">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-model_name"><i class="fa fa-tag"></i> Model Name</label>
+    <input type="text" id="node-input-model_name" placeholder="Model Name" />
+  </div>
+  <div style="width:40%; text-align:center; float:left; margin-bottom: 40px;">
+    <label for="node-input-model_type">Model Type</label>
+    <select name="model_type" id="node-input-model_type" style="width:85%">
+      <option value="qsvc">Intrusion-Detection</option>
+      <option value="regr">Attack-Prediction</option>
+    </select>
+  </div>
+</script>
+
+

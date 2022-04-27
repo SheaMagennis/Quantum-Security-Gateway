@@ -1,0 +1,22 @@
+<script type="text/html" data-help-name="intrusion-detection">
+  <p>
+    This node classifies incoming traffic, determining if it represents a security threat, and specifying the type of threat if that is the case.
+  </p>
+
+  <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">json</span>
+        </dt>
+        <dd>JSON with headers matching those given for the models' creation, without the 'label' field. At least 3 records are required</dd>
+        <dt class="message-properties">Model Name
+          <span class="property-type">string</span>
+        </dt>
+        <dd>The name of the model the input will be run against.</dd>
+    </dl>
+
+  <h3>Outputs</h3>
+    <dl class="message-properties">
+      <dd>The output is the classification of the traffic, as a string</dd>
+    </dl>
+</script>

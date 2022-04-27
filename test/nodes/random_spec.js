@@ -41,7 +41,7 @@ describe('RandomNode', function() {
       randVal: 0,
     };
     const expectedHigherOutput = {
-      randVal: 63,
+      randVal: 64,
     };
     testUtil.outputReceivedInCorrectRange(flow, givenInput, expectedLowerOutput, expectedHigherOutput, done);
   }).timeout(25000);

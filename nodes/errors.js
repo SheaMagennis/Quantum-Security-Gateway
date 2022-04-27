@@ -1,4 +1,7 @@
 'use strict';
+const eHelper = require('./error-shared');
+const queries = require('./database');
+
 
 /*
  * Node-RED nodes error handling functions should be defined here for homogeneity and reuse.
@@ -58,6 +61,9 @@ const INPUT_AN_INTEGER =
 
 const NO_INTERNET =
 'Failed to connect to the internet.';
+
+const NO_MODEL =
+'There is no model by this name';
 
 function validateQubitInput(msg) {
   let keys = Object.keys(msg.payload);
@@ -145,6 +151,134 @@ function validateRandomInput(msg) {
   return null;
 };
 
+function validateKeys(msg) {
+  return null;
+};
+
+function validateAnomalyInput(msg, callback) {
+  eHelper.checkCreationJSON(msg, 'none', 'none', function(z) {
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
+};
+
+function validateAttackInput(msg, modelName, usage, callback) {
+  eHelper.checkUseJSON(msg, modelName, 'regr', usage, function(y) {
+    if (y instanceof Error) {
+      return callback(y);
+      // eslint-disable-next-line brace-style
+    }/*
+    let z = eHelper.checkTime(msg);
+    if (z instanceof Error) {
+      return callback(z);}*/
+    else {
+      return callback(null);
+    }
+  });
+};
+
+function validateAttackCreationInput(msg, modelName, target, callback) {
+  eHelper.checkCreationJSON(msg, modelName, 'regr', function(w) {
+    if (w instanceof Error) {
+      return callback(w);
+    }
+    let x = eHelper.checkTime(msg);
+    if (x instanceof Error) {
+      return callback(x);
+    }
+    let y = eHelper.checkTarget(msg, target);
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.targetDiverse(msg);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
+};
+
+function validateListInput(msg) {
+  return null;
+};
+
+
+function validateHelperInput(type, name, callback) {
+  queries.modelExists(name, type, function(resp) {
+    let x = resp.map( (w) => w.value);
+    if (x[0]) {
+      return callback(null);
+    } else {
+      return callback(new Error(NO_MODEL));
+    }
+  });
+};
+
+function validateIntrusionCreationInput(msg, modelName, label, callback) {
+  eHelper.checkCreationJSON(msg, modelName, 'qsvc', function(res) {
+    if (res instanceof Error) {
+      return callback(res);
+    }
+    let x = eHelper.checkLabel(msg, label);
+    if (x instanceof Error) {
+      return callback(x);
+    }
+    let y = eHelper.checkCreateLabel(msg);
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.checkPCA(msg, true);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
+}
+
+function validateIntrusionInput(msg, modelName, usage, callback) {
+  eHelper.checkUseJSON(msg, modelName, 'qsvc', usage, function(res) {
+    if (res instanceof Error) {
+      return callback(res);
+    }
+    let z = eHelper.checkPCA(msg, false);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
+}
+
+function validateDatePredictionInput(msg, callback) {
+  eHelper.checkCreationJSON(msg, 'none', 'none', function(y) {
+    if (y instanceof Error) {
+      return callback(y);
+    }
+    let z = eHelper.checkPredTime(msg);
+    if (z instanceof Error) {
+      return callback(z);
+    } else {
+      return callback(null);
+    }
+  });
+}
+/*
+function validateLabelInclusion(label, msg){
+  let msgStr = JSON.parse(JSON.stringify(msg.payload));
+  let headers = Object.keys(msgStr).slice();
+  if (headers.includes(label)){
+    return null;
+  }
+  else {
+    return new error("training value not in JSON headers")
+  }
+}
+ */
 module.exports = {
   NOT_QUANTUM_NODE,
   USE_REGISTER_NODES,
@@ -156,10 +290,11 @@ module.exports = {
   SAME_QUBIT_RECEIVED_TWICE,
   NOT_BIT_STRING,
   BLOCH_SPHERE_WITH_MEASUREMENT,
+  NO_MODEL,
+  NO_INTERNET,
   GREATER_THAN_TWO,
   INPUT_ODD_INTEGER,
   INPUT_AN_INTEGER,
-  NO_INTERNET,
   validateQubitInput,
   validateRegisterInput,
   validateQubitsFromSameCircuit,
@@ -167,4 +302,13 @@ module.exports = {
   validateGroversInput,
   validateShorsInput,
   validateRandomInput,
+  validateIntrusionInput,
+  validateAnomalyInput,
+  validateAttackInput,
+  validateListInput,
+  validateHelperInput,
+  validateIntrusionCreationInput,
+  validateAttackCreationInput,
+  validateDatePredictionInput,
+  validateKeys,
 };

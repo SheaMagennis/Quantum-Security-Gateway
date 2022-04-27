@@ -1,0 +1,38 @@
+<script type="text/javascript">
+  RED.nodes.registerType("key-comparison", {
+    category: "quantum key distribution",
+    color: "#DC143C",
+    defaults: {
+      name: { value: "" },
+      firstKey : { value: "", required: true},
+      secondKey : { value: "", required: true}
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-balance-scale",
+    align: "right",
+    paletteLabel: "key-comparison",
+    label: function () {
+      return this.name || "key-comparison";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="key-comparison">
+  <div class="form-row">
+    <label for="node-input-name"> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-firstKey"> First Key</label>
+    <input type="text" id="node-input-firstKey" placeholder="0 1 1" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-secondKey"> Second Key</label>
+    <input type="text" id="node-input-secondKey" placeholder="1 1 0" />
+  </div>
+</script>
+
+

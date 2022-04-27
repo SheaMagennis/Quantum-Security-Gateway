@@ -1,0 +1,116 @@
+<script type="text/javascript">
+  RED.nodes.registerType("anomaly-detection", {
+    category: "model usage",
+    color: "#FF007F",
+    defaults: {
+      name: { value: "" },
+      api_token: { value: ""},
+      chosen_system: { value: "" },
+      preferred_backend: { value: "" },
+      backend: {
+        value: "",
+        required: true
+      },
+      shots: {
+        value: "",
+        required: true,
+        validate: function (x) {
+          x = parseInt(x);
+          if (Number.isInteger(x) && x > 5) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+      deviations: {
+        value: "",
+        required: true,
+        validate: function (x) {
+          x = parseInt(x);
+          if (Number.isInteger(x) && x > 0) {
+            return true;
+          } else {
+            return false;
+          }
+        },
+      },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-user-secret",
+    align: "right",
+    paletteLabel: "anomaly-detection",
+    label: function () {
+      return this.name || "anomaly-detection";
+    },
+    inputLabels: "Input",
+    outputLabels: "Output",
+  });
+</script>
+
+<script type="text/html" data-template-name="anomaly-detection">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-shots">Shots</label>
+    <input type="number" id="node-input-shots" placeholder="100"/>
+  </div>
+  <div class="form-row">
+    <label for="node-input-deviations">Standard Deviations</label>
+    <input type="number" id="node-input-deviations" placeholder="1"/>
+  </div>
+  <div style="width:40%; text-align:center; float:left; margin-bottom: 40px;">
+    <label for="node-input-backend">Backend</label>
+    <select name="backend" id="node-input-backend" style="width:85%" onchange="listSelect()">
+      <option selected="selected" disabled="disabled" value="">-Select-</option>
+      <option value="local" selected=>Local</option>
+      <option value="remote">Remote</option>
+    </select>
+  </div>
+  <div class="form-row" id="changeable" style="display: block;">
+    <div class="form-row">
+      <br />
+      <label for="node-input-api_token" id="user-api-token"
+        >IBM Quantum API Token
+      </label>
+      <input type="text" id="node-input-api_token" placeholder="API Token" style="margin-bottom: 20px;"/>
+    </div>
+
+    <div style="width:40%; text-align:center; float:left; margin-bottom: 40px;">
+      <label for="node-input-chosen_system">Least Busy Backend</label>
+      <select name="chosen_system" id="node-input-chosen_system" style="width:85%">
+        <option value="Simulator">Simulator</option>
+        <option value="Qubit_System">Quantum System</option>
+      </select>
+    </div>
+    <div style="width:5%; font-size:10pt; text-align:center; float:left; margin-top: 20px;">OR</div>
+    <div style="width:40%; text-align:center; float:left; margin-bottom: 40px;">
+      <label for="node-input-preferred_backend" id="user-backend">Specific Backend</label>
+      <input
+        type="text"
+        id="node-input-preferred_backend"
+        placeholder="Preferred Backend"
+        style="width:85%"
+      />
+    </div>
+  </div>
+</script>
+
+<script>
+    function listSelect()
+    {
+        var text = document.getElementById("changeable");
+        var val = document.getElementById("node-input-backend").value;
+        if (val === "local") {
+          text.style.display = "none";
+        } else if (val === "remote") {
+          text.style.display = "block";
+        }
+        else{
+          text.style.display = "none";
+        }
+    }
+</script>

@@ -49,6 +49,11 @@ const MEASURE =
 `qc.measure(%s)
 `;
 
+const LOCAL_BACKEND =
+`from qiskit import Aer
+backend_service = Aer.get_backend('qasm_simulator')
+`;
+
 const LOCAL_SIMULATOR =
 `simulator = Aer.get_backend('qasm_simulator')
 result = execute(qc, backend = simulator, shots = %s).result()
@@ -304,6 +309,67 @@ dec = list(counts.keys())[0]
 print(int(dec,2))
 `;
 
+const LIST_MODELS = `
+import sqlite3
+import os
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+c.execute('SELECT DISTINCT modelType,name from modelInput')
+conn.commit()
+ans=c.fetchall() 
+inMods=[]
+atMods=[]
+for x in range(len(ans)):
+  if(ans[x][0]=="qsvc"):
+    inMods.append(ans[x][1])
+  if(ans[x][0]=="regr"):
+    atMods.append(ans[x][1])    
+    
+\n               
+print("Intrusion-detection models:")
+for idVal in inMods:
+  print(idVal)
+\n
+print("Attack-prediction models:")
+for apVal in atMods:
+  print(apVal)
+
+`;
+
+const DETAIL_MODEL = `
+import csv
+import sqlite3
+mName="%s"    
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+c.execute('SELECT DISTINCT header,type from modelInput WHERE name=? AND modelType=?',(mName[4:],mName[:4]))
+conn.commit()
+ans=c.fetchall()
+print("header | type") 
+for x in ans:
+  print(x[0]+ " | " + x[1])
+`;
+
+const DELETE_MODEL = ` 
+import sqlite3
+import os
+mName="%s"
+os.remove("./model_store/"+mName)
+conn = None
+database = "./DB/modelInfo"
+conn = sqlite3.connect(database)
+c = conn.cursor()
+#name header type modeltype
+c.execute('DELETE from modelInput WHERE name=? AND modelType=?',(mName[4:],mName[:4]))
+conn.commit()
+print("Model "+mName[4:] + " deleted")
+`;
+
+
 module.exports = {
   IMPORTS,
   QUANTUM_CIRCUIT,
@@ -321,6 +387,7 @@ module.exports = {
   IBMQ_SYSTEM_PREFERRED,
   IBMQ_SYSTEM_VERBOSE,
   IBMQ_SYSTEM_RESULT,
+  LOCAL_BACKEND,
   GROVERS,
   NOT_GATE,
   CIRCUIT_DIAGRAM,
@@ -341,4 +408,7 @@ module.exports = {
   SHORS,
   HISTOGRAM,
   RAND,
+  LIST_MODELS,
+  DELETE_MODEL,
+  DETAIL_MODEL,
 };

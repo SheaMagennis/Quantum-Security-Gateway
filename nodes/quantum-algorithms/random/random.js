@@ -26,11 +26,9 @@ module.exports = function(RED) {
       }
 
       let script = util.format(snippets.RAND);
-      logger.trace(node.id, script); // testing
       shell.start();
       await shell.execute(script)
           .then((data) => {
-            logger.trace(data);
             msg.payload = {randVal: Number(data.slice(924, data.length))};
             send(msg);
             done();

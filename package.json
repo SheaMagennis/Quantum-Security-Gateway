@@ -42,10 +42,13 @@
   },
   "dependencies": {
     "is-online": "^9.0.1",
-    "python-interactive": "^0.3.2"
+    "python-interactive": "^0.3.2",
+    "sqlite3": "^5.0.2"
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "csv-parse": "^5.0.4",
+    "csv-parser": "^3.0.0",
     "dedent-js": "^1.0.1",
     "eslint": "^7.32.0",
     "eslint-config-google": "^0.14.0",
@@ -86,7 +89,20 @@
       "grovers": "nodes/quantum-algorithms/grovers/grovers.js",
       "shors": "nodes/quantum-algorithms/shors/shors.js",
       "portfolio-optimisation": "nodes/quantum-algorithms/portfolio-optimisation/portfolio-optimisation.js",
-      "random": "nodes/quantum-algorithms/random/random.js"
+      "random": "nodes/quantum-algorithms/random/random.js",
+      "intrusion-detection": "nodes/quantum-algorithms/intrusion-detection/intrusion-detection.js",
+      "anomaly-detection": "nodes/quantum-algorithms/anomaly-detection/anomaly-detection.js",
+      "attack-prediction": "nodes/quantum-algorithms/attack-prediction/attack-prediction.js",
+      "list-models": "nodes/helper-nodes/list-models/list-models.js",
+      "delete-model": "nodes/helper-nodes/delete-model/delete-model.js",
+      "detail-model": "nodes/helper-nodes/detail-model/detail-model.js",
+      "intrusion-detection-creation": "nodes/quantum-algorithms/intrusion-detection-creation/intrusion-detection-creation.js",
+      "attack-prediction-creation": "nodes/quantum-algorithms/attack-prediction-creation/attack-prediction-creation.js",
+      "attack-date-prediction": "nodes/quantum-algorithms/attack-date-prediction/attack-date-prediction.js",
+      "message-generation": "nodes/quantum-keys/message-generation/message-generation.js",
+      "second-bases-generation": "nodes/quantum-keys/second-bases-generation/second-bases-generation.js",
+      "key-creation": "nodes/quantum-keys/key-creation/key-creation.js",
+      "key-comparison": "nodes/quantum-keys/key-comparison/key-comparison.js"
     }
   }
 }

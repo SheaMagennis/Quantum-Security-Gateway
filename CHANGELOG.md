@@ -1,3 +1,18 @@
+### v0.5.0 - 27-04-2022
+- Added Intrusion-Detection Node
+- Added Intrusion-Detection-Creation Node
+- Added Attack-Prediction Node
+- Added Attack-Prediction-Creation Node
+- Added Anomaly-Detection Node
+- Added Attack-Date-Prediction Node
+- Added List-Models Node
+- Added Detail-Model Node
+- Added Delete-Model Node
+- Added Message-Generation Node
+- Added Second-Bases-Generation Node
+- Added Key-Creation Node
+- Added Key-Comparison Node
+
 ### v0.4.0 - 12-09-2021
 - Added Portfolio Optimisation node
 - Added alternative Docker installation

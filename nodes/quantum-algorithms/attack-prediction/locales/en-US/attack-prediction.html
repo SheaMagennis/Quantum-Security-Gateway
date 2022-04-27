@@ -1,0 +1,22 @@
+<script type="text/html" data-help-name="attack-prediction">
+  <p>
+      This node predicts values, predicting the precise value from the given input.
+  </p>
+
+  <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>payload
+            <span class="property-type">json</span>
+        </dt>
+        <dd>JSON with headers matching those given for the models' creation, without the 'target' field.</dd>
+        <dt class="message-properties">Model Name
+          <span class="property-type">string</span>
+        </dt>
+        <dd>The name of the model the input will be run against.</dd>
+    </dl>
+
+  <h3>Outputs</h3>
+    <dl class="message-properties">
+      <dd>The output is a series of integers for the resulting predicted values.</dd>
+    </dl>
+</script>
