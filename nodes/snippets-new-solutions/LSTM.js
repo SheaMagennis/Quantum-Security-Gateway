@@ -31,21 +31,24 @@ from sklearn.preprocessing import StandardScaler
 const LSTM=`
 initial=%j
 
+#algorithm outlined in https://arxiv.org/pdf/2009.01783.pdf - page 7 onwards
+import numpy as np
+import math
+import matplotlib.pyplot as plt
+
 class QLSTM:
     def __init__(self):
         self.data=[]
         self.depth=1
+        self.trainingVal=0
         
     def _setDepth(self,depth):
         self.depth=depth
     
     def _resolve(self,c,h,x):#recurse on this n times
-        #print(x)
-        #print(h)
         val = h+x
         #VQC1
         depth=self.depth
-        
         first=self._makeVQC(val,depth)
         firstOut=self._sigmoid(first)
         #VQC2
@@ -77,8 +80,7 @@ class QLSTM:
         return [ct,ht,yt]
     
     def _makeVQC(self,val,depth):
-        #backend = Aer.get_backend('qasm_simulator')
-        backend=backend_service
+        backend = Aer.get_backend('qasm_simulator')
         classical=4
         quant=4
         qc = QuantumCircuit(quant, classical)
@@ -86,6 +88,7 @@ class QLSTM:
         for i in range(depth):
             self._performVariation(qc,quant,val)
         res = self._measureVQC(quant,qc,backend)
+        qc.draw()
         return res
     
     def _initialVQC(self,val,qc,quant):
@@ -119,6 +122,7 @@ class QLSTM:
     def _measureVQC(self,quant,qc,backend):
         for i in range(quant):
             qc.measure(i,i)
+        qc.draw()
         result = execute(qc, backend = backend, shots = %d).result()
         counts=result.get_counts()
         dec = list(counts.keys())[0]
@@ -179,19 +183,23 @@ class QLSTM:
         qc.u(d,e,f,1)
         qc.u(g,h,i,2)
         qc.u(j,k,l,3)
+        #qc.draw()
         # Combine the Hamiltonian observable and the state
         op = ~StateFn(H) @ CircuitStateFn(primitive=qc, coeff=1.)
         # Convert the expectation value into an operator corresponding to the gradient w.r.t. the state parameters using
         # the parameter shift method.
         params = [a, b, c, d, e, f, g, h, i, j, k, l]
         # Define the values to be assigned to the parameters
-        value_dict = {a:1,b:1,c:1,d:1,e:1,f:1,g:1,h:1,i:1,j:1,k:1,l:1} #WHAT VALUES?
+        value_dict = {a:self.trainingVal,b:self.trainingVal,c:self.trainingVal,d:self.trainingVal,
+                      e:self.trainingVal,f:self.trainingVal,g:self.trainingVal,h:self.trainingVal,i:self.trainingVal
+                      ,j:self.trainingVal,k:self.trainingVal,l:self.trainingVal} 
         state_grad = Gradient(grad_method='param_shift').convert(operator=op, params=params)
         # Print the operator corresponding to the gradient
         #print(state_grad)
         # Assign the parameters and evaluate the gradient
         state_grad_result = state_grad.assign_parameters(value_dict).eval()
         #print('State gradient computed with parameter shift', state_grad_result)
+        qc.draw()
         return state_grad_result
     
     def getEstimation(self, data):#enter 2d array
@@ -202,16 +210,36 @@ class QLSTM:
             else:
                 temp = self._resolve(temp[0],[float(temp[1][0]),float(temp[1][1])],data[x])
         return [float(temp[2][:2][0]),float(temp[2][:2][1])]
-\n    
+    
+    def train(self, data, target):
+        #1 iteration
+        for x in range(len(data)):
+            if(x==0):
+                temp = self._resolve([0,0,0,0],[0,0],data[x])#control bits, hidden bits, values
+            else:
+                temp = self._resolve(temp[0],[float(temp[1][0]),float(temp[1][1])],data[x])
+            if(x==len(data)-1):
+                break
+            if (float(temp[2][:2][1]) == target[x]):
+                difference=0
+            else:
+                try:
+                    difference = ((float(temp[2][:2][1])-target[x])/(float(temp[2][:2][1])))*np.pi
+                except ZeroDivisionError:
+                    difference=target[x]
+            if(float(temp[2][:2][1])>target[x]):
+                self.trainingVal+=difference
+            else:
+                self.trainingVal-=difference
+            
+\n
 def transformData(data):
-    #data=["2011-11-11 13:55:36","2011-11-13 13:55:36","2011-11-17 13:55:36"]
+    data=["2011-11-11 13:55:36","2011-11-13 13:55:36","2011-11-17 13:55:36"]
     values=[]
-    #raise Exception(data[0])
     for x in range(len(data)):
-        val = (datetime.fromisoformat(data[x][0]))#datetime.fromisoformat(data[x])
-        tempvals=int(val.timestamp())
-        values.append(tempvals)
-        
+        val = (datetime.fromisoformat(data[x]))
+        tempvals=int(val.timestamp())#val.utcnow().timestamp()
+        values.append(tempvals)   
     res=[]
     for y in range(len(values)-1):
         res.append([values[y+1]-values[y],values[y+1]-values[y]])
@@ -232,6 +260,10 @@ scalar.fit(val)
 val=scalar.transform(val)
 
 valScal=val.tolist()
+
+trainData=valScal[0][1:]
+x.train(valScal, trainData)
+
 res=x.getEstimation(valScal)#only use first 
 lastVal=int(datetime.fromisoformat((data[-1][0])).timestamp())#int(datetime.fromisoformat((data[-1])).timestamp())
 
