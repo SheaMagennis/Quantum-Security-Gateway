@@ -37,20 +37,17 @@ Node-RED Quantum requires at minimum [Node.js 12.0.0](https://nodejs.org/en/), [
 
 Even though not required, some knowledge on how to use the Node-RED platfom can be useful. We recommend this [Node-RED tutorial](https://www.youtube.com/watch?v=3AR432bguOY) on YouTube.
 
-## Installation
-1. Install Node-RED locally by following the installation instructions [here](https://nodered.org/docs/getting-started/local).
-2. Once Node-RED has been installed, start the application by entering the command `node-red` in the terminal.
-3. Open the Node-RED interface by navigating to the IP address the server is running at in your browser. This will usually be `http://127.0.0.1:1880/`.
-4. In Node-RED, navigate to the **Palette Manager** (top-right corner), select **Install** and search for *'quantum'*, as depicted below.
-5. Install the **node-red-contrib-quantum** package. Once installed, the quantum nodes provided by this library will show in the **Palette** (on the left-side of the Node-RED editor). Please note that this installation may take a few minutes, as it needs to install the Python virtual environment required for executing the nodes.
-
-![Node-RED palette manager](./resources/installation-guide/palette-manager.png)
-
-### Docker Alternative
-An alternative method of installation is to set up a Docker environment:
-1. Install `docker` and `docker-compose`. The installation guide can be found on the [official Docker website](https://docs.docker.com/get-docker/).
-2. Run `docker-compose -p quantum up` to start the development container. You can also add `-d` option to run it in detached mode.
-3. If you only need the pre-configured Node.js and Python environment and to install the library on Node-RED interface, run `docker build -f Dockerfile.prod -t docker-quantum .` to build the image and then run `docker run -it -p [local-machine-port]:1880 docker-quantum` to start the container. Replace the `[local-machine-port]` with the desired port that you wish to run Node-RED on your local machine.
+##Usage 
+- Install Python, Node.js, and NPM.  
+- Clone the repository and navigate into it:  
+  `git clone https://github.com/node-red-quantum/node-red-contrib-quantum.git`  
+  `cd node-red-contrib-quantum/`  
+- Install dependencies, link the package to Node-RED, and setup the Python virtual environment:  
+  `npm run setup`  
+- Open Node-RED. The following command will first try and run any global installations of Node-RED, otherwise it will run the local installation which is installed as a dependency:  
+  `npm start`  
+- Navigate to the following URL in your web browser:  
+  `http://127.0.0.1:1880/`  
 
 ## About Quantum Computing
 
@@ -143,6 +140,8 @@ The *'quantum algorithm'* library includes:
 
 * [Grover's searching algorithm](https://github.com/node-red-quantum/node-red-contrib-quantum/wiki/Quantum-Algorithm-Nodes#grovers-algorithm)
 * [Shor's factoring algorithm](https://github.com/node-red-quantum/node-red-contrib-quantum/wiki/Quantum-Algorithm-Nodes#shors-algorithm)
+
+See the documentation attached to the frontend of other nodes for information on their usage.
 
 More information on *'quantum algorithm'* nodes can be found in the [Node-RED Quantum wiki](https://github.com/node-red-quantum/node-red-contrib-quantum/wiki/Quantum-Algorithm-Nodes).
 
