@@ -10,7 +10,7 @@ const shell = new PythonInteractive(PythonPath);
 module.exports = function(RED) {
   function SecondBasesGenerationNode(config) {
     RED.nodes.createNode(this, config);
-    this.name = config.name || 'second-bases';
+    this.name = config.name || 'second-bases-generation';
     this.bits = config.bits;
     const node = this;
 
@@ -29,7 +29,7 @@ module.exports = function(RED) {
       node.status({
         fill: 'orange',
         shape: 'dot',
-        text: 'Generating base and message',
+        text: 'Generating base',
       });
 
       let script = util.format(keys.keyImports + keys.received, node.bits);
@@ -61,5 +61,5 @@ module.exports = function(RED) {
     });
   }
 
-  RED.nodes.registerType('second-bases', SecondBasesGenerationNode);
+  RED.nodes.registerType('second-bases-generation', SecondBasesGenerationNode);
 };

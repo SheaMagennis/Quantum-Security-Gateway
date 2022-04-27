@@ -11,7 +11,7 @@ module.exports = function(RED) {
   function KeyComparisonNode(config) {
     RED.nodes.createNode(this, config);
     this.name = config.name || 'key-comparison';
-    this.firstkey = config.firstKey;
+    this.firstKey = config.firstKey;
     this.secondKey = config.secondKey;
     const node = this;
 
@@ -34,7 +34,7 @@ module.exports = function(RED) {
       });
 
       let script =
-          util.format(keys.keyImports + keys.keyComparison, node.firstkey, node.secondKey);
+          util.format(keys.keyImports + keys.keyComparison, node.firstKey, node.secondKey);
       shell.start();
       await shell.execute(script)
           .then((data) => {
